@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-exact-target-head-review-run-evidence-binding.schema.json",
+  "title": "Kodac P7-R20 Exact-Target-Head Zero-Finding Review-Run Evidence Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "evidenceIdentity",
+    "state",
+    "sourceVerificationEngineCompletionEventEvidenceIdentity",
+    "repositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "verificationReportIdentity",
+    "verificationSessionId",
+    "reviewRunId",
+    "reviewRunIdentity",
+    "reviewProviderId",
+    "reviewProviderVersion",
+    "reviewPolicyIdentity",
+    "reviewContextBundleIdentity",
+    "reviewTaskId",
+    "reviewInstructionsIdentity",
+    "reviewStatus",
+    "reviewedHead",
+    "evaluatedHead",
+    "acceptedClaimCount",
+    "findingIdentities"
+  ],
+  "properties": {
+    "version": { "const": "p7-r20-exact-target-head-review-run-evidence-binding-v1" },
+    "evidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "state": { "const": "EXACT_TARGET_HEAD_ZERO_FINDING_REVIEW_RUN_EVIDENCE_BOUND_ONLY" },
+    "sourceVerificationEngineCompletionEventEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "repositoryIdentity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "canonicalBase": { "$ref": "#/$defs/gitSha1" },
+    "targetHead": { "$ref": "#/$defs/gitSha1" },
+    "verificationReportIdentity": { "$ref": "#/$defs/sha256" },
+    "verificationSessionId": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "reviewRunId": { "$ref": "#/$defs/sha256" },
+    "reviewRunIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewProviderId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "reviewProviderVersion": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "reviewPolicyIdentity": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "reviewContextBundleIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewTaskId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "reviewInstructionsIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewStatus": { "const": "COMPLETED" },
+    "reviewedHead": { "$ref": "#/$defs/gitSha1" },
+    "evaluatedHead": { "$ref": "#/$defs/gitSha1" },
+    "acceptedClaimCount": { "const": 0 },
+    "findingIdentities": { "type": "array", "maxItems": 0, "items": false }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitSha1": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    }
+  }
+}
