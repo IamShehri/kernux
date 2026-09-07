@@ -388,12 +388,12 @@ test("canonical KRI-R1 corpus bytes and published identity remain unchanged", ()
   assert.equal(corpus.corpusIdentity, "e3f87d5e008918043da4f10617aa479d0d5e4b9fcde42143bc691763f503c4d4")
 })
 
-test("canonical KRI-R2 and KRI-R3 source bytes remain unchanged", () => {
+test("canonical KRI-R2/KRI-R3 predecessor bytes and authorized R20 executor successor remain pinned", () => {
   const expected = new Map([
     ["../src/reviewer-intelligence/contracts.ts", "5ebe91c3d98f626651230989564d367d0600863c"],
     ["../src/reviewer-intelligence/runtime.ts", "4c5d01293d37b14ad4b017ec1e7dd17055393113"],
     ["../src/reviewer-intelligence/provider-contracts.ts", "97e95f3cd19aebf63c86dba254bc8e55f919c031"],
-    ["../src/reviewer-intelligence/executor.ts", "1ff5d7273512af2f6ccb5c1d70ccb54369bac5e4"],
+    ["../src/reviewer-intelligence/executor.ts", "f7e969672182e3ee3209f9677522e6ffc3caa210"],
   ])
   for (const [path, blob] of expected) assert.equal(gitBlobSha1(readFileSync(new URL(path, import.meta.url))), blob, path)
 })
