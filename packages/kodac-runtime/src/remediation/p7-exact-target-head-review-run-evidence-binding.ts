@@ -307,12 +307,13 @@ export async function validateP7ExactTargetHeadReviewRunEvidenceBinding(
     OUTPUT_KEYS,
     "exact-target-head review-run evidence binding",
   )
-  const claimedIdentity = sha256(record.evidenceIdentity, "exact-target-head review-run evidence binding.evidenceIdentity")
+  const snapshot = structuredClone(record) as UnknownRecord
+  const claimedIdentity = sha256(snapshot.evidenceIdentity, "exact-target-head review-run evidence binding.evidenceIdentity")
   const expected = await buildP7ExactTargetHeadReviewRunEvidenceBinding(input)
   if (claimedIdentity !== expected.evidenceIdentity) {
     fail("exact-target-head review-run evidence binding.evidenceIdentity", "does not match the canonical source/review-run-derived preimage")
   }
-  if (canonicalJson(record) !== canonicalJson(expected)) {
+  if (canonicalJson(snapshot) !== canonicalJson(expected)) {
     fail("exact-target-head review-run evidence binding", "does not match canonical source/review-run-derived semantics")
   }
   return expected
