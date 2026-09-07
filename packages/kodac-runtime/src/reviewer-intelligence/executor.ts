@@ -260,6 +260,8 @@ function validateRun(input: unknown): ReviewRunRecord {
   return freeze({ ...base, reviewRunIdentity: expected })
 }
 
+export function validateReviewRunRecord(input: unknown): ReviewRunRecord { return validateRun(input) }
+
 class TimeoutError extends Error {}
 
 export class ReviewerExecutionRuntime {
@@ -285,7 +287,7 @@ export class ReviewerExecutionRuntime {
     this.#timeoutMs = r.timeoutMs === undefined ? 30_000 : integer(r.timeoutMs, "timeoutMs", 1, HARD_MAX_TIMEOUT_MS)
   }
 
-  validateReviewRunRecord(input: unknown): ReviewRunRecord { return validateRun(input) }
+  validateReviewRunRecord(input: unknown): ReviewRunRecord { return validateReviewRunRecord(input) }
 
   async execute(input: unknown): Promise<ReviewerExecutionResult> {
     const req = request(input, this.#maxContextItems, this.#maxContextBytes)
