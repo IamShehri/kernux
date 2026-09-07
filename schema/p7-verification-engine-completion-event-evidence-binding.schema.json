@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-verification-engine-completion-event-evidence-binding.schema.json",
+  "title": "Kodac P7-R19 Verification-Engine Completion-Event Evidence Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "evidenceIdentity",
+    "state",
+    "sourceVerificationEngineReceiptLedgerReadEvidenceIdentity",
+    "sourceReceiptLedgerFileReadEvidenceIdentity",
+    "sourceReceiptLedgerSnapshotEvidenceIdentity",
+    "sourceReceiptRecordSetEvidenceIdentity",
+    "sourcePolicyReportEvidenceIdentity",
+    "sourceReceiptReportEvidenceIdentity",
+    "sourceCommandSuccessEvidenceIdentity",
+    "sourceAppliedEvidenceIdentity",
+    "repositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "postStateDigest",
+    "verificationReportIdentity",
+    "verificationSessionId",
+    "verificationReportPassed",
+    "verificationReportCheckCount",
+    "verificationReportFailedCheckIds",
+    "verificationReceiptLedgerReadEventIdentity",
+    "verificationReceiptLedgerReadEventSequence",
+    "verificationReceiptLedgerReadEventEmittedAt",
+    "verificationCompletedEventIdentity",
+    "verificationCompletedEventProtocol",
+    "verificationCompletedEventVersion",
+    "verificationCompletedEventId",
+    "verificationCompletedEventSequence",
+    "verificationCompletedEventEmittedAt",
+    "verificationCompletedEventType",
+    "verificationCompletedEventPassed",
+    "verificationCompletedEventCheckCount",
+    "verificationCompletedEventFailedCheckIds"
+  ],
+  "properties": {
+    "version": { "const": "p7-r19-verification-engine-completion-event-evidence-binding-v1" },
+    "evidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "state": { "const": "VERIFICATION_ENGINE_COMPLETION_EVENT_EVIDENCE_BOUND_ONLY" },
+    "sourceVerificationEngineReceiptLedgerReadEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "sourceReceiptLedgerFileReadEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "sourceReceiptLedgerSnapshotEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "sourceReceiptRecordSetEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "sourcePolicyReportEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "sourceReceiptReportEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "sourceCommandSuccessEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "sourceAppliedEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "repositoryIdentity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "canonicalBase": { "$ref": "#/$defs/gitObject" },
+    "targetHead": { "$ref": "#/$defs/gitObject" },
+    "postStateDigest": { "$ref": "#/$defs/sha256" },
+    "verificationReportIdentity": { "$ref": "#/$defs/sha256" },
+    "verificationSessionId": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "verificationReportPassed": { "const": true },
+    "verificationReportCheckCount": { "$ref": "#/$defs/checkCount" },
+    "verificationReportFailedCheckIds": { "$ref": "#/$defs/emptyCheckIds" },
+    "verificationReceiptLedgerReadEventIdentity": { "$ref": "#/$defs/sha256" },
+    "verificationReceiptLedgerReadEventSequence": { "$ref": "#/$defs/sequence" },
+    "verificationReceiptLedgerReadEventEmittedAt": { "$ref": "#/$defs/timestamp" },
+    "verificationCompletedEventIdentity": { "$ref": "#/$defs/sha256" },
+    "verificationCompletedEventProtocol": { "const": "kodac.event" },
+    "verificationCompletedEventVersion": { "const": 1 },
+    "verificationCompletedEventId": { "$ref": "#/$defs/uuidV4" },
+    "verificationCompletedEventSequence": { "$ref": "#/$defs/sequence" },
+    "verificationCompletedEventEmittedAt": { "$ref": "#/$defs/timestamp" },
+    "verificationCompletedEventType": { "const": "verification.completed" },
+    "verificationCompletedEventPassed": { "const": true },
+    "verificationCompletedEventCheckCount": { "$ref": "#/$defs/checkCount" },
+    "verificationCompletedEventFailedCheckIds": { "$ref": "#/$defs/emptyCheckIds" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitObject": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "uuidV4": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "checkCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 512
+    },
+    "emptyCheckIds": {
+      "type": "array",
+      "maxItems": 0,
+      "items": false
+    }
+  }
+}
