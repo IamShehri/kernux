@@ -24,7 +24,7 @@ Live GitHub, root `AGENTS.md`, and exact canonical authorization/evidence record
 | P4 bounded R1-R2 | **CLOSED_CANONICAL** | P4 overall remains open |
 | P5 bounded R1-R2 | **CLOSED_CANONICAL** | P5-R3+ not authorized; P5 overall not closed |
 | P6 bounded R1 | **CLOSED_CANONICAL** | P6-R2+ not authorized by numbering; P6 overall not closed |
-| P7 bounded R1-R21 implementation units | **CLOSED_CANONICAL AT THEIR EXACT RECORDED STATES** | Current-view reconciliation remains a separate candidate; P7 overall not closed |
+| P7 bounded R1-R22 implementation units | **CLOSED_CANONICAL AT THEIR EXACT RECORDED STATES** | R22 current-view reconciliation remains a separate candidate; P7 overall not closed |
 | General / public KodacBench | **NOT CLOSED** | No public benchmark closure inferred |
 | P8-P9 | **IMPLEMENTATION NOT AUTHORIZED** | Planning only |
 | Project | **COMPLETION NOT ESTABLISHED** | No release/project closure inference |
@@ -48,9 +48,15 @@ Live GitHub, root `AGENTS.md`, and exact canonical authorization/evidence record
 | P7-R21 temporal post-verification exact-head review evidence-binding implementation | **CLOSED_CANONICAL / TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY** | PR #441 / proof `5575042060` |
 | P7-R21 current-view drift analysis | **ANALYSIS_ONLY** | PR #441 / comment `5575048913` |
 | P7-R21 post-merge current-view reconciliation authorization | **CLOSED_CANONICAL** | PR #442 / proof `5575091749` |
-| P7-R21 post-merge current-view reconciliation | **CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL** | Exact five-view candidate only |
-| Post-R21 successor implementation | **NOT_AUTHORIZED_BY_NUMBERING** | No authority by sequence/composition |
-| P7 overall | **NOT_CLOSED** | R21 bounded closure is not overall closure |
+| P7-R21 post-merge current-view reconciliation | **CLOSED_CANONICAL** | PR #443 / proof `5575155555` |
+| Post-R21 successor analysis | **ANALYSIS_ONLY** | PR #443 / comment `5575190043` |
+| P7-R22 exact-target-head complete review-context evidence-binding authorization | **CLOSED_CANONICAL** | PR #444 / proof `5575356695` |
+| P7-R22 exact-target-head complete review-context evidence-binding implementation | **CLOSED_CANONICAL / EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY** | PR #445 / proof `5575499827` |
+| P7-R22 current-view drift analysis | **ANALYSIS_ONLY** | PR #445 / comment `5575583353` |
+| P7-R22 post-merge current-view reconciliation authorization | **CLOSED_CANONICAL** | PR #446 / proof `5575621252` |
+| P7-R22 post-merge current-view reconciliation | **CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL** | Exact five-view candidate only |
+| Post-R22 successor implementation | **NOT_AUTHORIZED_BY_NUMBERING** | No authority by sequence/composition |
+| P7 overall | **NOT_CLOSED** | R22 bounded closure is not overall closure |
 | P8-P9 implementation | **NOT_AUTHORIZED** | No downstream authority inferred |
 | Public release / project completion | **NOT ESTABLISHED** | Requires separate canonical authority/evidence |
 
@@ -60,7 +66,7 @@ All still-effective predecessor P7 non-grants remain in force. Omission from thi
 
 ## Active milestone gate
 
-The P7-R21 current-view reconciliation is authorized only by PR #442 / proof `5575091749` and may change exactly:
+The P7-R22 current-view reconciliation is authorized only by PR #446 / proof `5575621252` and may change exactly:
 
 ```text
 docs/roadmap/NEXT.md
@@ -70,7 +76,7 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. The candidate cannot certify its own closure.
+No sixth path is authorized. The candidate records only already-proven R21/R22 canonical facts and cannot certify its own closure.
 
 Before merge it must independently prove on one unchanged exact head:
 
@@ -79,7 +85,7 @@ BASE == CURRENT_CANONICAL_MAIN
 BEHIND_BY = 0
 CHANGED_PATHS = EXACTLY 5
 NO_SIXTH_PATH
-ALL_FIVE_VIEWS_AGREE_ON_THE_SAME_R20_R21_FRONTIER
+ALL_FIVE_VIEWS_AGREE_ON_THE_SAME_R21_R22_FRONTIER
 REQUIRED_CI = TERMINAL_SUCCESS_OR_CANONICALLY_PROVEN_DOCS_ONLY_NON_APPLICABILITY
 SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
 KNOWN_ACTIONABLE_DEFECTS = 0
@@ -95,42 +101,46 @@ Guarded merge must use the exact final qualified head. Closure requires mandator
 ## Bounded meaning of the current implementation milestone
 
 ```text
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY = ESTABLISHED_BY_P7_R21_CONTRACT
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY = ESTABLISHED_BY_P7_R22_CONTRACT
 ```
 
-It means only that one exact P7-R20-bound completed zero-finding review run has a separately validated, content-addressed host-clock execution window with start strictly later than the exact P7-R19 verification-completion event timestamp and completion not preceding start.
+It means only that the exact K3-R5 context bundle already bound into the canonical R20/R21 review lineage can be deterministically reproduced from one canonical source input at the exact target head with current freshness, complete context metadata, no completeness reasons, and zero recorded omissions.
 
 Canonical implementation identities:
 
 ```text
-QUALIFIED_HEAD = 2678d5715c414d4809a9bf9828e19bd0eb1f0cdf
-QUALIFIED_HEAD_TREE = 8c9cf97f8f8251f62b7de6a364060cc8f283187d
-MERGE = e79306ee6fd75ee9d6b4c007aa72af9c2ef81c06
-IMPLEMENTATION_PROOF = 5575042060
+QUALIFIED_HEAD = 7aed7c2727320bac0ec77be22a8f892d83a17507
+QUALIFIED_HEAD_TREE = 9deb5a9231711e9cbf80b6dcf113db411eb6d425
+MERGE = 0a05524a0b3b580825a62e0c5c741b378dfc10b9
+IMPLEMENTATION_PROOF = 5575499827
 ```
 
-The state does not establish external-clock authenticity, provider/reviewer authenticity or provenance, context completeness, review completeness, or full exact-head re-review completeness.
+The evidence records bounded content-addressed context/review identities, budget facts, selected item identities, and a provenance-reference digest without raw context text. It does not establish full review completeness, path coverage, skill/risk coverage, provider termination/provenance/authenticity, external-clock authenticity, K5 reconciliation, or Done Gate proof.
 
 ---
 
 ## Non-equivalences and preserved boundaries
 
 ```text
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != EXTERNAL_CLOCK_AUTHENTICITY_PROOF
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != REVIEWER_OR_PROVIDER_AUTHENTICITY_PROOF
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != PROVIDER_INVOCATION_PROVENANCE_PROOF
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != REVIEW_CONTEXT_COMPLETENESS_PROOF
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != K5_RECONCILIATION_PROOF
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != DONE_GATE_PROOF
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != VERIFIED
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != FIXED
-TEMPORAL_POST_VERIFICATION_EXACT_HEAD_REVIEW_EVIDENCE_BOUND_ONLY != REVERIFIED
-P7_R21_CLOSED != SUCCESSOR_IMPLEMENTATION_AUTHORITY
-P7_R21_CLOSED != P7_OVERALL_CLOSED
-P7_R21_CLOSED != P8_P9_AUTHORITY
-P7_R21_CLOSED != RELEASE_AUTHORITY
-P7_R21_CLOSED != PROJECT_COMPLETION
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != CHANGED_REVIEWED_UNREVIEWED_PATH_COVERAGE_PROOF
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != SKILL_COVERAGE_PROOF
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != RISK_COVERAGE_PROOF
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != PROVIDER_TERMINATION_REASON_PROOF
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != PROVIDER_INVOCATION_PROVENANCE_PROOF
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != REVIEWER_OR_PROVIDER_AUTHENTICITY_PROOF
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != EXTERNAL_CLOCK_AUTHENTICITY_PROOF
+COMPLETE_CONTEXT_BUNDLE != COMPLETE_REVIEW
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != K5_RECONCILIATION_PROOF
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != DONE_GATE_PROOF
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != VERIFIED
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != FIXED
+EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY != REVERIFIED
+P7_R22_CLOSED != SUCCESSOR_IMPLEMENTATION_AUTHORITY
+P7_R22_CLOSED != P7_OVERALL_CLOSED
+P7_R22_CLOSED != P8_P9_AUTHORITY
+P7_R22_CLOSED != RELEASE_AUTHORITY
+P7_R22_CLOSED != PROJECT_COMPLETION
 
 K2_SIDE_EFFECT_AUTHORITY = UNCHANGED
 K5_DONE_GATE_AUTHORITY = UNCHANGED
