@@ -241,7 +241,7 @@ test("P7-R23 binds explicit rename lineage without inferring it from filenames",
   )
 })
 
-test("P7-R23 identity changes when authority-relevant repository facts change", () => {
+test("P7-R23 separates descriptor-universe identity from repository binding context", () => {
   const baseline = build()
   const variants: P7ReviewCoverageUniverseEvidenceBindingBuildInput[] = [
     { ...mixedInput(), canonicalBase: SHA1_E },
@@ -253,7 +253,7 @@ test("P7-R23 identity changes when authority-relevant repository facts change", 
 
   for (const input of variants) {
     const candidate = build(input)
-    assert.notEqual(candidate.reviewUniverseIdentity, baseline.reviewUniverseIdentity)
+    assert.equal(candidate.reviewUniverseIdentity, baseline.reviewUniverseIdentity)
     assert.notEqual(candidate.evidenceIdentity, baseline.evidenceIdentity)
   }
 })
@@ -286,6 +286,35 @@ test("P7-R23 identity changes when normalized path evidence changes", () => {
     assert.notEqual(candidate.reviewUniverseIdentity, baseline.reviewUniverseIdentity)
     assert.notEqual(candidate.evidenceIdentity, baseline.evidenceIdentity)
   }
+})
+
+test("P7-R23 review-universe identity binds object-kind semantics", () => {
+  const input = mixedInput()
+  const baseline = build(input)
+  const changedPaths = input.changedPaths.map((item): P7ReviewCoveragePathDescriptor =>
+    item.path === "link/config"
+      ? { ...item, objectKind: "submodule_gitlink", fileMode: "160000" }
+      : item,
+  )
+  const candidate = build({ ...input, changedPaths })
+
+  assert.notEqual(candidate.reviewUniverseIdentity, baseline.reviewUniverseIdentity)
+  assert.notEqual(candidate.evidenceIdentity, baseline.evidenceIdentity)
+  assert.deepEqual(candidate.submodulePaths, ["link/config", "vendor/lib"])
+})
+
+test("P7-R23 review-universe identity binds policy-reason evidence", () => {
+  const input = mixedInput()
+  const baseline = build(input)
+  const changedPaths = input.changedPaths.map((item): P7ReviewCoveragePathDescriptor =>
+    item.path === "docs/excluded.md"
+      ? { ...item, policyReason: "A different explicit bounded exclusion reason." }
+      : item,
+  )
+  const candidate = build({ ...input, changedPaths })
+
+  assert.notEqual(candidate.reviewUniverseIdentity, baseline.reviewUniverseIdentity)
+  assert.notEqual(candidate.evidenceIdentity, baseline.evidenceIdentity)
 })
 
 test("P7-R23 rejects invalid Git identities, path-set identities and path budgets", () => {
@@ -480,6 +509,18 @@ test("P7-R23 output is detached, deeply frozen and validator rejects tampering",
   assert.throws(
     () => validateP7ReviewCoverageUniverseEvidenceBinding({ ...output, reviewUniverseIdentity: "0".repeat(64) }, mixedInput()),
     /deterministic canonical projection/,
+  )
+  assert.throws(
+    () => validateP7ReviewCoverageUniverseEvidenceBinding({ ...output, evidenceIdentity: "not-a-sha256" }, mixedInput()),
+    /evidenceIdentity/,
+  )
+  assert.throws(
+    () => validateP7ReviewCoverageUniverseEvidenceBinding({ ...output, reviewUniverseIdentity: "not-a-sha256" }, mixedInput()),
+    /reviewUniverseIdentity/,
+  )
+  assert.throws(
+    () => validateP7ReviewCoverageUniverseEvidenceBinding({ ...output, changedPathSetIdentity: "not-a-sha256" }, mixedInput()),
+    /changedPathSetIdentity/,
   )
   assert.throws(
     () => validateP7ReviewCoverageUniverseEvidenceBinding({ ...output, state: "VERIFIED" }, mixedInput()),

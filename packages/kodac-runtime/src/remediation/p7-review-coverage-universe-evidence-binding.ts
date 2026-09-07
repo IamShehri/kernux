@@ -520,16 +520,7 @@ function projectPaths(
 function normalizedBuildCore(value: unknown): EvidenceCore {
   const input = normalizeBuildInput(value)
   const reviewUniversePaths = Object.freeze(input.changedPaths.map((descriptor) => descriptor.path))
-  const reviewUniverseIdentity = hashText(
-    canonicalJson({
-      repositoryIdentity: input.repositoryIdentity,
-      canonicalBase: input.canonicalBase,
-      targetHead: input.targetHead,
-      targetTree: input.targetTree,
-      changedPathSetIdentity: input.changedPathSetIdentity,
-      changedPaths: input.changedPaths,
-    }),
-  )
+  const reviewUniverseIdentity = hashText(canonicalJson({ changedPaths: input.changedPaths }))
 
   return deepFreeze({
     version: P7_R23_REVIEW_COVERAGE_UNIVERSE_EVIDENCE_BINDING_VERSION,
