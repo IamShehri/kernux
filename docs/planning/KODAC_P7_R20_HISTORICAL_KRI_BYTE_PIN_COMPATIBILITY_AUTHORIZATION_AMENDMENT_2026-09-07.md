@@ -32,6 +32,8 @@ packages/kodac-runtime/src/reviewer-intelligence/executor.ts
 
 The permitted executor change is only to expose the already-existing canonical `validateRun` semantics through a standalone exported `validateReviewRunRecord` function and to have `ReviewerExecutionRuntime.validateReviewRunRecord` delegate to that same function.
 
+`packages/kodac-runtime/src/index.ts` already re-exports `reviewer-intelligence/executor.ts` through an existing `export *` declaration. Therefore the exact R20-required standalone export is package-visible as an unavoidable consequence of the pre-existing package-root export wiring. This amendment makes that consequence explicit: exactly `validateReviewRunRecord` may become package-visible through the existing `export *`; no `index.ts` edit, new export wiring, alias, additional public symbol, CLI/API integration, or broader public-interface change is authorized.
+
 PR #436 implements that bounded executor delta. Its current executor blob is:
 
 ```text
@@ -114,7 +116,7 @@ packages/kodac-runtime/test/p4-r1-reviewer-claim-envelope.test.ts
 
 No seventh path is authorized.
 
-The two newly admitted paths are test-only compatibility repairs. They do not authorize any KRI-R4, P4-R1, provider, reviewer, runtime, schema, public-interface, workflow, dependency, service, persistence, network, secret, release, P8/P9, or Done Gate semantic expansion.
+The two newly admitted paths are test-only compatibility repairs. They do not authorize any KRI-R4, P4-R1, provider, reviewer, runtime, schema, workflow, dependency, service, persistence, network, secret, release, P8/P9, or Done Gate semantic expansion. The only package-visible surface consequence remains the exact R20-required `validateReviewRunRecord` export inherited through the already-existing `index.ts` `export *`; no package-root wiring change or additional public interface is authorized.
 
 ## 5. Exact permitted compatibility substitutions
 
@@ -154,7 +156,10 @@ PATCH_APPLICATION = NO
 PATCH_RETRY_AUTHORITY = NO
 AUTOFIX = NO
 NEW_DEPENDENCY = NO
-NEW_PUBLIC_EXPORT = NO
+R20_VALIDATE_REVIEW_RUN_RECORD_PACKAGE_VISIBLE = YES / EXISTING_EXPORT_STAR_ONLY
+PACKAGE_ROOT_INDEX_MUTATION = NO
+ADDITIONAL_PUBLIC_EXPORT = NO
+CLI_API_PRODUCT_INTEGRATION = NOT_AUTHORIZED
 P8_P9_AUTHORITY = NO
 RELEASE_AUTHORITY = NO
 PROJECT_COMPLETION = NOT_ESTABLISHED
@@ -202,6 +207,7 @@ AUTHORIZATION_AMENDMENT_CANDIDATE != CANONICAL_AUTHORITY
 CANONICAL_AMENDMENT != P7_R20_IMPLEMENTATION_CLOSED
 HISTORICAL_PIN_COMPATIBILITY != HISTORICAL_RECORD_REWRITE
 R20_EXECUTOR_SUCCESSOR_BLOB != REVIEWER_SEMANTIC_EXPANSION
+R20_VALIDATE_REVIEW_RUN_RECORD_PACKAGE_VISIBILITY != GENERAL_PACKAGE_API_EXPANSION
 R20_TEST_COMPATIBILITY_REPAIR != TEST_RELAXATION
 R20_TEST_COMPATIBILITY_REPAIR != CI_WAIVER
 R20_TEST_COMPATIBILITY_REPAIR != P8_P9_AUTHORITY
