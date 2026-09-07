@@ -142,10 +142,6 @@ function mixedInput(): P7ReviewCoverageUniverseEvidenceBindingBuildInput {
   }
 }
 
-function clone<T>(value: T): T {
-  return structuredClone(value)
-}
-
 function build(input = mixedInput()): P7ReviewCoverageUniverseEvidenceBinding {
   return buildP7ReviewCoverageUniverseEvidenceBinding(input)
 }
@@ -209,7 +205,7 @@ test("P7-R23 canonicalizes input order and is content-addressed", () => {
   assert.deepEqual(first, reversed)
   assert.equal(first.reviewUniverseIdentity, reversed.reviewUniverseIdentity)
   assert.equal(first.evidenceIdentity, reversed.evidenceIdentity)
-  assert.equal(validateP7ReviewCoverageUniverseEvidenceBinding(first, input), first)
+  assert.deepEqual(validateP7ReviewCoverageUniverseEvidenceBinding(first, input), first)
 })
 
 test("P7-R23 preserves case-only distinct repository paths", () => {
@@ -416,11 +412,11 @@ test("P7-R23 rejects hostile Proxy, accessor, symbol and custom-prototype input"
   const proxied = new Proxy(mixedInput(), {})
   assert.throws(() => buildP7ReviewCoverageUniverseEvidenceBinding(proxied), /Proxy/)
 
-  const accessor = mixedInput() as UnknownRecord
+  const accessor = mixedInput() as unknown as UnknownRecord
   Object.defineProperty(accessor, "repositoryIdentity", { enumerable: true, get: () => "github:TheHalfMoon/Kodac" })
   assert.throws(() => buildP7ReviewCoverageUniverseEvidenceBinding(accessor as unknown as P7ReviewCoverageUniverseEvidenceBindingBuildInput), /data property/)
 
-  const symbolic = mixedInput() as UnknownRecord & { [key: symbol]: string }
+  const symbolic = mixedInput() as unknown as UnknownRecord & { [key: symbol]: string }
   symbolic[Symbol("hidden")] = "value"
   assert.throws(() => buildP7ReviewCoverageUniverseEvidenceBinding(symbolic as unknown as P7ReviewCoverageUniverseEvidenceBindingBuildInput), /symbol/)
 
@@ -442,7 +438,7 @@ test("P7-R23 rejects aliases, cycles, unsafe integers and non-JSON values", () =
   const shared = descriptor("src/a.ts")
   assert.throws(() => build({ ...mixedInput(), changedPaths: [shared, shared] }), /aliases or cycles/)
 
-  const cyclic = mixedInput() as UnknownRecord
+  const cyclic = mixedInput() as unknown as UnknownRecord
   cyclic.self = cyclic
   assert.throws(() => buildP7ReviewCoverageUniverseEvidenceBinding(cyclic), /aliases or cycles|unknown field/)
 
@@ -455,7 +451,7 @@ test("P7-R23 rejects aliases, cycles, unsafe integers and non-JSON values", () =
     /safe integer/,
   )
 
-  const bigintInput = mixedInput() as UnknownRecord
+  const bigintInput = mixedInput() as unknown as UnknownRecord
   bigintInput.changedPathSetIdentity = 1n
   assert.throws(() => buildP7ReviewCoverageUniverseEvidenceBinding(bigintInput), /JSON-compatible/)
 })
