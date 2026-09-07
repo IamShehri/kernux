@@ -60,6 +60,41 @@ export interface P7VerificationEngineCompletionEventEvidenceBinding {
 type UnknownRecord = Record<string, unknown>
 type EvidenceCore = Omit<P7VerificationEngineCompletionEventEvidenceBinding, "evidenceIdentity">
 
+type VerificationEvidenceKind = "receipt" | "artifact" | "event" | "workspace"
+type VerificationCategory =
+  | "agent"
+  | "workspace"
+  | "diff"
+  | "receipts"
+  | "policy"
+  | "syntax"
+  | "types"
+  | "lint"
+  | "tests"
+  | "custom"
+type VerificationStatus = "pass" | "fail"
+
+type VerificationEvidenceProjection = Readonly<{
+  kind: VerificationEvidenceKind
+  ref: string
+  digest?: string
+}>
+type VerificationCheckProjection = Readonly<{
+  id: string
+  category: VerificationCategory
+  status: VerificationStatus
+  summary: string
+  evidence: readonly VerificationEvidenceProjection[]
+}>
+type VerificationReportProjection = Readonly<{
+  protocol: "kodac.verification"
+  version: 1
+  sessionId: string
+  startedAt: string
+  completedAt: string
+  passed: boolean
+  checks: readonly VerificationCheckProjection[]
+}>
 type NormalizedCompletionEvent = Readonly<{
   protocol: typeof P7_R19_EVENT_PROTOCOL
   version: typeof P7_R19_EVENT_VERSION
@@ -78,10 +113,21 @@ type NormalizedCompletionEvent = Readonly<{
 const SHA256 = /^[0-9a-f]{64}$/
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 const CANONICAL_TIMESTAMP = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$/
+const CHECK_ID = /^[a-z0-9][a-z0-9._-]{0,127}$/i
+const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/u
 const MAX_CHECKS = 512
+const MAX_EVIDENCE_PER_CHECK = 256
+const MAX_SESSION_ID_CODE_POINTS = 256
+const MAX_SUMMARY_CODE_POINTS = 4_096
+const MAX_EVIDENCE_REF_CODE_POINTS = 1_024
 const MAX_JSON_NODES = 16_384
 const MAX_JSON_DEPTH = 24
 
+const CATEGORIES = new Set<VerificationCategory>([
+  "agent", "workspace", "diff", "receipts", "policy", "syntax", "types", "lint", "tests", "custom",
+])
+const STATUSES = new Set<VerificationStatus>(["pass", "fail"])
+const EVIDENCE_KINDS = new Set<VerificationEvidenceKind>(["receipt", "artifact", "event", "workspace"])
 const BUILD_KEYS = [
   "sourceVerificationEngineReceiptLedgerReadEvidenceBinding",
   "sourceVerificationEngineReceiptLedgerReadEvidenceBindingInput",
@@ -89,6 +135,22 @@ const BUILD_KEYS = [
 ] as const
 const EVENT_KEYS = ["protocol", "version", "eventId", "sessionId", "sequence", "emittedAt", "type", "payload"] as const
 const PAYLOAD_KEYS = ["passed", "checks", "failed"] as const
+const REPORT_KEYS = ["protocol", "version", "sessionId", "startedAt", "completedAt", "passed", "checks"] as const
+const CHECK_KEYS = ["id", "category", "status", "summary", "evidence"] as const
+const EVIDENCE_ALLOWED_KEYS = ["kind", "ref", "digest"] as const
+const EVIDENCE_REQUIRED_KEYS = ["kind", "ref"] as const
+const REPORT_BINDING_PATH = [
+  "sourceReceiptLedgerFileReadEvidenceBindingInput",
+  "sourceReceiptLedgerSnapshotEvidenceBindingInput",
+  "sourceReceiptRecordSetEvidenceBindingInput",
+  "sourcePolicyReportEvidenceBindingInput",
+  "sourceReceiptReportEvidenceBindingInput",
+  "sourceGitChangeReportEvidenceBindingInput",
+  "sourceWorkspaceReferenceEvidenceBindingInput",
+  "sourceAgentCompletionEvidenceBindingInput",
+  "sourceCommandSuccessEvidenceBindingInput",
+  "sourceVerificationReportBinding",
+] as const
 const OUTPUT_KEYS = [
   "version",
   "evidenceIdentity",
@@ -137,6 +199,12 @@ function hashText(value: string): string {
   return createHash("sha256").update(value, "utf8").digest("hex")
 }
 
+function codePointLength(value: string): number {
+  let length = 0
+  for (const _character of value) length += 1
+  return length
+}
+
 function assertUnicodeScalars(value: string, label: string): void {
   for (let index = 0; index < value.length; index += 1) {
     const code = value.charCodeAt(index)
@@ -174,6 +242,19 @@ function ownDataRecord(
   }
   for (const key of requiredKeys) if (!Object.hasOwn(record, key)) fail(label, `is missing required field: ${key}`)
   return record
+}
+
+function ownDataProperty(value: unknown, key: string, label: string): unknown {
+  if (value === null || typeof value !== "object" || Array.isArray(value) || nodeTypes.isProxy(value)) {
+    fail(label, "must be a non-Proxy plain object")
+  }
+  const prototype = Object.getPrototypeOf(value)
+  if (prototype !== Object.prototype && prototype !== null) fail(label, "must be a plain object")
+  const descriptor = Object.getOwnPropertyDescriptor(value, key)
+  if (descriptor === undefined || !("value" in descriptor) || descriptor.enumerable !== true) {
+    fail(`${label}.${key}`, "must be an enumerable own data property")
+  }
+  return descriptor.value
 }
 
 function denseArray(value: unknown, label: string, maximum: number): readonly unknown[] {
@@ -264,6 +345,15 @@ function uuidV4(value: unknown, label: string): string {
   return value
 }
 
+function boundedText(value: unknown, label: string, maximumCodePoints: number): string {
+  if (typeof value !== "string") fail(label, "must be a string")
+  assertUnicodeScalars(value, label)
+  if (value.length === 0) fail(label, "must not be empty")
+  if (codePointLength(value) > maximumCodePoints) fail(label, `exceeds ${maximumCodePoints} Unicode code points`)
+  if (CONTROL_CHARACTERS.test(value)) fail(label, "must not contain control characters")
+  return value
+}
+
 function canonicalTimestamp(value: unknown, label: string): string {
   if (typeof value !== "string") fail(label, "must be a string")
   assertUnicodeScalars(value, label)
@@ -280,6 +370,75 @@ function positiveSafeInteger(value: unknown, label: string): number {
     fail(label, "must be a safe integer >= 1")
   }
   return value
+}
+
+function normalizeVerificationEvidence(value: unknown, label: string): VerificationEvidenceProjection {
+  const record = ownDataRecord(value, EVIDENCE_ALLOWED_KEYS, EVIDENCE_REQUIRED_KEYS, label)
+  if (typeof record.kind !== "string" || !EVIDENCE_KINDS.has(record.kind as VerificationEvidenceKind)) {
+    fail(`${label}.kind`, "is unsupported")
+  }
+  const normalized: { kind: VerificationEvidenceKind; ref: string; digest?: string } = {
+    kind: record.kind as VerificationEvidenceKind,
+    ref: boundedText(record.ref, `${label}.ref`, MAX_EVIDENCE_REF_CODE_POINTS),
+  }
+  if (Object.hasOwn(record, "digest")) normalized.digest = sha256(record.digest, `${label}.digest`)
+  return Object.freeze(normalized)
+}
+
+function normalizeVerificationCheck(value: unknown, index: number): VerificationCheckProjection {
+  const label = `source verification report.checks[${index}]`
+  const record = ownDataRecord(value, CHECK_KEYS, CHECK_KEYS, label)
+  const id = boundedText(record.id, `${label}.id`, 128)
+  if (!CHECK_ID.test(id)) fail(`${label}.id`, "must match the canonical verification check id grammar")
+  if (typeof record.category !== "string" || !CATEGORIES.has(record.category as VerificationCategory)) {
+    fail(`${label}.category`, "is unsupported")
+  }
+  if (typeof record.status !== "string" || !STATUSES.has(record.status as VerificationStatus)) {
+    fail(`${label}.status`, "is unsupported")
+  }
+  const evidence = denseArray(record.evidence, `${label}.evidence`, MAX_EVIDENCE_PER_CHECK)
+    .map((item, evidenceIndex) => normalizeVerificationEvidence(item, `${label}.evidence[${evidenceIndex}]`))
+  const evidenceKeys = evidence.map((item) => `${item.kind}\u0000${item.ref}\u0000${item.digest ?? ""}`)
+  if (new Set(evidenceKeys).size !== evidenceKeys.length) fail(`${label}.evidence`, "must not contain duplicate evidence references")
+  const orderedEvidence = [...evidence].sort((left, right) =>
+    compareStrings(left.kind, right.kind) || compareStrings(left.ref, right.ref) || compareStrings(left.digest ?? "", right.digest ?? ""),
+  )
+  return Object.freeze({
+    id,
+    category: record.category as VerificationCategory,
+    status: record.status as VerificationStatus,
+    summary: boundedText(record.summary, `${label}.summary`, MAX_SUMMARY_CODE_POINTS),
+    evidence: Object.freeze(orderedEvidence),
+  })
+}
+
+function normalizeVerificationReport(value: unknown): VerificationReportProjection {
+  assertSafeJsonGraph(value, "source verification report")
+  const record = ownDataRecord(value, REPORT_KEYS, REPORT_KEYS, "source verification report")
+  if (record.protocol !== "kodac.verification") fail("source verification report.protocol", "is unsupported")
+  if (record.version !== 1) fail("source verification report.version", "is unsupported")
+  const sessionId = boundedText(record.sessionId, "source verification report.sessionId", MAX_SESSION_ID_CODE_POINTS)
+  const startedAt = canonicalTimestamp(record.startedAt, "source verification report.startedAt")
+  const completedAt = canonicalTimestamp(record.completedAt, "source verification report.completedAt")
+  if (Date.parse(completedAt) < Date.parse(startedAt)) {
+    fail("source verification report.completedAt", "must not precede startedAt")
+  }
+  if (typeof record.passed !== "boolean") fail("source verification report.passed", "must be a boolean")
+  const rawChecks = denseArray(record.checks, "source verification report.checks", MAX_CHECKS)
+  if (rawChecks.length === 0) fail("source verification report.checks", "must contain at least one check")
+  const checks = rawChecks.map((item, index) => normalizeVerificationCheck(item, index))
+  const ids = checks.map((check) => check.id)
+  if (new Set(ids).size !== ids.length) fail("source verification report.checks", "must not contain duplicate check ids")
+  const orderedChecks = [...checks].sort((left, right) => compareStrings(left.id, right.id))
+  return Object.freeze({
+    protocol: "kodac.verification" as const,
+    version: 1 as const,
+    sessionId,
+    startedAt,
+    completedAt,
+    passed: record.passed,
+    checks: Object.freeze(orderedChecks),
+  })
 }
 
 function deepFreeze<T>(value: T): T {
@@ -302,25 +461,23 @@ function canonicalJson(value: unknown): string {
   return `{${keys.map((key) => `${JSON.stringify(key)}:${canonicalJson(record[key])}`).join(",")}}`
 }
 
-function sourceVerificationReportBinding(
+function currentVerificationReport(
   input: P7VerificationEngineReceiptLedgerReadEvidenceBindingBuildInput,
-) {
-  return input.sourceReceiptLedgerFileReadEvidenceBindingInput
-    .sourceReceiptLedgerSnapshotEvidenceBindingInput
-    .sourceReceiptRecordSetEvidenceBindingInput
-    .sourcePolicyReportEvidenceBindingInput
-    .sourceReceiptReportEvidenceBindingInput
-    .sourceGitChangeReportEvidenceBindingInput
-    .sourceWorkspaceReferenceEvidenceBindingInput
-    .sourceAgentCompletionEvidenceBindingInput
-    .sourceCommandSuccessEvidenceBindingInput
-    .sourceVerificationReportBinding
+): VerificationReportProjection {
+  let current: unknown = input
+  let label = "sourceVerificationEngineReceiptLedgerReadEvidenceBindingInput"
+  for (const key of REPORT_BINDING_PATH) {
+    current = ownDataProperty(current, key, label)
+    label = `${label}.${key}`
+  }
+  const rawReport = ownDataProperty(current, "verificationReport", label)
+  return normalizeVerificationReport(rawReport)
 }
 
 function normalizeCompletionEvent(
   value: unknown,
   source: P7VerificationEngineReceiptLedgerReadEvidenceBinding,
-  report: ReturnType<typeof sourceVerificationReportBinding>,
+  report: VerificationReportProjection,
 ): NormalizedCompletionEvent {
   assertSafeJsonGraph(value, "verificationCompletedEvent")
   const record = ownDataRecord(value, EVENT_KEYS, EVENT_KEYS, "verificationCompletedEvent")
@@ -336,26 +493,24 @@ function normalizeCompletionEvent(
     fail("verificationCompletedEvent.sequence", "must be greater than the exact P7-R18 ledger-read event sequence")
   }
   const emittedAt = canonicalTimestamp(record.emittedAt, "verificationCompletedEvent.emittedAt")
-  if (Date.parse(emittedAt) < Date.parse(report.verificationCompletedAt)) {
+  if (Date.parse(emittedAt) < Date.parse(report.completedAt)) {
     fail("verificationCompletedEvent.emittedAt", "must not precede the exact canonical verification report completion")
   }
   if (Date.parse(emittedAt) < Date.parse(source.verificationReceiptLedgerReadEventEmittedAt)) {
     fail("verificationCompletedEvent.emittedAt", "must not precede the exact P7-R18 ledger-read event")
   }
-
   const payload = ownDataRecord(record.payload, PAYLOAD_KEYS, PAYLOAD_KEYS, "verificationCompletedEvent.payload")
   if (payload.passed !== true) {
     fail("verificationCompletedEvent.payload.passed", "must equal true in the canonical P7-R8 all-pass predecessor domain")
   }
   const checks = positiveSafeInteger(payload.checks, "verificationCompletedEvent.payload.checks")
-  if (checks !== report.verificationReport.checks.length) {
+  if (checks !== report.checks.length) {
     fail("verificationCompletedEvent.payload.checks", "must match the exact canonical verification report check count")
   }
   const failed = denseArray(payload.failed, "verificationCompletedEvent.payload.failed", MAX_CHECKS)
   if (failed.length !== 0) {
     fail("verificationCompletedEvent.payload.failed", "must be empty in the canonical P7-R8 all-pass predecessor domain")
   }
-
   return deepFreeze({
     protocol: P7_R19_EVENT_PROTOCOL,
     version: P7_R19_EVENT_VERSION,
@@ -380,18 +535,21 @@ async function normalizedBuildCore(value: unknown): Promise<EvidenceCore> {
     input.sourceVerificationEngineReceiptLedgerReadEvidenceBinding,
     sourceInput,
   )
-  const report = sourceVerificationReportBinding(sourceInput)
-  if (report.verificationReportIdentity !== source.verificationReportIdentity) {
-    fail("source verification report", "identity must match the exact P7-R18 lineage")
+
+  // R18/R16 validation contains an asynchronous filesystem read. Re-read the exact nested
+  // report through data descriptors only after that await, canonicalize it exactly as R6 does
+  // for report identity, and bind the recomputed identity to the frozen R18 result. This closes
+  // a mutable-caller TOCTOU window without a second filesystem read or a second R18 validation.
+  const report = currentVerificationReport(sourceInput)
+  const recomputedReportIdentity = hashText(JSON.stringify(report))
+  if (recomputedReportIdentity !== source.verificationReportIdentity) {
+    fail("source verification report", "identity changed after canonical P7-R18 validation")
   }
-  if (report.verificationSessionId !== source.verificationSessionId) {
+  if (report.sessionId !== source.verificationSessionId) {
     fail("source verification report", "session must match the exact P7-R18 lineage")
   }
-  if (report.verificationReportPassed !== true || report.verificationReport.passed !== true) {
+  if (report.passed !== true || report.checks.some((candidate) => candidate.status !== "pass")) {
     fail("source verification report", "must be all-pass through the canonical P7-R8 predecessor")
-  }
-  if (report.verificationReport.checks.some((candidate) => candidate.status !== "pass")) {
-    fail("source verification report", "must contain only passing checks through the canonical P7-R8 predecessor")
   }
 
   const event = normalizeCompletionEvent(input.verificationCompletedEvent, source, report)
@@ -415,7 +573,7 @@ async function normalizedBuildCore(value: unknown): Promise<EvidenceCore> {
     verificationReportIdentity: source.verificationReportIdentity,
     verificationSessionId: source.verificationSessionId,
     verificationReportPassed: true as const,
-    verificationReportCheckCount: report.verificationReport.checks.length,
+    verificationReportCheckCount: report.checks.length,
     verificationReportFailedCheckIds: Object.freeze([]),
     verificationReceiptLedgerReadEventIdentity: source.verificationReceiptLedgerReadEventIdentity,
     verificationReceiptLedgerReadEventSequence: source.verificationReceiptLedgerReadEventSequence,
