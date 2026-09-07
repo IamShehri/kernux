@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-exact-target-head-complete-review-context-evidence-binding.schema.json",
+  "title": "Kodac P7-R22 Exact-Target-Head Complete Review-Context Evidence Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "evidenceIdentity",
+    "state",
+    "sourceTemporalPostVerificationReviewEvidenceIdentity",
+    "sourceExactTargetHeadReviewRunEvidenceIdentity",
+    "p7RepositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "reviewRunIdentity",
+    "reviewTaskId",
+    "reviewContextBundleIdentity",
+    "contextRepositoryIdentity",
+    "contextSnapshotIdentity",
+    "contextContentIdentity",
+    "contextRequestIdentity",
+    "contextSelectionStrategy",
+    "contextSnapshotGitHead",
+    "contextFreshness",
+    "contextCompletenessState",
+    "contextCompletenessReasons",
+    "contextOmittedAtLeast",
+    "contextBudgetMaxItems",
+    "contextBudgetMaxUtf8Bytes",
+    "contextBudgetUsedItems",
+    "contextBudgetUsedUtf8Bytes",
+    "contextItemCount",
+    "contextItemIdentities",
+    "contextProvenanceIdentity"
+  ],
+  "properties": {
+    "version": { "const": "p7-r22-exact-target-head-complete-review-context-evidence-binding-v1" },
+    "evidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "state": { "const": "EXACT_TARGET_HEAD_COMPLETE_REVIEW_CONTEXT_EVIDENCE_BOUND_ONLY" },
+    "sourceTemporalPostVerificationReviewEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "sourceExactTargetHeadReviewRunEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "p7RepositoryIdentity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "canonicalBase": { "$ref": "#/$defs/gitSha1" },
+    "targetHead": { "$ref": "#/$defs/gitSha1" },
+    "reviewRunIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewTaskId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "reviewContextBundleIdentity": { "$ref": "#/$defs/sha256" },
+    "contextRepositoryIdentity": { "$ref": "#/$defs/sha256" },
+    "contextSnapshotIdentity": { "$ref": "#/$defs/sha256" },
+    "contextContentIdentity": { "$ref": "#/$defs/sha256" },
+    "contextRequestIdentity": { "$ref": "#/$defs/sha256" },
+    "contextSelectionStrategy": { "const": "kodac.context.lexical-evidence-v1" },
+    "contextSnapshotGitHead": { "$ref": "#/$defs/gitSha1" },
+    "contextFreshness": { "const": "current" },
+    "contextCompletenessState": { "const": "complete" },
+    "contextCompletenessReasons": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "contextOmittedAtLeast": { "const": 0 },
+    "contextBudgetMaxItems": { "type": "integer", "minimum": 1, "maximum": 256 },
+    "contextBudgetMaxUtf8Bytes": { "type": "integer", "minimum": 1, "maximum": 262144 },
+    "contextBudgetUsedItems": { "type": "integer", "minimum": 0, "maximum": 256 },
+    "contextBudgetUsedUtf8Bytes": { "type": "integer", "minimum": 0, "maximum": 262144 },
+    "contextItemCount": { "type": "integer", "minimum": 0, "maximum": 256 },
+    "contextItemIdentities": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/sha256" }
+    },
+    "contextProvenanceIdentity": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitSha1": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    }
+  }
+}
