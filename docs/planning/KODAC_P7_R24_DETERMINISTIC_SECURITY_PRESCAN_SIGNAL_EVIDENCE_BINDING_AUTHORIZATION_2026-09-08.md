@@ -23,15 +23,15 @@ PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-This document is one bounded authorization candidate only. The descriptive label `P7-R24` does not create authority by numbering. The future implementation described below becomes eligible only if this exact one-path authorization candidate independently qualifies, merges through protected `main` with exact-head guarding, and receives complete mandatory post-merge proof.
+This document is one bounded authorization candidate only. `P7-R24` is a label, not authority by numbering. The future implementation described below becomes eligible only if this exact one-path authorization independently qualifies, merges through protected `main` using the exact qualified head, and receives complete mandatory post-merge proof.
 
 Live GitHub truth, root `AGENTS.md`, canonical evidence and exact authorization records override this document.
 
-## 2. Why this unit is non-duplicative
+## 2. Non-duplication boundary
 
 Canonical P6-R1 normalizes already-existing deterministic analyzer output into a provider-neutral security-finding identity. It explicitly does not execute a scanner/analyzer, decode raw inputs, ingest raw match payloads, or establish truth.
 
-P7-R24/A2 has a different bounded purpose: derive deterministic **pre-scan signals** from caller-supplied bounded bytes for paths already admitted as reviewable text by the exact R23 review-universe evidence, then content-address those signals and their source/range identities.
+P7-R24/A2 has a different bounded purpose: derive deterministic **pre-scan signals** from caller-supplied bounded bytes for every path already admitted as reviewable text by one exact R23 review-universe evidence record, then content-address those signals and their source/range identities.
 
 Required separation:
 
@@ -57,15 +57,15 @@ packages/kodac-runtime/test/p7-r24-deterministic-security-prescan-evidence-bindi
 
 No fourth path is authorized.
 
-In particular, this authorization does not permit package-root exports, `index.ts`, CLI/API/product integration, workflow changes, dependency or lockfile changes, donor source vendoring, provenance registry changes, P6 source/schema/test changes, R23 source/schema/test changes, K2/K5 changes, current-view changes, release configuration, ruleset changes or repository-protection changes.
+Not authorized: package-root exports, `index.ts`, CLI/API/product integration, workflows, dependencies, lockfiles, donor-source vendoring, provenance registries, P6 source/schema/tests, R23 source/schema/tests, K2/K5, current views, release configuration, rulesets or repository protection.
 
-If a correct implementation requires any fourth path or new dependency, stop and create a new canonical authorization amendment instead of broadening this unit.
+If a correct implementation requires any fourth path or new dependency, stop and create a separate canonical authorization amendment instead of broadening this unit.
 
-## 4. Canonical predecessor binding
+## 4. Canonical predecessor and exact source-set binding
 
 The future implementation must consume and revalidate one exact canonical P7-R23 `P7ReviewCoverageUniverseEvidenceBinding` through the existing R23 validator rather than duplicating R23 subject or universe semantics.
 
-The A2 subject is therefore bound to:
+The A2 subject is bound to:
 
 ```text
 repositoryIdentity
@@ -77,13 +77,26 @@ reviewUniverseIdentity
 reviewableTextPaths
 ```
 
-A supplied source path that is absent from R23 `reviewableTextPaths` must fail closed. Opaque, generated, hidden-payload, unreadable, unsupported-encoding, oversized, symlink, submodule, LFS, policy-excluded and deleted paths remain R23 coverage dispositions; A2 must not silently recast them as successfully scanned text.
+The source set is **complete and closed relative to R23 reviewable text**:
+
+```text
+SCANNED_PATH_SET = R23_REVIEWABLE_TEXT_PATH_SET
+SOURCE_RECORD_COUNT = R23_REVIEWABLE_TEXT_PATH_COUNT
+ONE_SOURCE_RECORD_PER_REVIEWABLE_TEXT_PATH = REQUIRED
+MISSING_REVIEWABLE_TEXT_SOURCE = REJECT
+EXTRA_SOURCE_PATH = REJECT
+DUPLICATE_SOURCE_PATH = REJECT
+```
+
+This equality is required even when `reviewableTextPaths` is empty. Therefore a zero-signal result can only describe the deterministic rule set over the complete R23 reviewable-text source set supplied to A2; it still does not imply a clean or complete review.
+
+Opaque, generated, referenced-hidden, unreadable, unsupported-encoding, oversized, symlink, submodule, LFS, policy-excluded and deleted paths remain explicit R23 dispositions. A2 must not silently recast them as successfully scanned text.
 
 ## 5. Exact bounded source-input model
 
 The future implementation may accept only caller-supplied inert data. It must not read the filesystem or invoke Git.
 
-Each supplied pre-scan source record must bind at least:
+Each source record must bind exactly one R23 reviewable-text path and at least:
 
 ```text
 path
@@ -95,20 +108,22 @@ encoding = UTF8 | UTF8_BOM
 
 The implementation must:
 
-1. validate canonical base64 encoding and decode it in memory;
-2. enforce explicit per-source and aggregate byte limits before expensive processing;
-3. recompute SHA-256 over the decoded raw bytes and require equality with `rawByteIdentity`;
-4. require `rawByteLength` to equal the exact decoded byte length;
-5. decode only the explicitly supported deterministic UTF-8 / UTF-8-BOM policy;
-6. reject malformed UTF-8, unsupported encodings, invalid BOM claims or content inconsistent with the R23 reviewable-text disposition;
-7. derive and expose a SHA-256 `decodedTextIdentity` over the exact decoded Unicode text representation used for matching;
-8. never expose raw source bytes or raw matched text in the output evidence.
+1. validate canonical base64 rather than relying on permissive decoder behavior;
+2. enforce explicit source-count, per-source byte and aggregate-byte limits before expensive processing;
+3. decode base64 in memory and require canonical re-encoding equality;
+4. recompute SHA-256 over the decoded raw bytes and require equality with `rawByteIdentity`;
+5. require `rawByteLength` to equal the exact decoded byte length;
+6. require source `encoding` to agree with the corresponding R23 descriptor encoding disposition (`utf8` or `utf8_bom`);
+7. decode only deterministic UTF-8 / UTF-8-BOM using fatal malformed-input behavior;
+8. reject malformed UTF-8, invalid BOM claims and R23/source encoding mismatch;
+9. derive SHA-256 `decodedTextIdentity` over the exact decoded Unicode text representation used for matching;
+10. never expose raw source bytes or raw matched text in serialized output.
 
-No charset-guessing dependency is authorized. In particular, `chardet`, donor Python code and ambient platform locale are not trust inputs.
+No charset-guessing dependency is authorized. `chardet`, donor Python code and ambient platform locale are not trust inputs.
 
 ## 6. Required deterministic rule model
 
-The future implementation must define a closed, versioned Kodac-owned deterministic rule registry. Each rule must have:
+The implementation must define a closed, versioned Kodac-owned rule registry. Each rule binds:
 
 ```text
 ruleId
@@ -117,7 +132,7 @@ category
 externalTaxonomyMappings
 ```
 
-The initial registry may reimplement a small high-value subset of the pinned AI-Infra-Guard static patterns, including purpose-equivalent signals for:
+The initial registry may independently reimplement a small high-value subset of the pinned AI-Infra-Guard static patterns, purpose-equivalent to:
 
 ```text
 remote_pipe_to_shell
@@ -132,13 +147,13 @@ ssh_key_write_indicator
 suspicious_executable_download
 ```
 
-The exact Kodac regexes/algorithms must be reviewed as Kodac-owned implementation. Donor rule names, descriptions or T01-T09 labels are reference inputs only.
+Exact Kodac regexes/algorithms must be reviewed as Kodac-owned implementation. Donor rule names/descriptions and T01-T09 labels are reference inputs only.
 
-`externalTaxonomyMappings` must be a deterministic sorted bounded list of inert versioned mapping identifiers. An external mapping does not create Kodac risk applicability or coverage truth.
+`externalTaxonomyMappings` is a deterministic, sorted, bounded list of inert versioned mapping identifiers. Mapping presence does not establish Kodac risk applicability or risk coverage.
 
 ## 7. Required signal evidence semantics
 
-Each output signal must bind at least:
+Each signal must bind at least:
 
 ```text
 signalIdentity
@@ -155,22 +170,34 @@ endColumn
 matchedTextDigest
 ```
 
-Range rules:
+Range semantics are closed:
 
-- line and column numbers are 1-based positive safe integers;
+```text
+INDEX_BASE = 1
+COLUMN_UNIT = UNICODE_CODE_POINT
+RANGE_END = INCLUSIVE
+LINE_BREAK_LF = ONE_LINE_BREAK
+LINE_BREAK_CRLF = ONE_LINE_BREAK
+BARE_CR = ORDINARY_CODE_POINT_UNLESS_MATCHED_BY_RULE
+ZERO_LENGTH_MATCH = FORBIDDEN
+```
+
+Additional requirements:
+
+- all line/column values are positive safe integers;
 - `startLine <= endLine`;
-- same-line signals require `startColumn <= endColumn`;
-- ranges must deterministically identify the exact matched Unicode text slice under the implementation's documented line-ending semantics;
-- LF and CRLF handling must be deterministic across Ubuntu, macOS and Windows;
-- range calculation must not depend on host locale or filesystem APIs.
+- same-line ranges satisfy `startColumn <= endColumn`;
+- the range must identify exactly the matched non-empty Unicode text slice;
+- CRLF/LF behavior must be identical across Ubuntu, macOS and Windows;
+- range calculation must not depend on host locale, path APIs or filesystem state.
 
-`matchedTextDigest` must be SHA-256 over the exact matched text slice. The raw matched text, secret-like content, prose snippet, stdout, stderr or provider output must not appear in the serialized result.
+`matchedTextDigest` is SHA-256 over the exact matched decoded-text slice. Raw matched text, secret-like content, prose snippets, stdout, stderr and provider output are forbidden from serialized evidence.
 
-Signal ordering must be deterministic by canonical path, source/range, rule identity and signal identity. Duplicate semantic signals must either deterministically deduplicate or fail closed under one documented rule; behavior must be tested and schema-aligned.
+Signals must use one deterministic canonical ordering by path, start/end range, rule identity and signal identity. Exact duplicate semantic signals must be deterministically deduplicated before identity calculation; conflicting duplicate identities must fail closed.
 
 ## 8. Required aggregate evidence semantics
 
-The bounded result must include a versioned state exactly purpose-equivalent to:
+The result must carry a constant bounded state purpose-equivalent to:
 
 ```text
 DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY
@@ -179,6 +206,7 @@ DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY
 and bind at least:
 
 ```text
+version
 evidenceIdentity
 state
 repositoryIdentity
@@ -195,23 +223,24 @@ signalCount
 signals
 ```
 
-`sourceSetIdentity` must content-address the canonical supplied source projection including path/raw-byte/decoded-text identities and deterministic encoding metadata.
-
-`ruleSetIdentity` must content-address the exact closed rule registry semantics used for this result, including rule versions and external mappings.
-
-`evidenceIdentity` must bind the entire canonical output core and exact R23 subject context.
-
-A zero-signal result is permitted as a bounded observation but must remain only:
+Required equalities:
 
 ```text
-DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY
+scannedPaths = R23 reviewableTextPaths in canonical order
+sourceCount = length(scannedPaths)
 ```
 
-It must not emit a `clean`, `safe`, `passed`, `complete`, `verified` or equivalent truth field.
+`sourceSetIdentity` content-addresses the canonical complete source projection including path/raw-byte/decoded-text identities and encoding metadata.
+
+`ruleSetIdentity` content-addresses the exact closed rule-registry semantics used for this result, including rule versions and external mappings.
+
+`evidenceIdentity` binds the complete canonical output core and exact R23 subject context.
+
+A zero-signal result is permitted but remains only `DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY`; there must be no serialized `clean`, `safe`, `passed`, `complete`, `verified` or equivalent truth field.
 
 ## 9. Donor source discipline
 
-Pinned donor input is limited to study/derivation from:
+Pinned study/derivation input:
 
 ```text
 REPOSITORY = Tencent/AI-Infra-Guard
@@ -229,16 +258,16 @@ Preferred reuse class:
 REIMPLEMENTED / DERIVED SMALL ALGORITHMS + TEST PATTERNS
 ```
 
-No wholesale donor runtime copy is authorized. No Python runtime, `chardet`, donor service, donor model, donor network call, SARIF trust root, donor dependency graph or donor credential surface is authorized.
+No wholesale donor runtime copy, Python runtime, `chardet`, donor service/model/network call, SARIF trust root, donor dependency graph or donor credential surface is authorized.
 
-If implementation copies source text rather than independently reimplementing behavior, stop and create a separately scoped source-admission amendment with exact copied line/path attribution and Apache-2.0 notice handling before using that code.
+If implementation would copy donor source text rather than independently reimplement behavior, stop and create a separately scoped source-admission amendment with exact copied path/line attribution and Apache-2.0 compliance before using it.
 
 ## 10. Hostile-input and determinism requirements
 
-The future implementation must remain pure, synchronous, deterministic and data-only. It must fail closed on at least:
+The future implementation must be pure, synchronous, deterministic and data-only. It must fail closed on at least:
 
 ```text
-Proxy or revoked Proxy input
+Proxy or revoked Proxy
 accessor/getter properties
 symbol properties
 custom object/array prototypes
@@ -248,17 +277,21 @@ non-JSON graph values where JSON data is required
 invalid Unicode scalar strings
 non-canonical paths
 unknown or missing fields
-invalid SHA-1/SHA-256 identities
-invalid base64 or non-canonical base64
-raw-byte digest or length mismatch
+invalid SHA-1/SHA-256
+invalid or non-canonical base64
+raw-byte digest mismatch
+raw-byte length mismatch
 malformed UTF-8
 invalid UTF-8 BOM semantics
-duplicate source paths
-source path outside R23 reviewableTextPaths
+R23/source encoding mismatch
+missing reviewable-text source
+duplicate source path
+extra source path
 source/universe subject mismatch
 over-limit source count / source bytes / aggregate bytes / signal count
 unknown rule or taxonomy mapping
-invalid or inconsistent signal ranges
+zero-length regex match
+invalid or inconsistent signal range
 output/evidence identity tampering
 ```
 
@@ -271,24 +304,26 @@ The exact implementation test path must prove at least:
 1. deterministic equivalent-input success;
 2. exact R23 subject/review-universe identity binding;
 3. R23 evidence tamper rejection;
-4. source path must be in `reviewableTextPaths`;
-5. raw bytes base64 round-trip, byte length and SHA-256 equality;
-6. UTF-8 and UTF-8-BOM decoding;
-7. malformed/unsupported encoding rejection;
-8. CRLF/LF stable line/column ranges;
-9. Unicode range stability;
-10. each initial rule positive case;
-11. near-miss/benign negative cases sufficient to prevent obvious overbroad matching;
-12. multiple matches and deterministic ordering;
-13. deterministic `matchedTextDigest`, `sourceSetIdentity`, `ruleSetIdentity` and `evidenceIdentity`;
-14. secret-like match evidence contains only digest/range/identity, never captured bytes/text;
-15. zero-signal output remains bounded observation only;
-16. no automatic conversion to P6-R1 deterministic finding;
-17. unknown/extra output fields rejected by schema/validator;
-18. hostile Proxy/accessor/symbol/prototype/sparse/alias/cycle cases;
-19. caller mutation cannot alter returned output;
-20. no filesystem, Git, process, provider/model, network, secret retrieval, SARIF, K2, K5, persistence, patch/autofix, package publication or deployment side effects;
-21. source contains no forbidden imports or APIs that would introduce those side-effect surfaces.
+4. exact `scannedPaths == reviewableTextPaths` equality;
+5. missing, duplicate and extra source rejection;
+6. empty reviewable-text set deterministic success with empty source set;
+7. canonical base64 round-trip, byte length and raw SHA-256 equality;
+8. UTF-8 and UTF-8-BOM decoding plus R23 encoding-disposition agreement;
+9. malformed UTF-8 / BOM mismatch rejection;
+10. CRLF/LF stable 1-based inclusive Unicode-code-point ranges;
+11. Unicode range stability and zero-length-match rejection;
+12. each initial rule positive case;
+13. near-miss/benign negative cases sufficient to catch obviously overbroad matching;
+14. multiple matches, exact duplicate deduplication and deterministic ordering;
+15. deterministic `matchedTextDigest`, `sourceSetIdentity`, `ruleSetIdentity`, `signalIdentity` and `evidenceIdentity`;
+16. secret-like matches expose digest/range/identity only, never captured bytes/text;
+17. zero-signal output remains bounded observation only;
+18. no automatic conversion to P6-R1 deterministic finding;
+19. schema/validator reject unknown/extra output fields;
+20. Proxy/accessor/symbol/prototype/sparse/alias/cycle hostile cases;
+21. caller mutation cannot alter returned evidence;
+22. no filesystem, Git, process, provider/model, network, secret retrieval, SARIF, K2, K5, persistence, patch/autofix, package publication or deployment side effects;
+23. production source contains no forbidden imports/APIs that introduce those side-effect surfaces.
 
 ## 12. Closed JSON Schema requirement
 
@@ -332,7 +367,7 @@ P7_R24_CLOSED != RELEASE_AUTHORITY
 P7_R24_CLOSED != PROJECT_COMPLETION
 ```
 
-Also preserved:
+Preserved non-grants:
 
 ```text
 P6_R1_MUTATION = NOT_AUTHORIZED
@@ -354,7 +389,7 @@ WAIVER = NO
 
 ## 14. Qualification requirements for this authorization candidate
 
-This documentation-only candidate may qualify only if one unchanged exact head proves:
+One unchanged exact head must prove:
 
 ```text
 BASE == CURRENT_CANONICAL_MAIN
@@ -365,6 +400,7 @@ P7_R23_RECONCILIATION_PROOF = EXACTLY_REVERIFIED / 5576546888
 POST_R23_SUCCESSOR_ANALYSIS = EXACTLY_REVERIFIED / 5576567428 / ANALYSIS_ONLY
 V3_A2_SEMANTICS = EXACTLY_REVERIFIED
 P6_R1_NON_DUPLICATION_BOUNDARY = EXACTLY_REVERIFIED
+R23_REVIEWABLE_TEXT_ENCODING_RULE = EXACTLY_REVERIFIED / utf8 | utf8_bom ONLY
 DONOR_SNAPSHOT_IDENTITIES = EXACTLY_REVERIFIED
 REQUIRED_CI = TERMINAL_SUCCESS_OR_CANONICALLY_PROVEN_PATH_FILTER_NON_APPLICABILITY
 SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
@@ -377,9 +413,9 @@ WAIVER = NO
 
 Any new candidate commit invalidates prior exact-head review and CI evidence.
 
-## 15. Mandatory post-merge proof for this authorization
+## 15. Mandatory post-merge proof
 
-The authorization does not become canonical merely because GitHub reports the PR merged. Post-merge proof must establish at minimum:
+The authorization does not become canonical merely because GitHub reports the PR merged. Post-merge proof must establish:
 
 ```text
 PR = CLOSED / MERGED
@@ -397,7 +433,7 @@ RULESET_20707483 = ACTIVE / NO_BYPASS
 WAIVER = NO
 ```
 
-Only after that complete proof may the three-path implementation allowlist become active.
+Only then may the three-path implementation allowlist become active.
 
 ## 16. Candidate conclusion
 
