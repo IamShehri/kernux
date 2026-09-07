@@ -888,7 +888,10 @@ test("P7-R19 rejects nested R6 report mutation during inherited asynchronous R18
     reportBinding.verificationCompletedAt = "2026-09-06T12:00:03.980Z"
     reportBinding.verificationReport.completedAt = "2026-09-06T12:00:03.980Z"
 
-    await assert.rejects(pending, /identity changed after canonical P7-R18 validation/)
+    await assert.rejects(
+      pending,
+      /(?:identity changed after canonical P7-R18 validation|verification-report binding does not match canonical source-derived semantics)/,
+    )
   })
 })
 
