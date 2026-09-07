@@ -597,7 +597,7 @@ test("P7-R23 implementation source has no filesystem, Git, provider, scanner or 
   ]
   for (const token of forbidden) assert.equal(source.includes(token), false, token)
 
-  const importLines = source.split("\n").filter((line) => line.startsWith("import "))
+  const importLines = source.split(/\r?\n/u).filter((line) => line.startsWith("import "))
   assert.deepEqual(importLines, [
     'import { createHash } from "node:crypto"',
     'import { types as nodeTypes } from "node:util"',
