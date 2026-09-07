@@ -313,6 +313,7 @@ test("P7-R23 rejects non-canonical and escaping repository paths", () => {
     "src/../up.ts",
     "src/\u0000nul.ts",
     "src/\u0007bell.ts",
+    "src/\u202Eevil.ts",
     `src/${"e\u0301"}.ts`,
   ]
 
@@ -440,7 +441,10 @@ test("P7-R23 rejects aliases, cycles, unsafe integers and non-JSON values", () =
 
   const cyclic = mixedInput() as unknown as UnknownRecord
   cyclic.self = cyclic
-  assert.throws(() => buildP7ReviewCoverageUniverseEvidenceBinding(cyclic), /aliases or cycles|unknown field/)
+  assert.throws(
+    () => buildP7ReviewCoverageUniverseEvidenceBinding(cyclic as unknown as P7ReviewCoverageUniverseEvidenceBindingBuildInput),
+    /aliases or cycles|unknown field/,
+  )
 
   assert.throws(
     () => build({ ...mixedInput(), changedPaths: [descriptor("a", { byteSize: Number.MAX_SAFE_INTEGER + 1 })] }),
@@ -453,7 +457,10 @@ test("P7-R23 rejects aliases, cycles, unsafe integers and non-JSON values", () =
 
   const bigintInput = mixedInput() as unknown as UnknownRecord
   bigintInput.changedPathSetIdentity = 1n
-  assert.throws(() => buildP7ReviewCoverageUniverseEvidenceBinding(bigintInput), /JSON-compatible/)
+  assert.throws(
+    () => buildP7ReviewCoverageUniverseEvidenceBinding(bigintInput as unknown as P7ReviewCoverageUniverseEvidenceBindingBuildInput),
+    /JSON-compatible/,
+  )
 })
 
 test("P7-R23 output is detached, deeply frozen and validator rejects tampering", () => {
