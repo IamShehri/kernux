@@ -173,8 +173,8 @@ function canonical(value: unknown): string {
 }
 
 function sha256(value: unknown): string {
-  const input = typeof value === "string" || value instanceof Uint8Array ? value : canonical(value)
-  return createHash("sha256").update(input, typeof input === "string" ? "utf8" : undefined).digest("hex")
+  const input = typeof value === "string" ? value : canonical(value)
+  return createHash("sha256").update(input, "utf8").digest("hex")
 }
 
 function claim(): Record<string, unknown> {
