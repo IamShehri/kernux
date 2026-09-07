@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-deterministic-security-prescan-evidence-binding.schema.json",
+  "title": "Kodac P7-R24 Deterministic Security Pre-scan Evidence Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "evidenceIdentity",
+    "state",
+    "repositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "targetTree",
+    "changedPathSetIdentity",
+    "reviewUniverseIdentity",
+    "sourceSetIdentity",
+    "ruleSetIdentity",
+    "sourceCount",
+    "scannedPaths",
+    "signalCount",
+    "signals"
+  ],
+  "properties": {
+    "version": { "const": "p7-r24-deterministic-security-prescan-evidence-binding-v1" },
+    "evidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "state": { "const": "DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY" },
+    "repositoryIdentity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "canonicalBase": { "$ref": "#/$defs/gitSha1" },
+    "targetHead": { "$ref": "#/$defs/gitSha1" },
+    "targetTree": { "$ref": "#/$defs/gitSha1" },
+    "changedPathSetIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewUniverseIdentity": { "$ref": "#/$defs/sha256" },
+    "sourceSetIdentity": { "$ref": "#/$defs/sha256" },
+    "ruleSetIdentity": { "$ref": "#/$defs/sha256" },
+    "sourceCount": { "type": "integer", "minimum": 0, "maximum": 64 },
+    "scannedPaths": { "$ref": "#/$defs/pathArray" },
+    "signalCount": { "type": "integer", "minimum": 0, "maximum": 4096 },
+    "signals": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": { "$ref": "#/$defs/signal" }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitSha1": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "pathArray": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/path" }
+    },
+    "mappingArray": {
+      "type": "array",
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      }
+    },
+    "signalCoordinate": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1048576
+    },
+    "signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "signalIdentity",
+        "ruleId",
+        "ruleVersion",
+        "externalTaxonomyMappings",
+        "path",
+        "sourceGitObjectIdentity",
+        "sourceRawByteIdentity",
+        "sourceDecodedTextIdentity",
+        "startLine",
+        "endLine",
+        "startColumn",
+        "endColumn",
+        "matchedTextDigest"
+      ],
+      "properties": {
+        "signalIdentity": { "$ref": "#/$defs/sha256" },
+        "ruleId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,127}$"
+        },
+        "ruleVersion": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,15}$"
+        },
+        "externalTaxonomyMappings": { "$ref": "#/$defs/mappingArray" },
+        "path": { "$ref": "#/$defs/path" },
+        "sourceGitObjectIdentity": { "$ref": "#/$defs/gitSha1" },
+        "sourceRawByteIdentity": { "$ref": "#/$defs/sha256" },
+        "sourceDecodedTextIdentity": { "$ref": "#/$defs/sha256" },
+        "startLine": { "$ref": "#/$defs/signalCoordinate" },
+        "endLine": { "$ref": "#/$defs/signalCoordinate" },
+        "startColumn": { "$ref": "#/$defs/signalCoordinate" },
+        "endColumn": { "$ref": "#/$defs/signalCoordinate" },
+        "matchedTextDigest": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}
