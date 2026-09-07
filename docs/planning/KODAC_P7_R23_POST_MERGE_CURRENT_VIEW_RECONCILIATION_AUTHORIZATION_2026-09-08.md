@@ -20,10 +20,11 @@ CANONICAL_BASE_TREE = 06b40a08305cc8a567713cfc523fc0b2af4effa7
 P7_R22_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #447 / proof 5575697294
 POST_R22_TENCENT_SOURCE_INTAKE_ANALYSIS = PR #447 / comment 5575751076 / ANALYSIS_ONLY
 TENCENT_DONOR_SYNTHESIS_AND_COMPLETE_REVIEW_MASTER_PLAN_V3 = CLOSED_CANONICAL / PLANNING_ONLY / PR #448 / proof 5575897235
+POST_V3_SUCCESSOR_ANALYSIS = PR #448 / comment 5576071930 / ANALYSIS_ONLY
 P7_R23_AUTHORIZATION = CLOSED_CANONICAL / PR #449 / proof 5576125671
-P7_R23_IMPLEMENTATION = CLOSED_CANONICAL / PR #450 / proof 5576404564
+P7_R23_IMPLEMENTATION = CLOSED_CANONICAL / PR #450 / proof 5576403450
 P7_R23_STATE = REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY
-P7_R23_CURRENT_VIEW_DRIFT_ANALYSIS = PR #450 / comment 5576415867 / ANALYSIS_ONLY
+P7_R23_CURRENT_VIEW_DRIFT_ANALYSIS = PR #450 / comment 5576422367 / ANALYSIS_ONLY
 P7_OVERALL = NOT_CLOSED
 PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
@@ -33,7 +34,7 @@ Live GitHub truth, root `AGENTS.md`, and exact canonical authorization/evidence 
 
 ## 2. Proven documentary drift
 
-The fresh P7-R23 drift analysis proves that the five canonical current views still carry the exact blobs merged by the R22 reconciliation. Their text intentionally could not certify that reconciliation's own closure, and therefore now lags later canonical evidence.
+The fresh P7-R23 drift analysis `5576422367` proves that the five canonical current views still carry the exact blobs merged by the R22 reconciliation. Their text intentionally could not certify that reconciliation's own closure, and therefore now lags later canonical evidence.
 
 Exact base preimages:
 
@@ -63,6 +64,8 @@ No sixth path is authorized.
 
 The future reconciliation must be documentation-only and may record only already-proven canonical facts. It must not modify runtime code, schema, tests, workflows, dependencies, lockfiles, historical authorization/evidence records, donor source, provider/model configuration, KRI/K2/K5 authority, benchmark data, persistence, telemetry, release configuration, rulesets, or repository protection.
 
+The future candidate must begin from the then-live canonical `main`. Before editing, it must re-read and record the exact then-current blob SHA for each of these five paths. If any path contains unrelated post-analysis changes, those changes must be preserved and the reconciliation must be recomputed forward-only from the live canonical preimage.
+
 ## 4. Required reconciliation content
 
 The future five-view candidate, if this authorization closes canonically, must reconcile the views to the already-proven frontier including at minimum:
@@ -71,13 +74,15 @@ The future five-view candidate, if this authorization closes canonically, must r
 P7_R22_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #447 / proof 5575697294
 POST_R22_TENCENT_SOURCE_INTAKE_ANALYSIS = PR #447 / comment 5575751076 / ANALYSIS_ONLY
 TENCENT_DONOR_SYNTHESIS_AND_COMPLETE_REVIEW_MASTER_PLAN_V3 = CLOSED_CANONICAL / PLANNING_ONLY / PR #448 / proof 5575897235
+POST_V3_SUCCESSOR_ANALYSIS = PR #448 / comment 5576071930 / ANALYSIS_ONLY
 P7_R23_AUTHORIZATION = CLOSED_CANONICAL / PR #449 / proof 5576125671
-P7_R23_IMPLEMENTATION = CLOSED_CANONICAL / PR #450 / proof 5576404564
+P7_R23_IMPLEMENTATION = CLOSED_CANONICAL / PR #450 / proof 5576403450
 P7_R23_STATE = REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY
-P7_R23_CURRENT_VIEW_DRIFT_ANALYSIS = PR #450 / comment 5576415867 / ANALYSIS_ONLY
+P7_R23_CURRENT_VIEW_DRIFT_ANALYSIS = PR #450 / comment 5576422367 / ANALYSIS_ONLY
 P7_R23_POST_MERGE_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / THIS_AUTHORIZATION_POST_MERGE_PROOF
 P7_R23_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 POST_R23_SUCCESSOR_IMPLEMENTATION = NOT_AUTHORIZED_BY_NUMBERING
+A2_DETERMINISTIC_SECURITY_PRE_SCAN_IMPLEMENTATION = NOT_AUTHORIZED_BY_PLAN_COMPOSITION
 P7_OVERALL = NOT_CLOSED
 P8_P9_IMPLEMENTATION = NOT_AUTHORIZED
 PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
@@ -87,20 +92,26 @@ WAIVER = NO
 
 The reconciliation must preserve unrelated canonical program state and all still-effective predecessor non-grants. Omission from a condensed current view must never be interpreted as supersession or authority.
 
+The future reconciliation cannot certify its own closure. Until its own guarded merge and complete mandatory post-merge proof exist, it must remain `CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL` in every edited current view.
+
 ## 5. Mandatory R23 non-equivalences
 
 Every future reconciled view must preserve the bounded meaning of R23:
 
 ```text
 REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != PATH_REVIEW_COVERAGE_PROOF
+REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != REVIEWED_PATH_SET_PROOF
 REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != DETERMINISTIC_SECURITY_PRE_SCAN_PROOF
 REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != RISK_COVERAGE_PROOF
 REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != SKILL_COVERAGE_PROOF
 REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != PROVIDER_TERMINATION_REASON_PROOF
+REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != PROVIDER_INVOCATION_PROVENANCE_PROOF
 REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF
 REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != K5_RECONCILIATION_PROOF
 REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != DONE_GATE_PROOF
+P7_R23_CLOSED != POST_R23_SUCCESSOR_IMPLEMENTATION_AUTHORITY
 P7_R23_CLOSED != P7_OVERALL_CLOSED
+P7_R23_CLOSED != RELEASE_AUTHORITY
 P7_R23_CLOSED != PROJECT_COMPLETION
 ```
 
@@ -149,6 +160,7 @@ BEHIND_BY = 0
 CHANGED_PATHS = EXACTLY_1_AUTHORIZATION_PATH
 NO_SECOND_PATH = PASS
 BASE_CURRENT_VIEW_PREIMAGE_BLOBS = EXACTLY_AS_RECORDED_ABOVE
+CANONICAL_PROOF_REFERENCES = EXACTLY_REVERIFIED
 REQUIRED_CI = TERMINAL_SUCCESS_OR_CANONICALLY_PROVEN_PATH_FILTER_NON_APPLICABILITY
 SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
 KNOWN_ACTIONABLE_DEFECTS = 0
