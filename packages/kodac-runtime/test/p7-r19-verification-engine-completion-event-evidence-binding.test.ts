@@ -870,6 +870,28 @@ test("P7-R19 enforces the canonical P7-R8 all-pass predecessor domain", async ()
   })
 })
 
+test("P7-R19 rejects nested R6 report mutation during inherited asynchronous R18 file validation", async () => {
+  await withTemp(async (root) => {
+    const fixture = await r19Fixture(root)
+    const racing = clonedInput(fixture.input)
+    racing.verificationCompletedEvent.emittedAt = "2026-09-06T12:00:03.990Z"
+    const reportBinding = sourceReportFromR18Input(
+      racing.sourceVerificationEngineReceiptLedgerReadEvidenceBindingInput,
+    )
+
+    const pending = buildP7VerificationEngineCompletionEventEvidenceBinding(
+      racing as P7VerificationEngineCompletionEventEvidenceBindingBuildInput,
+    )
+
+    // The inherited R18/R16 validator yields for its bounded local-file read. Mutating only
+    // the nested R6 report binding after that yield must not influence R19 semantics.
+    reportBinding.verificationCompletedAt = "2026-09-06T12:00:03.980Z"
+    reportBinding.verificationReport.completedAt = "2026-09-06T12:00:03.980Z"
+
+    await assert.rejects(pending, /identity changed after canonical P7-R18 validation/)
+  })
+})
+
 test("P7-R19 fails closed on R18 evidence/build-input and local receipt-ledger drift", async () => {
   await withTemp(async (root) => {
     const fixture = await r19Fixture(root)
