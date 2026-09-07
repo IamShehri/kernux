@@ -121,7 +121,7 @@ type EvidenceCore = Omit<P7ReviewCoverageUniverseEvidenceBinding, "evidenceIdent
 
 const SHA1 = /^[0-9a-f]{40}$/
 const SHA256 = /^[0-9a-f]{64}$/
-const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f-\u009f]/u
+const CONTROL_CHARACTERS = /[\p{Cc}\p{Cf}\p{Cs}]/u
 
 const BUILD_KEYS = [
   "repositoryIdentity",
