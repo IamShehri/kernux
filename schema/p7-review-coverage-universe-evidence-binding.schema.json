@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-review-coverage-universe-evidence-binding.schema.json",
+  "title": "Kodac P7-R23 Review Coverage Universe Evidence Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "evidenceIdentity",
+    "state",
+    "repositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "targetTree",
+    "changedPathSetIdentity",
+    "reviewUniverseIdentity",
+    "changedPathCount",
+    "reviewUniversePaths",
+    "reviewableTextPaths",
+    "opaqueBinaryPaths",
+    "generatedOrDerivedPaths",
+    "referencedHiddenPayloadPaths",
+    "unreadablePaths",
+    "unsupportedEncodingPaths",
+    "oversizedPaths",
+    "symlinkPaths",
+    "submodulePaths",
+    "lfsPointerPaths",
+    "policyExcludedPaths",
+    "deletedPaths"
+  ],
+  "properties": {
+    "version": { "const": "p7-r23-review-coverage-universe-evidence-binding-v1" },
+    "evidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "state": { "const": "REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY" },
+    "repositoryIdentity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "canonicalBase": { "$ref": "#/$defs/gitSha1" },
+    "targetHead": { "$ref": "#/$defs/gitSha1" },
+    "targetTree": { "$ref": "#/$defs/gitSha1" },
+    "changedPathSetIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewUniverseIdentity": { "$ref": "#/$defs/sha256" },
+    "changedPathCount": { "type": "integer", "minimum": 1, "maximum": 64 },
+    "reviewUniversePaths": { "$ref": "#/$defs/pathArray" },
+    "reviewableTextPaths": { "$ref": "#/$defs/pathArray" },
+    "opaqueBinaryPaths": { "$ref": "#/$defs/pathArray" },
+    "generatedOrDerivedPaths": { "$ref": "#/$defs/pathArray" },
+    "referencedHiddenPayloadPaths": { "$ref": "#/$defs/pathArray" },
+    "unreadablePaths": { "$ref": "#/$defs/pathArray" },
+    "unsupportedEncodingPaths": { "$ref": "#/$defs/pathArray" },
+    "oversizedPaths": { "$ref": "#/$defs/pathArray" },
+    "symlinkPaths": { "$ref": "#/$defs/pathArray" },
+    "submodulePaths": { "$ref": "#/$defs/pathArray" },
+    "lfsPointerPaths": { "$ref": "#/$defs/pathArray" },
+    "policyExcludedPaths": { "$ref": "#/$defs/pathArray" },
+    "deletedPaths": { "$ref": "#/$defs/pathArray" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitSha1": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024
+    },
+    "pathArray": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/path" }
+    }
+  }
+}
