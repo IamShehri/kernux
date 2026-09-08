@@ -212,7 +212,12 @@
         "status": { "const": "NOT_READY" },
         "proven": { "const": false },
         "evidence": { "$ref": "#/$defs/solveCompletedEvidence" },
-        "payload": { "$ref": "#/$defs/solveCompletedPayload" }
+        "payload": {
+          "allOf": [
+            { "$ref": "#/$defs/solveCompletedPayload" },
+            { "type": "object", "properties": { "reasons": { "type": "array", "minItems": 1 } } }
+          ]
+        }
       }
     },
     "solveProvenReadyEnvelope": {
@@ -227,7 +232,12 @@
         "status": { "const": "PROVEN_READY" },
         "proven": { "const": true },
         "evidence": { "$ref": "#/$defs/solveCompletedEvidence" },
-        "payload": { "$ref": "#/$defs/solveCompletedPayload" }
+        "payload": {
+          "allOf": [
+            { "$ref": "#/$defs/solveCompletedPayload" },
+            { "type": "object", "properties": { "reasons": { "type": "array", "maxItems": 0 } } }
+          ]
+        }
       }
     }
   }
