@@ -414,8 +414,7 @@ function normalizedSkill(value: unknown, index: number): NormalizedSkill {
 }
 
 function normalizeInput(rawInput: P7SkillCoverageEvidenceBindingBuildInput): NormalizedInput {
-  const snapshot = snapshotJsonData(rawInput, "input")
-  const record = ownDataRecord(snapshot, INPUT_KEYS, INPUT_KEYS, "input")
+  const record = ownDataRecord(rawInput, INPUT_KEYS, INPUT_KEYS, "input")
   const values = denseArray(record.skills, "input.skills", P7_R26_SKILL_COVERAGE_LIMITS.maxSkills)
   const skills = values.map((value, index) => normalizedSkill(value, index))
 
