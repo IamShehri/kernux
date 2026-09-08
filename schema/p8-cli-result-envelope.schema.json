@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p8-cli-result-envelope.schema.json",
+  "title": "Kodac P8-R1 Machine-Readable CLI Result Envelope",
+  "description": "A pure data-only versioned result envelope for the existing apply-patch, ask, and solve CLI command families. The envelope validates caller-supplied result consistency only; it does not execute commands, evaluate Done Gate, inspect proof artifacts, invoke providers/models, grant write authority, publish packages, or establish release/project completion.",
+  "oneOf": [
+    { "$ref": "#/$defs/applyPatchEnvelope" },
+    { "$ref": "#/$defs/askEnvelope" },
+    { "$ref": "#/$defs/solveStoppedEnvelope" },
+    { "$ref": "#/$defs/solveNotReadyEnvelope" },
+    { "$ref": "#/$defs/solveProvenReadyEnvelope" }
+  ],
+  "$defs": {
+    "identityText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^(?!.*[\\u0000-\\u001F\\u007F])(?=.*\\S)(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])+$"
+    },
+    "sessionId": {
+      "allOf": [
+        { "$ref": "#/$defs/identityText" },
+        { "maxLength": 256 }
+      ]
+    },
+    "shortIdentity": {
+      "allOf": [
+        { "$ref": "#/$defs/identityText" },
+        { "maxLength": 256 }
+      ]
+    },
+    "pathIdentity": {
+      "allOf": [
+        { "$ref": "#/$defs/identityText" },
+        { "maxLength": 1024 }
+      ]
+    },
+    "contentText": {
+      "type": "string",
+      "maxLength": 65536,
+      "pattern": "^(?!.*[\\u0000\\u007F])(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$"
+    },
+    "messageText": {
+      "allOf": [
+        { "$ref": "#/$defs/contentText" },
+        { "maxLength": 4096 }
+      ]
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["turnsUsed", "toolCallsUsed", "failuresUsed", "elapsedMs"],
+      "properties": {
+        "turnsUsed": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+        "toolCallsUsed": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+        "failuresUsed": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+        "elapsedMs": { "type": "integer", "minimum": 0, "maximum": 1000000000 }
+      }
+    },
+    "affected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["added", "modified", "deleted"],
+      "properties": {
+        "added": { "type": "array", "maxItems": 256, "items": { "$ref": "#/$defs/pathIdentity" } },
+        "modified": { "type": "array", "maxItems": 256, "items": { "$ref": "#/$defs/pathIdentity" } },
+        "deleted": { "type": "array", "maxItems": 256, "items": { "$ref": "#/$defs/pathIdentity" } }
+      }
+    },
+    "applyPatchEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events", "receipts"],
+      "properties": {
+        "events": { "$ref": "#/$defs/identityText" },
+        "receipts": { "$ref": "#/$defs/identityText" }
+      }
+    },
+    "askEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events"],
+      "properties": {
+        "events": { "$ref": "#/$defs/identityText" }
+      }
+    },
+    "solveStoppedEvidence": {
+      "$ref": "#/$defs/applyPatchEvidence"
+    },
+    "solveCompletedEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events", "receipts", "plan", "proof"],
+      "properties": {
+        "events": { "$ref": "#/$defs/identityText" },
+        "receipts": { "$ref": "#/$defs/identityText" },
+        "plan": { "$ref": "#/$defs/identityText" },
+        "proof": { "$ref": "#/$defs/identityText" }
+      }
+    },
+    "applyPatchPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["affected", "receiptId"],
+      "properties": {
+        "affected": { "$ref": "#/$defs/affected" },
+        "receiptId": { "$ref": "#/$defs/shortIdentity" }
+      }
+    },
+    "askPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model", "assistant"],
+      "properties": {
+        "provider": { "$ref": "#/$defs/shortIdentity" },
+        "model": { "$ref": "#/$defs/shortIdentity" },
+        "assistant": { "$ref": "#/$defs/contentText" }
+      }
+    },
+    "solveStoppedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason", "budget"],
+      "properties": {
+        "reason": {
+          "enum": ["completed", "max_turns", "max_tool_calls", "max_elapsed", "max_failures", "duplicate_tool_call", "cycle_detected", "aborted"]
+        },
+        "budget": { "$ref": "#/$defs/budget" }
+      }
+    },
+    "solveCompletedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model", "assistant", "budget", "verificationRisk", "verificationCommands", "warnings", "reasons"],
+      "properties": {
+        "provider": { "$ref": "#/$defs/shortIdentity" },
+        "model": { "$ref": "#/$defs/shortIdentity" },
+        "assistant": { "$ref": "#/$defs/contentText" },
+        "budget": { "$ref": "#/$defs/budget" },
+        "verificationRisk": { "enum": ["low", "medium", "high"] },
+        "verificationCommands": {
+          "type": "array",
+          "maxItems": 256,
+          "items": { "$ref": "#/$defs/shortIdentity" }
+        },
+        "warnings": {
+          "type": "array",
+          "maxItems": 256,
+          "items": { "$ref": "#/$defs/messageText" }
+        },
+        "reasons": {
+          "type": "array",
+          "maxItems": 256,
+          "items": { "$ref": "#/$defs/messageText" }
+        }
+      }
+    },
+    "applyPatchEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "command", "sessionId", "status", "proven", "evidence", "payload"],
+      "properties": {
+        "protocol": { "const": "kodac.cli-result" },
+        "version": { "const": 1 },
+        "command": { "const": "apply-patch" },
+        "sessionId": { "$ref": "#/$defs/sessionId" },
+        "status": { "const": "PATCH_APPLIED" },
+        "proven": { "const": false },
+        "evidence": { "$ref": "#/$defs/applyPatchEvidence" },
+        "payload": { "$ref": "#/$defs/applyPatchPayload" }
+      }
+    },
+    "askEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "command", "sessionId", "status", "proven", "evidence", "payload"],
+      "properties": {
+        "protocol": { "const": "kodac.cli-result" },
+        "version": { "const": 1 },
+        "command": { "const": "ask" },
+        "sessionId": { "$ref": "#/$defs/sessionId" },
+        "status": { "const": "COMPLETE" },
+        "proven": { "const": false },
+        "evidence": { "$ref": "#/$defs/askEvidence" },
+        "payload": { "$ref": "#/$defs/askPayload" }
+      }
+    },
+    "solveStoppedEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "command", "sessionId", "status", "proven", "evidence", "payload"],
+      "properties": {
+        "protocol": { "const": "kodac.cli-result" },
+        "version": { "const": 1 },
+        "command": { "const": "solve" },
+        "sessionId": { "$ref": "#/$defs/sessionId" },
+        "status": { "const": "STOPPED" },
+        "proven": { "const": false },
+        "evidence": { "$ref": "#/$defs/solveStoppedEvidence" },
+        "payload": { "$ref": "#/$defs/solveStoppedPayload" }
+      }
+    },
+    "solveNotReadyEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "command", "sessionId", "status", "proven", "evidence", "payload"],
+      "properties": {
+        "protocol": { "const": "kodac.cli-result" },
+        "version": { "const": 1 },
+        "command": { "const": "solve" },
+        "sessionId": { "$ref": "#/$defs/sessionId" },
+        "status": { "const": "NOT_READY" },
+        "proven": { "const": false },
+        "evidence": { "$ref": "#/$defs/solveCompletedEvidence" },
+        "payload": { "$ref": "#/$defs/solveCompletedPayload" }
+      }
+    },
+    "solveProvenReadyEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocol", "version", "command", "sessionId", "status", "proven", "evidence", "payload"],
+      "properties": {
+        "protocol": { "const": "kodac.cli-result" },
+        "version": { "const": 1 },
+        "command": { "const": "solve" },
+        "sessionId": { "$ref": "#/$defs/sessionId" },
+        "status": { "const": "PROVEN_READY" },
+        "proven": { "const": true },
+        "evidence": { "$ref": "#/$defs/solveCompletedEvidence" },
+        "payload": { "$ref": "#/$defs/solveCompletedPayload" }
+      }
+    }
+  }
+}
