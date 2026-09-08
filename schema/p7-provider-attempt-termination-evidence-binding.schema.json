@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-provider-attempt-termination-evidence-binding.schema.json",
+  "title": "Kodac P7-R27 Provider Attempt / Termination Evidence Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "evidenceIdentity",
+    "state",
+    "repositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "targetTree",
+    "changedPathSetIdentity",
+    "reviewUniverseIdentity",
+    "reviewContextEvidenceIdentity",
+    "reviewRunIdentity",
+    "skillCoverageEvidenceIdentity",
+    "provenanceEvidenceSetIdentity",
+    "attemptIdentity",
+    "providerIdentity",
+    "modelIdentity",
+    "configurationIdentity",
+    "promptPolicyIdentity",
+    "toolPolicyIdentity",
+    "startedAt",
+    "completedAt",
+    "terminationReason",
+    "inputTokenOrBudgetEvidenceIdentity",
+    "outputTruncationState",
+    "outputTruncationEvidenceIdentity",
+    "toolCallCount",
+    "retryLineageIdentity",
+    "completionDebtIdentity",
+    "completionState"
+  ],
+  "properties": {
+    "version": { "const": "p7-r27-provider-attempt-termination-evidence-binding-v1" },
+    "evidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "state": { "const": "PROVIDER_ATTEMPT_TERMINATION_EVIDENCE_BOUND_ONLY" },
+    "repositoryIdentity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "canonicalBase": { "$ref": "#/$defs/gitSha" },
+    "targetHead": { "$ref": "#/$defs/gitSha" },
+    "targetTree": { "$ref": "#/$defs/gitSha" },
+    "changedPathSetIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewUniverseIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewContextEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewRunIdentity": { "$ref": "#/$defs/sha256" },
+    "skillCoverageEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "provenanceEvidenceSetIdentity": { "$ref": "#/$defs/sha256" },
+    "attemptIdentity": { "$ref": "#/$defs/sha256" },
+    "providerIdentity": { "$ref": "#/$defs/sha256" },
+    "modelIdentity": { "$ref": "#/$defs/sha256" },
+    "configurationIdentity": { "$ref": "#/$defs/sha256" },
+    "promptPolicyIdentity": { "$ref": "#/$defs/sha256" },
+    "toolPolicyIdentity": { "$ref": "#/$defs/sha256" },
+    "startedAt": { "$ref": "#/$defs/timestamp" },
+    "completedAt": {
+      "anyOf": [
+        { "$ref": "#/$defs/timestamp" },
+        { "type": "null" }
+      ]
+    },
+    "terminationReason": {
+      "enum": [
+        "COMPLETED",
+        "TOKEN_LIMIT",
+        "TOOL_LIMIT",
+        "TIMEOUT",
+        "CANCELLED",
+        "PROVIDER_ERROR",
+        "POLICY_STOP",
+        "BUDGET_EXHAUSTED",
+        "UNKNOWN"
+      ]
+    },
+    "inputTokenOrBudgetEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "outputTruncationState": { "enum": ["NOT_TRUNCATED", "TRUNCATED", "UNKNOWN"] },
+    "outputTruncationEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "toolCallCount": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "retryLineageIdentity": { "$ref": "#/$defs/sha256" },
+    "completionDebtIdentity": { "$ref": "#/$defs/sha256" },
+    "completionState": {
+      "enum": ["CALLER_ASSERTED_COMPLETED_NO_KNOWN_TRUNCATION", "COMPLETION_DEBT"]
+    }
+  },
+  "$defs": {
+    "gitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    }
+  }
+}
