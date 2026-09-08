@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-skill-coverage-evidence-binding.schema.json",
+  "title": "Kodac P7-R26 Skill Coverage Evidence Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "evidenceIdentity",
+    "state",
+    "repositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "targetTree",
+    "changedPathSetIdentity",
+    "reviewUniverseIdentity",
+    "riskCoverageEvidenceIdentity",
+    "riskTaxonomyIdentity",
+    "riskCoverageDebtIdentity",
+    "riskCoverageState",
+    "skillCoverageSourceSetIdentity",
+    "skillAdmissionEvidenceIdentity",
+    "skillRelevanceEvidenceIdentity",
+    "skillDispositionEvidenceIdentity",
+    "relevantSkillSet",
+    "notRelevantSkillSet",
+    "unknownRelevanceSkillSet",
+    "admittedSkillSet",
+    "notAdmittedSkillSet",
+    "unknownAdmissionSkillSet",
+    "loadedSkillSet",
+    "executedSkillSet",
+    "unavailableSkillSet",
+    "skillRecords",
+    "coverageDebtIdentity",
+    "skillCoverageState"
+  ],
+  "properties": {
+    "version": { "const": "p7-r26-skill-coverage-evidence-binding-v1" },
+    "evidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "state": { "const": "SKILL_COVERAGE_EVIDENCE_BOUND_ONLY" },
+    "repositoryIdentity": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "canonicalBase": { "$ref": "#/$defs/gitSha" },
+    "targetHead": { "$ref": "#/$defs/gitSha" },
+    "targetTree": { "$ref": "#/$defs/gitSha" },
+    "changedPathSetIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewUniverseIdentity": { "$ref": "#/$defs/sha256" },
+    "riskCoverageEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "riskTaxonomyIdentity": { "$ref": "#/$defs/sha256" },
+    "riskCoverageDebtIdentity": { "$ref": "#/$defs/sha256" },
+    "riskCoverageState": {
+      "enum": [
+        "ACCOUNTED_NO_UNCOVERED_OR_UNKNOWN",
+        "HAS_UNCOVERED_RISK",
+        "HAS_UNKNOWN_APPLICABILITY",
+        "HAS_UNCOVERED_AND_UNKNOWN"
+      ]
+    },
+    "skillCoverageSourceSetIdentity": { "$ref": "#/$defs/sha256" },
+    "skillAdmissionEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "skillRelevanceEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "skillDispositionEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "relevantSkillSet": { "$ref": "#/$defs/skillIdentitySet" },
+    "notRelevantSkillSet": { "$ref": "#/$defs/skillIdentitySet" },
+    "unknownRelevanceSkillSet": { "$ref": "#/$defs/skillIdentitySet" },
+    "admittedSkillSet": { "$ref": "#/$defs/skillIdentitySet" },
+    "notAdmittedSkillSet": { "$ref": "#/$defs/skillIdentitySet" },
+    "unknownAdmissionSkillSet": { "$ref": "#/$defs/skillIdentitySet" },
+    "loadedSkillSet": { "$ref": "#/$defs/skillIdentitySet" },
+    "executedSkillSet": { "$ref": "#/$defs/skillIdentitySet" },
+    "unavailableSkillSet": { "$ref": "#/$defs/skillIdentitySet" },
+    "skillRecords": {
+      "type": "array",
+      "maxItems": 256,
+      "items": { "$ref": "#/$defs/skillRecord" }
+    },
+    "coverageDebtIdentity": { "$ref": "#/$defs/sha256" },
+    "skillCoverageState": { "enum": ["ACCOUNTED_NO_COVERAGE_DEBT", "HAS_COVERAGE_DEBT"] }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "evidenceIdentitySet": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/sha256" }
+    },
+    "skillIdentitySet": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/sha256" }
+    },
+    "riskIdSet": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "credential_access",
+          "data_exfiltration",
+          "encoded_execution",
+          "persistence",
+          "prompt_injection",
+          "remote_execution",
+          "semantic_logic_abuse",
+          "supply_chain_payload"
+        ]
+      }
+    },
+    "skillRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "skillIdentity",
+        "packageEvidenceIdentity",
+        "governanceEvidenceIdentity",
+        "packageManifestIdentity",
+        "sourceProvenanceIdentity",
+        "extensionId",
+        "name",
+        "packageBindingState",
+        "governanceTrustStatus",
+        "governanceAuthorityState",
+        "admission",
+        "admissionEvidenceIdentities",
+        "relevance",
+        "relevantRiskIds",
+        "relevanceEvidenceIdentities",
+        "disposition",
+        "dispositionEvidenceIdentities"
+      ],
+      "properties": {
+        "skillIdentity": { "$ref": "#/$defs/sha256" },
+        "packageEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+        "governanceEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+        "packageManifestIdentity": { "$ref": "#/$defs/sha256" },
+        "sourceProvenanceIdentity": { "$ref": "#/$defs/sha256" },
+        "extensionId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "name": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 64 },
+        "packageBindingState": { "enum": ["UNBOUND", "CURRENT", "STALE"] },
+        "governanceTrustStatus": { "const": "UNASSESSED" },
+        "governanceAuthorityState": { "const": "NONE" },
+        "admission": { "enum": ["ADMITTED", "NOT_ADMITTED", "UNKNOWN"] },
+        "admissionEvidenceIdentities": { "$ref": "#/$defs/evidenceIdentitySet" },
+        "relevance": { "enum": ["RELEVANT", "NOT_RELEVANT", "UNKNOWN"] },
+        "relevantRiskIds": { "$ref": "#/$defs/riskIdSet" },
+        "relevanceEvidenceIdentities": { "$ref": "#/$defs/evidenceIdentitySet" },
+        "disposition": { "enum": ["LOADED", "EXECUTED", "UNAVAILABLE"] },
+        "dispositionEvidenceIdentities": { "$ref": "#/$defs/evidenceIdentitySet" }
+      }
+    }
+  }
+}
