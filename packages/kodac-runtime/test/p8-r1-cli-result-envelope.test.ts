@@ -175,7 +175,15 @@ test("P8-R1 exports the bounded protocol and closed discriminators", () => {
   assert.equal(P8_CLI_RESULT_VERSION, 1)
   assert.deepEqual(P8_CLI_COMMANDS, ["apply-patch", "ask", "solve"])
   assert.deepEqual(P8_SOLVE_STATUSES, ["STOPPED", "PROVEN_READY", "NOT_READY"])
-  assert.ok(P8_SOLVE_STOP_REASONS.includes("max_turns"))
+  assert.deepEqual(P8_SOLVE_STOP_REASONS, [
+    "max_turns",
+    "max_tool_calls",
+    "max_elapsed",
+    "max_failures",
+    "duplicate_tool_call",
+    "cycle_detected",
+    "aborted",
+  ])
   assert.deepEqual(P8_VERIFICATION_RISKS, ["low", "medium", "high"])
 })
 
@@ -231,6 +239,11 @@ test("P8-R1 rejects command/status/payload/evidence discriminator mismatches", (
   stoppedWithProof.evidence.proof = "/tmp/proof.json"
   assert.equal(runtimeAccepts(stoppedWithProof), false)
 
+  const completedStopReason = full(solveStoppedInput())
+  completedStopReason.payload.reason = "completed"
+  assert.equal(runtimeAccepts(completedStopReason), false)
+  assert.equal(schemaAccepts(schema, completedStopReason), false)
+
   const completedWithoutProof = full(solveCompletedInput("NOT_READY"))
   delete completedWithoutProof.evidence.proof
   assert.equal(runtimeAccepts(completedWithoutProof), false)
@@ -262,10 +275,12 @@ test("P8-R1 enforces deterministic string, collection, and numeric bounds", () =
   const controlIdentity = full(askInput())
   controlIdentity.payload.provider = "bad\nprovider"
   assert.equal(runtimeAccepts(controlIdentity), false)
+  assert.equal(schemaAccepts(schema, controlIdentity), false)
 
   const nulContent = full(askInput())
-  nulContent.payload.assistant = "bad\u0000content"
+  nulContent.payload.assistant = "line one\nbad\u0000content"
   assert.equal(runtimeAccepts(nulContent), false)
+  assert.equal(schemaAccepts(schema, nulContent), false)
 
   const assistantOverflow = full(askInput())
   assistantOverflow.payload.assistant = "x".repeat(P8_CLI_RESULT_LIMITS.maxAssistantCodePoints + 1)
@@ -291,11 +306,13 @@ test("P8-R1 accepts bounded multiline assistant/message content without weakenin
   const ask = askInput()
   ask.payload.assistant = "line one\nline two\tindented"
   assert.doesNotThrow(() => buildP8CliResultEnvelope(ask as P8CliResultEnvelopeInput))
+  assert.equal(schemaAccepts(schema, full(ask)), true)
 
   const solve = solveCompletedInput("NOT_READY")
   solve.payload.warnings = ["warning line one\nwarning line two"]
   solve.payload.reasons = ["reason\twith detail"]
   assert.doesNotThrow(() => buildP8CliResultEnvelope(solve as P8CliResultEnvelopeInput))
+  assert.equal(schemaAccepts(schema, full(solve)), true)
 })
 
 test("P8-R1 returns detached deeply immutable records", () => {
@@ -319,7 +336,7 @@ test("P8-R1 fails closed on accessors, proxies, custom prototypes, aliases, cycl
     enumerable: true,
     get() { return "getter-session" },
   })
-  assert.throws(() => buildP8CliResultEnvelope(accessor as P8CliResultEnvelopeInput), /data-property|descriptor|JSON data/)
+  assert.throws(() => buildP8CliResultEnvelope(accessor as P8CliResultEnvelopeInput), /data property|data-property|descriptor|JSON data/)
 
   const proxy = new Proxy(askInput(), {})
   assert.throws(() => buildP8CliResultEnvelope(proxy as P8CliResultEnvelopeInput), /Proxy/)
@@ -359,8 +376,10 @@ test("P8-R1 runtime and schema agree on representative accepted and rejected JSO
   const wrongProof = full(solveCompletedInput("PROVEN_READY")); wrongProof.proven = false; rejected.push(wrongProof)
   const wrongRisk = full(solveCompletedInput("NOT_READY")); wrongRisk.payload.verificationRisk = "critical"; rejected.push(wrongRisk)
   const wrongStop = full(solveStoppedInput()); wrongStop.payload.reason = "timeout"; rejected.push(wrongStop)
+  const completedStop = full(solveStoppedInput()); completedStop.payload.reason = "completed"; rejected.push(completedStop)
   const badCounter = full(solveStoppedInput()); badCounter.payload.budget.turnsUsed = 1.5; rejected.push(badCounter)
   const blankProvider = full(askInput()); blankProvider.payload.provider = "   "; rejected.push(blankProvider)
+  const multilineNul = full(askInput()); multilineNul.payload.assistant = "ok\nno\u0000pe"; rejected.push(multilineNul)
 
   for (const candidate of accepted) {
     assert.equal(runtimeAccepts(candidate), true)
