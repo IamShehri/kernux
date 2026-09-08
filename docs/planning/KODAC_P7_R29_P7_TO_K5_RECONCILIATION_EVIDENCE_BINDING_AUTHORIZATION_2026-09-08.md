@@ -1,6 +1,6 @@
 # Kodac P7-R29 — P7-to-K5 Reconciliation Evidence-Binding Authorization Candidate
 
-Status: **AUTHORIZATION_CANDIDATE / NOT_CANONICAL / NO_IMPLEMENTATION_AUTHORITY UNTIL MERGED_AND_POST_PROVEN**  
+Status: **AUTHORIZATION_CANDIDATE / NOT_CANONICAL / NO_IMPLEMENTATION_AUTHORITY UNTIL_MERGED_AND_POST_PROVEN**  
 Date: 2026-09-08  
 Decision owner: Kodac founder  
 Waiver: **NO**
@@ -27,7 +27,7 @@ WAIVER = NO
 
 Live GitHub truth, root `AGENTS.md`, exact canonical authorization/evidence records and active ruleset `20707483` override this candidate.
 
-This record is authorization-only. It creates no source/test/index mutation authority unless this exact authorization candidate independently qualifies, merges normally through protected `main` with an exact expected-head guard, and receives complete mandatory post-merge activation proof.
+This record is authorization-only. It creates no source/test/schema mutation authority unless this exact authorization candidate independently qualifies, merges normally through protected `main` with an exact expected-head guard, and receives complete mandatory post-merge activation proof.
 
 `P7-R29` is the bounded governance label for this candidate. Numbering and planning sequence are not themselves authority.
 
@@ -52,6 +52,8 @@ R28 is now canonically closed at its exact bounded meaning, and fresh analysis `
 
 K5 is already closed for its bounded R1-R5 proof-review scope. Its closeout preserves that K5 package judgment and K5-R4 reconciliation are not Done Gate authority and that `K5_R4_VALID != PROVEN_READY`.
 
+The immediately preceding P7-R28 evidence-binding implementation used the repository's established evidence-contract shape of one production source, one focused test and one JSON interoperability schema. R29 preserves that shape. It does not add a root runtime export or broaden the public runtime surface.
+
 Therefore the next eligible unit is a narrow compatibility/evidence bridge from exact P7-R28 completeness evidence into existing K5 proof-review identity semantics, without changing K5's existing contracts and without invoking or mutating Done Gate.
 
 ## 3. Exact future implementation allowlist
@@ -61,7 +63,7 @@ Only after this authorization itself becomes `CLOSED_CANONICAL` may one later im
 ```text
 packages/kodac-runtime/src/proof-review/p7-k5-reconciliation-evidence-binding.ts
 packages/kodac-runtime/test/p7-r29-p7-k5-reconciliation-evidence-binding.test.ts
-packages/kodac-runtime/src/index.ts
+schema/p7-k5-reconciliation-evidence-binding.schema.json
 ```
 
 No fourth path is authorized.
@@ -69,14 +71,17 @@ No fourth path is authorized.
 The implementation must not modify:
 
 ```text
+packages/kodac-runtime/src/index.ts
 packages/kodac-runtime/src/remediation/p7-full-exact-head-review-completeness-evidence-binding.ts
 packages/kodac-runtime/src/proof-review/contracts.ts
 packages/kodac-runtime/src/proof-review/linkage-contracts.ts
+packages/kodac-runtime/src/proof-review/linkage.ts
 packages/kodac-runtime/src/proof-review/review-adjudication-contracts.ts
+packages/kodac-runtime/src/proof-review/review-adjudication.ts
 packages/kodac-runtime/src/proof-review/reconciliation-contracts.ts
 packages/kodac-runtime/src/proof-review/reconciliation.ts
 packages/kodac-runtime/src/verification/done-gate.ts
-schema/**
+any schema path other than schema/p7-k5-reconciliation-evidence-binding.schema.json
 .github/**
 provenance/**
 package manifests
@@ -105,7 +110,7 @@ DONE_GATE_BLOB = 067e147569fa52cc2b04c5df26fbe20a01e958e9
 RUNTIME_INDEX_BLOB = 491dd4fdb1a924fff15cf2ccd38ae868b745bd82
 ```
 
-These are observations, not permission to overwrite predecessor paths.
+These are observations, not permission to overwrite predecessor paths. The runtime index is explicitly immutable for this unit.
 
 ## 5. Authorized bounded contract
 
@@ -235,6 +240,22 @@ K5-R4 status = NOT_APPLICABLE
 
 Its own identity must be deterministic and content-addressed over the normalized output preimage.
 
+### 5.6 JSON interoperability schema
+
+The exact authorized schema path is a structural interoperability projection of the bounded output only. It must:
+
+- use JSON Schema draft 2020-12;
+- be closed to unknown fields;
+- bind the exact version/state constants and finite status values;
+- constrain Git object and SHA-256 identity formats;
+- agree with the TypeScript validator on the complete accepted output shape;
+- create no runtime, validation-engine, Done Gate or authority semantics beyond the TypeScript contract.
+
+```text
+JSON_SCHEMA != CANONICAL_EVIDENCE_SOURCE
+JSON_SCHEMA_ACCEPTANCE != DONE_GATE_PROOF
+```
+
 ## 6. Fail-closed requirements
 
 The implementation must reject at least:
@@ -250,7 +271,8 @@ The implementation must reject at least:
 9. any non-empty K5-R4 result set or wrong out-of-scope membership;
 10. stale/foreign package, judgment or reconciliation identity;
 11. malformed Unicode, prototype/proxy/accessor/symbol/sparse/alias/cycle inputs where predecessor validators or this bridge require ordinary JSON data;
-12. any attempt to represent Done Gate, `PROVEN_READY`, merge, release or project-completion state as an output field or inferred state.
+12. any attempt to represent Done Gate, `PROVEN_READY`, merge, release or project-completion state as an output field or inferred state;
+13. runtime/schema shape disagreement in focused qualification.
 
 The output must be deeply immutable and deterministic for equivalent normalized input.
 
@@ -268,6 +290,7 @@ P7_R28_BOUNDED_COMPLETENESS != ALL_BYTES_SEMANTICALLY_REVIEWED
 P7_R28_BOUNDED_COMPLETENESS != DEFECT_FREE
 K5_R1_SUFFICIENT_PACKAGE != PROVEN_READY
 K5_R4_NOT_APPLICABLE != PROVEN_READY
+JSON_SCHEMA_ACCEPTANCE != PROVEN_READY
 EVIDENCE_BINDING != AUTHORITY_TRANSFER
 ```
 
@@ -276,6 +299,7 @@ EVIDENCE_BINDING != AUTHORITY_TRANSFER
 ```text
 K2_SIDE_EFFECT_AUTHORITY = UNCHANGED
 K5_EXISTING_R1_R5_CONTRACTS = UNCHANGED
+RUNTIME_ROOT_INDEX = UNCHANGED
 DONE_GATE_IMPLEMENTATION = UNCHANGED
 DONE_GATE_INVOCATION_OR_MUTATION = NOT_AUTHORIZED
 PROOFGRAPH = NOT_AUTHORIZED
@@ -313,8 +337,11 @@ P7_R28_PREDECESSOR = EXACTLY_REVALIDATED
 K5_R1_PREDECESSOR = EXACTLY_REVALIDATED
 K5_R4_PREDECESSOR = EXACTLY_REVALIDATED
 DONE_GATE_BLOB = UNCHANGED
+RUNTIME_INDEX_BLOB = UNCHANGED
 STRICT_TYPESCRIPT = PASS
 FOCUSED_P7_R29_TESTS = PASS
+RUNTIME_SCHEMA_PARITY = PASS
+HOSTILE_INPUT_VALIDATION = PASS
 P7_R22_R28_REGRESSIONS = PASS
 K5_R1_R4_REGRESSIONS = PASS
 FULL_RUNTIME_TESTS = PASS
@@ -343,7 +370,7 @@ CHANGED_PATHS = EXACTLY_1_AUTHORIZATION_PATH
 NO_SECOND_PATH = PASS
 R28_RECONCILIATION_PROOF = EXACTLY_REVERIFIED / 5588939785
 POST_R28_SUCCESSOR_ANALYSIS = EXACTLY_REVERIFIED / 5589035328 / ANALYSIS_ONLY
-FUTURE_IMPLEMENTATION_ALLOWLIST = EXACTLY_3_PATHS
+FUTURE_IMPLEMENTATION_ALLOWLIST = EXACTLY_3_PATHS / SOURCE_TEST_SCHEMA
 REQUIRED_CI = TERMINAL_SUCCESS OR CANONICALLY_PROVEN PATH_FILTER_NON_APPLICABILITY
 SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
 KNOWN_ACTIONABLE_DEFECTS = 0
@@ -377,7 +404,7 @@ Only that complete post-merge proof may establish:
 
 ```text
 P7_R29_P7_TO_K5_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL
-P7_R29_IMPLEMENTATION = AUTHORIZED_ONLY_FOR_EXACT_3_PATH_ALLOWLIST
+P7_R29_IMPLEMENTATION = AUTHORIZED_ONLY_FOR_EXACT_3_PATH_SOURCE_TEST_SCHEMA_ALLOWLIST
 ```
 
 ## 12. Candidate boundary
