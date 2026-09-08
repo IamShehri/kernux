@@ -13,7 +13,7 @@ Live GitHub, root `AGENTS.md`, and exact canonical authorization/evidence record
 | Area | Current canonical state | Boundary |
 | --- | --- | --- |
 | K0 / K1 | **CLOSED** | Canonical foundation closed |
-| K2 | **CLOSED / TRUSTED SIDE-EFFECT EXECUTION BOUNDARY** | Authority unchanged by P7 current-view work |
+| K2 | **CLOSED / TRUSTED SIDE-EFFECT EXECUTION BOUNDARY** | Authority unchanged by P8 current-view work |
 | K3 bounded R1-R6 | **CLOSED** | Bounded scope only |
 | KRI-R1 through KRI-R4 | **CLOSED_CANONICAL** | Bounded review-intelligence scope |
 | K4 bounded R1-R5 | **CLOSED_CANONICAL** | Bounded scope only |
@@ -26,42 +26,48 @@ Live GitHub, root `AGENTS.md`, and exact canonical authorization/evidence record
 | P5 bounded R1-R2 | **CLOSED_CANONICAL / OVERALL NOT_CLOSED** | P5-R3+ not authorized |
 | P6 bounded R1 | **CLOSED_CANONICAL / OVERALL NOT_CLOSED** | P6-R2+ not authorized by numbering |
 | P7 bounded R1-R30 engineering scope | **CLOSED_CANONICAL** | PR #483 / proof `5590967916`; P7 overall remains not closed |
-| P7 post-closeout current-view reconciliation | **CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL** | Authorized by PR #484 / proof `5591079738` |
-| P8-P9 | **IMPLEMENTATION NOT_AUTHORIZED** | Planning direction only |
+| P7 post-closeout current-view reconciliation | **CLOSED_CANONICAL** | PR #485 / proof `5591213559` |
+| P8-R1 authorization | **CLOSED_CANONICAL** | PR #486 / proof `5591337213` |
+| P8-R1 machine-readable CLI result envelope | **CLOSED_CANONICAL / BOUNDED PURE-DATA FOUNDATION** | PR #487 / merge `0e772d9636d0e721741e442aac56349488a3227b` / proof `5591781497` |
+| P8-R1 post-merge current-view reconciliation authorization | **CLOSED_CANONICAL** | PR #488 / merge `2dbbd6f0ca40f9e43a4f08f7529b4d31ef138ef1` / proof `5591850887` |
+| P8-R1 post-merge current-view reconciliation | **CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL** | Exact five-path documentation candidate only |
+| P8 Product & Distribution Hardening | **NOT_CLOSED** | Bounded R1 closure is not stage closure |
+| P8-R2+ | **NOT_AUTHORIZED_BY_NUMBERING** | Fresh authority required |
+| Public release / package publication / deployment | **NOT_AUTHORIZED** | Separate authority required |
 | Project | **COMPLETION NOT_ESTABLISHED** | No release/project closure inference |
 
-All unrelated canonical program state remains unchanged by this candidate.
+All unrelated canonical program state remains unchanged by this candidate. Omission from this condensed roadmap is not authorization, waiver, supersession, proof, or narrowing.
 
 ---
 
-## Canonical P7 frontier
+## Canonical P7-to-P8 frontier
 
-| Unit | State | Canonical evidence |
-| --- | --- | --- |
-| P7-R1 through P7-R30 bounded units | **CLOSED_CANONICAL AT EXACT RECORDED STATES** | Complete lineage preserved by canonical closeout evidence |
-| P7-R30 Done Gate proof-binding implementation | **CLOSED_CANONICAL / P7_DONE_GATE_PROOF_BOUND_ONLY** | PR #479 / proof `5590242046` |
-| P7-R30 bound Done Gate result | **PROVEN_READY** | Bound only through canonical R30 |
-| P7-R30 post-merge current-view reconciliation | **CLOSED_CANONICAL** | PR #481 / proof `5590437242` |
-| Post-R30 successor-authority analysis | **ANALYSIS_ONLY** | PR #481 / comment `5590492551` |
-| P7 bounded R1-R30 closeout authorization | **CLOSED_CANONICAL** | PR #482 / proof `5590618990` |
-| P7 bounded R1-R30 engineering-scope closeout | **CLOSED_CANONICAL** | PR #483 / merge `a3a03bdc2486aebeb68c0bbf1793f3cf9a79a603` / proof `5590967916` |
-| Post-closeout current-view reconciliation analysis | **ANALYSIS_ONLY** | PR #483 / comment `5590991007` |
-| Post-closeout current-view reconciliation authorization | **CLOSED_CANONICAL** | PR #484 / merge `f75c1c1accb3c5799af5dc26abc2a69aa7c99fde` / proof `5591079738` |
-| Post-closeout current-view reconciliation | **CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL** | Exact five-path candidate only |
-| P7-R31+ | **NOT_AUTHORIZED_BY_NUMBERING** | No authority by sequence |
-| P7 overall | **NOT_CLOSED** | Bounded closeout does not imply overall closure |
-| P8-P9 | **IMPLEMENTATION NOT_AUTHORIZED** | No authority by sequence/composition |
-| Project completion | **NOT_ESTABLISHED** | No release/project closure inference |
+```text
+P7_BOUNDED_R1_R30_ENGINEERING_SCOPE = CLOSED_CANONICAL / PR #483 / proof 5590967916
+P7_POST_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #485 / proof 5591213559
+POST_P7_SUCCESSOR_ANALYSIS = PR #485 / comment 5591269488 / ANALYSIS_ONLY
 
-All still-effective predecessor P7 state and non-grants remain in force. Omission from this condensed table is not authorization, waiver, supersession, proof, or narrowing.
+P8_R1_AUTHORIZATION = CLOSED_CANONICAL / PR #486 / proof 5591337213
+P8_R1_IMPLEMENTATION = CLOSED_CANONICAL / PR #487 / merge 0e772d9636d0e721741e442aac56349488a3227b / proof 5591781497
+POST_P8_R1_SUCCESSOR_ANALYSIS = PR #487 / comment 5591792193 / ANALYSIS_ONLY
+P8_R1_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #488 / merge 2dbbd6f0ca40f9e43a4f08f7529b4d31ef138ef1 / proof 5591850887
+P8_R1_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P8_R2_PLUS = NOT_AUTHORIZED_BY_NUMBERING
+P7_OVERALL = NOT_CLOSED
+P8_PRODUCT_DISTRIBUTION_HARDENING = NOT_CLOSED
+PROJECT_COMPLETION = NOT_ESTABLISHED
+WAIVER = NO
+```
+
+Historical P7 R1-R30 authorization/evidence/repair/anomaly records remain canonical and unchanged. This current view does not flatten or rewrite that lineage.
 
 ---
 
-## Active unit — post-closeout current-view reconciliation candidate
+## Active unit — P8-R1 post-merge current-view reconciliation
 
-Authority is canonical only through PR #484 / proof `5591079738`.
+Authority is canonical only through PR #488 / proof `5591850887`.
 
-The candidate may modify exactly:
+The current candidate may modify exactly:
 
 ```text
 docs/roadmap/NEXT.md
@@ -71,59 +77,51 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. The five current views may record the externally proven P7 bounded R1-R30 closeout state and exact closeout anchors, but they must remain candidate-safe about the reconciliation itself until guarded merge plus external post-merge proof.
+No sixth path is authorized.
 
-Until that proof:
+The candidate may bind already-proven P7/P8-R1 state and its authorization chain, but must remain candidate-safe about its own reconciliation result until guarded merge plus mandatory external post-merge proof.
+
+Qualification requires:
 
 ```text
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE = CLOSED_CANONICAL
-P7_POST_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
-P7_OVERALL = NOT_CLOSED
-P7_R31_PLUS = NOT_AUTHORIZED_BY_NUMBERING
-P8_P9_IMPLEMENTATION = NOT_AUTHORIZED
-PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
-PROJECT_COMPLETION = NOT_ESTABLISHED
+BASE == CURRENT_CANONICAL_MAIN
+BEHIND_BY = 0
+CHANGED_PATHS = EXACTLY_5_AUTHORIZED_PATHS
+NO_SIXTH_PATH = PASS
+ALL_FIVE_BLOBS = FROZEN
+HISTORICAL_AUTHORIZATION_EVIDENCE_RUNTIME_RECORDS = UNCHANGED
+REQUIRED_CI = TERMINAL_SUCCESS_OR_CANONICALLY_PROVEN_NONAPPLICABILITY
+SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
+KNOWN_ACTIONABLE_DEFECTS = 0
+UNRESOLVED_ACTIONABLE_REVIEW_THREADS = 0
+REQUIRED_EXTERNAL_SEMANTIC_REVIEW_COUNT = 0
+RULESET_20707483 = ACTIVE / NO_BYPASS
+EXPECTED_HEAD_GUARDED_MERGE = REQUIRED
 WAIVER = NO
 ```
 
-Qualification requires exact current-main base, `BEHIND_BY=0`, exactly five authorized changed paths, five frozen blobs, unchanged historical P7 authorization/evidence/runtime records, applicable terminal CI or canonically proven nonapplicability, substantive semantic/security/governance review CLEAN, zero actionable defects, zero unresolved actionable threads, active no-bypass ruleset `20707483`, and expected-head guarded normal merge.
-
 ---
 
-## R30 bounded meaning and preserved anomaly
+## Bounded P8-R1 meaning
+
+The canonical R1 contract is one versioned pure/data-only machine-readable CLI result envelope family:
 
 ```text
-QUALIFIED_HEAD = af73e24adfa3b45668711003bb5465effbc4c30a
-QUALIFIED_HEAD_TREE = d9344cb15ac90b3db674ca19ae0216b0eda7e6bd
-MERGE = acec886b7c3296c0c58409ef987e6ea85c63e14e
-IMPLEMENTATION_PROOF = 5590242046
-STATE = P7_DONE_GATE_PROOF_BOUND_ONLY
-DONE_GATE_STATUS_BOUND = PROVEN_READY
+PROTOCOL = kodac.cli-result
+VERSION = 1
+COMMANDS = apply-patch | ask | solve
 ```
 
-R30 remains a deterministic proof-binding wrapper over existing canonical trust surfaces. It revalidates the P7-R29 P7-to-K5 reconciliation lineage and P7-R6 verification-report lineage and invokes only the existing unchanged `DoneGate.evaluate()` algorithm. It creates no second readiness algorithm or authority transfer.
+It preserves command/status/proven consistency, bounded evidence/payload data, fail-closed validation, resource limits, detached deep immutability, and runtime/schema agreement. It does not wire CLI output, alter exit codes, publish/export packages, invoke providers/models, grant network/secret/filesystem authority, expand K2/K5/Done Gate authority, or establish release/project completion.
 
-R30 post-merge evidence retains one first-attempt Ubuntu failure in an unchanged pre-existing Linux-only H4-R3G-B synthetic-host fixture outside the R30 path set. The fixture retained blob `e58cbcd6f68a56ab9850a495f9b19c71ee279a95`. Exactly one no-code/no-tree-drift same-SHA controlled rerun passed Ubuntu typecheck, full tests, benchmark hook, and final `k2-runtime-gate`. The first attempt remains disclosed; `WAIVER = NO`.
-
-The canonical closeout evidence also preserves the R5 serialized-preimage repair chain, the R19 all-pass predecessor amendment, the R20 KRI byte-pin compatibility amendment and later lineage-aware chain, and other material forward qualification repairs.
-
----
-
-## Mandatory non-equivalences
+Mandatory non-equivalences:
 
 ```text
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != P7_OVERALL_CLOSED
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != P8_AUTHORITY
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != P9_AUTHORITY
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != RELEASE_AUTHORITY
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != PACKAGE_PUBLICATION_AUTHORITY
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != DEPLOYMENT_AUTHORITY
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != PROJECT_COMPLETION
-P7_POST_CLOSEOUT_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
-P7_DONE_GATE_PROOF_BOUND_ONLY != MERGE_AUTHORITY
-P7_DONE_GATE_PROOF_BOUND_ONLY != APPROVAL
-P7_DONE_GATE_PROOF_BOUND_ONLY != RELEASE_AUTHORITY
-P7_DONE_GATE_PROOF_BOUND_ONLY != PROJECT_COMPLETION
+P8_R1_IMPLEMENTATION_CLOSED != P8_PRODUCT_DISTRIBUTION_HARDENING_CLOSED
+P8_R1_IMPLEMENTATION_CLOSED != P8_R2_PLUS_AUTHORITY
+P8_R1_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
+P8_R1_CLI_RESULT_ENVELOPE != CLI_WIRING
+P8_R1_CLI_RESULT_ENVELOPE != INDEPENDENT_PROOF
 PROVEN_READY != MERGE_AUTHORITY
 PROVEN_READY != RELEASE_AUTHORITY
 PROVEN_READY != PROJECT_COMPLETION
@@ -153,14 +151,18 @@ PROVIDER_RETRY_REPLAY_RESUME = NOT_AUTHORIZED
 PROVIDER_SPEND = NOT_AUTHORIZED
 SECRET_ACCESS = NOT_AUTHORIZED
 NETWORK_ACCESS = NOT_AUTHORIZED
+FILESYSTEM_WRITE_AUTHORITY = NOT_AUTHORIZED
 PERSISTENCE_DATABASE_TELEMETRY_UPLOAD_LEARNING = NOT_AUTHORIZED
-DONE_GATE_PROOF = ESTABLISHED_ONLY_AT_BOUNDED_P7_R30_PROOF_BINDING_MEANING
-DONE_GATE_INVOCATION_OR_MUTATION = NOT_AUTHORIZED_BEYOND_CANONICAL_R30_BINDING
-P8_P9_IMPLEMENTATION = NOT_AUTHORIZED
+CLI_WIRING = NOT_AUTHORIZED
+CLI_EXIT_CODE_CHANGE = NOT_AUTHORIZED
+PACKAGE_ROOT_EXPORT = NOT_AUTHORIZED
+PACKAGE_RENAME_VERSION_PUBLICATION = NOT_AUTHORIZED
+GITHUB_CI_PRODUCT_INTEGRATION = NOT_AUTHORIZED
+P8_R2_PLUS = NOT_AUTHORIZED_BY_NUMBERING
 PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
 RULESET_CHANGE_BYPASS = NOT_AUTHORIZED
 PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-After external post-merge proof of this reconciliation, derive the next roadmap frontier only through fresh evidence-driven successor-authority analysis. Do not infer P7-R31+, P8/P9, or any later unit from numbering, plan sequence, closeout state, reconciliation state, or `PROVEN_READY`.
+After external post-merge proof of this reconciliation, derive the next roadmap frontier only through fresh evidence-driven successor-authority analysis. Do not infer P8-R2+, P9, release, publication, deployment, or project completion from numbering, plan sequence, bounded R1 closure, this reconciliation, or `PROVEN_READY`.
