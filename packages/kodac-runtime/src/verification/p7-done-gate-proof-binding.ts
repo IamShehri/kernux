@@ -49,8 +49,8 @@ type ProofCore = Omit<P7DoneGateProofBinding, "proofIdentity">
 const SHA40 = /^[0-9a-f]{40}$/
 const SHA256 = /^[0-9a-f]{64}$/
 const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/u
-const MAX_REPOSITORY_IDENTITY_UTF8_BYTES = 512
-const MAX_EVIDENCE_REF_UTF8_BYTES = 1_024
+const MAX_REPOSITORY_IDENTITY_CODE_POINTS = 512
+const MAX_EVIDENCE_REF_CODE_POINTS = 1_024
 const MAX_DONE_GATE_EVIDENCE = 1_536
 const EVIDENCE_KINDS = new Set<VerificationEvidenceRef["kind"]>(["receipt", "artifact", "event", "workspace"])
 const BUILD_INPUT_KEYS = [
@@ -143,11 +143,17 @@ function assertUnicodeScalars(value: string, label: string): void {
   }
 }
 
-function boundedText(value: unknown, label: string, maximumUtf8Bytes: number): string {
+function codePointLength(value: string): number {
+  let length = 0
+  for (const _character of value) length += 1
+  return length
+}
+
+function boundedText(value: unknown, label: string, maximumCodePoints: number): string {
   if (typeof value !== "string" || value.length === 0) fail(label, "must be a non-empty string")
   assertUnicodeScalars(value, label)
   if (CONTROL_CHARACTERS.test(value)) fail(label, "must not contain control characters")
-  if (Buffer.byteLength(value, "utf8") > maximumUtf8Bytes) fail(label, `must be at most ${maximumUtf8Bytes} UTF-8 bytes`)
+  if (codePointLength(value) > maximumCodePoints) fail(label, `must be at most ${maximumCodePoints} Unicode code points`)
   return value
 }
 
@@ -257,7 +263,7 @@ function normalizeEvidence(value: unknown, label: string): Readonly<Verification
   }
   const normalized: VerificationEvidenceRef = {
     kind: record.kind as VerificationEvidenceRef["kind"],
-    ref: boundedText(record.ref, `${label}.ref`, MAX_EVIDENCE_REF_UTF8_BYTES),
+    ref: boundedText(record.ref, `${label}.ref`, MAX_EVIDENCE_REF_CODE_POINTS),
   }
   if (Object.hasOwn(record, "digest")) normalized.digest = sha256(record.digest, `${label}.digest`)
   return Object.freeze(normalized)
@@ -332,14 +338,14 @@ function normalizeBinding(value: unknown): P7DoneGateProofBinding {
   const core = Object.freeze({
     version: fixed(record.version, P7_R30_DONE_GATE_PROOF_BINDING_VERSION, "p7DoneGateProofBinding.version"),
     state: fixed(record.state, P7_R30_DONE_GATE_PROOF_BOUND_STATE, "p7DoneGateProofBinding.state"),
-    repositoryIdentity: boundedText(record.repositoryIdentity, "p7DoneGateProofBinding.repositoryIdentity", MAX_REPOSITORY_IDENTITY_UTF8_BYTES),
+    repositoryIdentity: boundedText(record.repositoryIdentity, "p7DoneGateProofBinding.repositoryIdentity", MAX_REPOSITORY_IDENTITY_CODE_POINTS),
     canonicalBase: sha40(record.canonicalBase, "p7DoneGateProofBinding.canonicalBase"),
     targetHead: sha40(record.targetHead, "p7DoneGateProofBinding.targetHead"),
     p7VerificationReportBindingIdentity: sha256(record.p7VerificationReportBindingIdentity, "p7DoneGateProofBinding.p7VerificationReportBindingIdentity"),
     p7VerificationReportIdentity: sha256(record.p7VerificationReportIdentity, "p7DoneGateProofBinding.p7VerificationReportIdentity"),
     p7ToK5ReconciliationEvidenceIdentity: sha256(record.p7ToK5ReconciliationEvidenceIdentity, "p7DoneGateProofBinding.p7ToK5ReconciliationEvidenceIdentity"),
     k5PackageIdentity: sha256(record.k5PackageIdentity, "p7DoneGateProofBinding.k5PackageIdentity"),
-    k5JudgmentIdentity: sha256(record.k5JudgmentIdentity, "p7DoneGateProofBinding.k5JudgmentIdentity"),
+    k5JudgmentIdentity: sha256(record.k5JudgmentIdentity, "p7DoneGateProofBinding.k7PackageIdentity"),
     k5ReconciliationIdentity: sha256(record.k5ReconciliationIdentity, "p7DoneGateProofBinding.k5ReconciliationIdentity"),
     doneGateStatus: fixed(record.doneGateStatus, "PROVEN_READY", "p7DoneGateProofBinding.doneGateStatus"),
     doneGateEvidence: normalizeDoneGateEvidence(record.doneGateEvidence, "p7DoneGateProofBinding.doneGateEvidence"),
