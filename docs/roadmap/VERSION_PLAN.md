@@ -39,7 +39,9 @@ P7-R30 DONE GATE STATUS BOUND = PROVEN_READY
 P7-R30 POST-MERGE CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #481 / proof 5590437242
 POST-R30 SUCCESSOR AUTHORITY ANALYSIS = PR #481 / comment 5590492551 / ANALYSIS_ONLY
 P7 BOUNDED R1-R30 CLOSEOUT AUTHORIZATION = CLOSED_CANONICAL / PR #482 / proof 5590618990
-P7 BOUNDED R1-R30 ENGINEERING SCOPE CLOSEOUT = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P7 BOUNDED R1-R30 ENGINEERING SCOPE = CLOSED_CANONICAL / PR #483 / merge a3a03bdc2486aebeb68c0bbf1793f3cf9a79a603 / proof 5590967916
+P7 POST-CLOSEOUT CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #484 / merge f75c1c1accb3c5799af5dc26abc2a69aa7c99fde / proof 5591079738
+P7 POST-CLOSEOUT CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 P7-R31+ = NOT_AUTHORIZED_BY_NUMBERING
 P7 OVERALL = NOT_CLOSED
 P8-P9 IMPLEMENTATION = NOT_AUTHORIZED
@@ -54,12 +56,11 @@ All still-effective predecessor non-grants remain in force. Omission from this c
 
 ## Active planned unit
 
-The only active version-plan mutation is the documentation/evidence-only P7 bounded R1-R30 engineering-scope closeout candidate authorized by PR #482 / proof `5590618990`.
+The only active version-plan mutation is the documentation-only P7 post-closeout current-view reconciliation candidate authorized by PR #484 / proof `5591079738`.
 
 Exact allowlist:
 
 ```text
-docs/planning/KODAC_P7_BOUNDED_R1_R30_CANONICAL_CLOSEOUT_EVIDENCE_2026-09-08.md
 docs/roadmap/NEXT.md
 docs/roadmap/ROADMAP.md
 docs/roadmap/MILESTONES.md
@@ -67,21 +68,17 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No seventh path is authorized. The evidence record independently revalidates complete R1-R30 lineage and material repair/anomaly history. The five current views may record only candidate-state before merge and cannot certify their own closure or create downstream authority.
+No sixth path is authorized. The five current views may record the externally proven P7 bounded R1-R30 engineering closeout state and exact PR #483 anchors. The reconciliation itself must remain candidate-safe until external post-merge proof.
 
 Qualification and guarded merge require:
 
 ```text
 BASE == CURRENT_CANONICAL_MAIN
 BEHIND_BY = 0
-CHANGED_PATHS = EXACTLY_6_AUTHORIZED_PATHS
-NO_SEVENTH_PATH = PASS
-ALL_SIX_BLOBS = FROZEN
-P7_IMPLEMENTATION_EVIDENCE = UNCHANGED
-COMPLETE_R1_R30_LINEAGE = REVERIFIED
-MATERIAL_FORWARD_ONLY_REPAIR_HISTORY = PRESERVED
-R30_INITIAL_UBUNTU_FAILURE = DISCLOSED
-R30_CONTROLLED_SAME_SHA_RERUN = DISCLOSED
+CHANGED_PATHS = EXACTLY_5_AUTHORIZED_PATHS
+NO_SIXTH_PATH = PASS
+ALL_FIVE_BLOBS = FROZEN
+HISTORICAL_P7_AUTHORIZATION_EVIDENCE_RUNTIME_RECORDS = UNCHANGED
 REQUIRED_CI = TERMINAL_SUCCESS_OR_CANONICALLY_PROVEN_NONAPPLICABILITY
 SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
 KNOWN_ACTIONABLE_DEFECTS = 0
@@ -105,27 +102,33 @@ P7_R30_MERGE = acec886b7c3296c0c58409ef987e6ea85c63e14e
 P7_R30_IMPLEMENTATION_PROOF = 5590242046
 ```
 
-The R30 contract revalidates the complete canonical P7-R29 P7-to-K5 reconciliation lineage and the complete canonical P7-R6 post-apply verification-report lineage, requires exact repository/base/head convergence, and invokes only the existing unchanged `DoneGate.evaluate()` algorithm. It creates no second readiness algorithm.
+The R30 contract revalidates the complete canonical P7-R29 P7-to-K5 reconciliation lineage and complete canonical P7-R6 verification-report lineage, requires exact repository/base/head convergence, and invokes only the existing unchanged `DoneGate.evaluate()` algorithm. It creates no second readiness algorithm.
 
 Post-merge evidence preserves one disclosed first-attempt Ubuntu failure in an unchanged pre-existing Linux-only H4-R3G-B synthetic-host fixture outside the R30 path set. The fixture blob remained `e58cbcd6f68a56ab9850a495f9b19c71ee279a95`. Exactly one no-code/no-tree-drift same-SHA controlled rerun passed Ubuntu typecheck, full tests, benchmark hook, and final `k2-runtime-gate`. The first failure is not rewritten as first-attempt green and `WAIVER = NO`.
 
 ---
 
-## Closeout authority identity
+## Closeout and reconciliation authority identity
 
 ```text
 R30_RECONCILIATION_PR = 481
 R30_RECONCILIATION_PROOF = 5590437242
 POST_R30_ANALYSIS = 5590492551 / ANALYSIS_ONLY
 CLOSEOUT_AUTHORIZATION_PR = 482
-CLOSEOUT_AUTHORIZATION_MERGE = bb424e06535222af3188401a085ddd1dffbc0434
 CLOSEOUT_AUTHORIZATION_PROOF = 5590618990
-CLOSEOUT_SCOPE = EXACTLY_SIX_PATHS
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+CLOSEOUT_PR = 483
+CLOSEOUT_MERGE = a3a03bdc2486aebeb68c0bbf1793f3cf9a79a603
+CLOSEOUT_PROOF = 5590967916
+P7_BOUNDED_R1_R30_ENGINEERING_SCOPE = CLOSED_CANONICAL
+POST_CLOSEOUT_ANALYSIS = 5590991007 / ANALYSIS_ONLY
+POST_CLOSEOUT_RECONCILIATION_AUTHORIZATION_PR = 484
+POST_CLOSEOUT_RECONCILIATION_AUTHORIZATION_MERGE = f75c1c1accb3c5799af5dc26abc2a69aa7c99fde
+POST_CLOSEOUT_RECONCILIATION_AUTHORIZATION_PROOF = 5591079738
+P7_POST_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 SUCCESSOR_IMPLEMENTATION_AUTHORITY = NONE
 ```
 
-The closeout evidence preserves material history including the R5 serialized-preimage repair chain, R19 all-pass predecessor amendment, R20 KRI byte-pin compatibility amendment and lineage-aware successors, plus other forward-only qualification repairs. It does not flatten those events into a fictional all-green first-attempt history.
+The canonical closeout evidence preserves material history including the R5 serialized-preimage repair chain, R19 all-pass predecessor amendment, R20 KRI byte-pin compatibility amendment and lineage-aware successors, plus other forward-only qualification repairs. It does not flatten those events into a fictional all-green first-attempt history.
 
 ---
 
@@ -139,6 +142,7 @@ P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != RELEASE_AUTHORITY
 P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != PACKAGE_PUBLICATION_AUTHORITY
 P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != DEPLOYMENT_AUTHORITY
 P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != PROJECT_COMPLETION
+P7_POST_CLOSEOUT_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
 P7_DONE_GATE_PROOF_BOUND_ONLY != MERGE_AUTHORITY
 P7_DONE_GATE_PROOF_BOUND_ONLY != APPROVAL
 P7_DONE_GATE_PROOF_BOUND_ONLY != RELEASE_AUTHORITY
@@ -182,4 +186,4 @@ PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-After external post-merge proof establishes the bounded closeout, perform a fresh repository-required post-closeout current-view reconciliation analysis from resulting live `main`. A future mutation requires separately canonical authority; numbering, sequence, closeout state, and `PROVEN_READY` are not authority.
+After external post-merge proof establishes this reconciliation, perform fresh evidence-driven successor-authority analysis from resulting live `main`. A future mutation requires separately canonical authority; numbering, sequence, bounded closeout state, reconciliation state, and `PROVEN_READY` are not authority.

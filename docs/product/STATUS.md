@@ -37,7 +37,9 @@ P7-R30 DONE GATE STATUS BOUND = PROVEN_READY
 P7-R30 POST-MERGE CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #481 / proof 5590437242
 POST-R30 SUCCESSOR AUTHORITY ANALYSIS = PR #481 / comment 5590492551 / ANALYSIS_ONLY
 P7 BOUNDED R1-R30 CLOSEOUT AUTHORIZATION = CLOSED_CANONICAL / PR #482 / proof 5590618990
-P7 BOUNDED R1-R30 ENGINEERING SCOPE CLOSEOUT = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P7 BOUNDED R1-R30 ENGINEERING SCOPE = CLOSED_CANONICAL / PR #483 / merge a3a03bdc2486aebeb68c0bbf1793f3cf9a79a603 / proof 5590967916
+P7 POST-CLOSEOUT CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #484 / merge f75c1c1accb3c5799af5dc26abc2a69aa7c99fde / proof 5591079738
+P7 POST-CLOSEOUT CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 P7-R31+ = NOT_AUTHORIZED_BY_NUMBERING
 P7 OVERALL = NOT_CLOSED
 P8-P9 IMPLEMENTATION = NOT_AUTHORIZED
@@ -50,12 +52,11 @@ All still-effective predecessor state and non-grants remain in force. Omission f
 
 ---
 
-## Current P7 bounded closeout candidate
+## Current P7 post-closeout reconciliation candidate
 
-The only active product-status mutation is the documentation/evidence-only closeout authorized by PR #482 / proof `5590618990`. It is limited exactly to:
+The only active product-status mutation is the documentation-only post-closeout current-view reconciliation authorized by PR #484 / proof `5591079738`. It is limited exactly to:
 
 ```text
-docs/planning/KODAC_P7_BOUNDED_R1_R30_CANONICAL_CLOSEOUT_EVIDENCE_2026-09-08.md
 docs/roadmap/NEXT.md
 docs/roadmap/ROADMAP.md
 docs/roadmap/MILESTONES.md
@@ -63,12 +64,13 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No seventh path is authorized. The evidence record independently revalidates complete R1-R30 lineage and material forward-only repair/amendment/anomaly history. This product-status view cannot certify closeout on its own.
+No sixth path is authorized. The candidate may record the externally proven bounded R1-R30 closeout and its exact PR #483 merge/proof anchors. It cannot certify its own reconciliation result or create downstream authority.
 
-Until guarded merge and mandatory post-merge proof:
+Until guarded merge and mandatory external post-merge proof:
 
 ```text
-P7_BOUNDED_R1_R30_ENGINEERING_SCOPE = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P7_BOUNDED_R1_R30_ENGINEERING_SCOPE = CLOSED_CANONICAL
+P7_POST_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 P7 OVERALL = NOT_CLOSED
 P7-R31+ = NOT_AUTHORIZED_BY_NUMBERING
 P8-P9 IMPLEMENTATION = NOT_AUTHORIZED
@@ -79,7 +81,7 @@ WAIVER = NO
 
 ---
 
-## Canonical R30 and closeout evidence
+## Canonical R30, closeout, and reconciliation evidence
 
 ```text
 P7_R30_QUALIFIED_HEAD = af73e24adfa3b45668711003bb5465effbc4c30a
@@ -91,13 +93,16 @@ DONE_GATE_STATUS_BOUND = PROVEN_READY
 R30_RECONCILIATION = CLOSED_CANONICAL / PR #481 / proof 5590437242
 POST_R30_ANALYSIS = PR #481 / comment 5590492551 / ANALYSIS_ONLY
 P7_CLOSEOUT_AUTHORIZATION = CLOSED_CANONICAL / PR #482 / proof 5590618990
+P7_BOUNDED_R1_R30_ENGINEERING_SCOPE = CLOSED_CANONICAL / PR #483 / proof 5590967916
+P7_POST_CLOSEOUT_ANALYSIS = PR #483 / comment 5590991007 / ANALYSIS_ONLY
+P7_POST_CLOSEOUT_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #484 / proof 5591079738
 ```
 
 R30 means only deterministic bounded proof binding across fully revalidated canonical P7-R29 P7-to-K5 evidence and canonical P7-R6 verification-report evidence. It requires exact repository/base/head convergence and delegates readiness only to the existing unchanged Done Gate evaluator. It does not establish merge, release, publication, deployment, or project completion.
 
 R30 post-merge evidence retains one disclosed first-attempt Ubuntu failure in an unchanged pre-existing Linux-only H4-R3G-B synthetic-host fixture outside the R30 path set. The fixture retained blob `e58cbcd6f68a56ab9850a495f9b19c71ee279a95`. Exactly one no-code/no-tree-drift same-SHA controlled rerun passed Ubuntu typecheck, full tests, benchmark hook, and final `k2-runtime-gate`. The first failure is not rewritten as first-attempt green and `WAIVER = NO`.
 
-The closeout evidence candidate preserves the complete bounded R1-R30 lineage and material provenance, including the R5 serialized-preimage repair and superseded unmerged duplicate, R19 all-pass predecessor amendment and closed-unmerged implementation candidate, R20 KRI byte-pin compatibility amendment, and later forward-only qualification repairs.
+The canonical closeout evidence preserves the complete bounded R1-R30 lineage and material provenance, including the R5 serialized-preimage repair and superseded unmerged duplicate, R19 all-pass predecessor amendment and closed-unmerged implementation candidate, R20 KRI byte-pin compatibility amendment, and later forward-only qualification repairs.
 
 ---
 
@@ -111,6 +116,7 @@ P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != RELEASE_AUTHORITY
 P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != PACKAGE_PUBLICATION_AUTHORITY
 P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != DEPLOYMENT_AUTHORITY
 P7_BOUNDED_R1_R30_ENGINEERING_SCOPE_CLOSED != PROJECT_COMPLETION
+P7_POST_CLOSEOUT_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
 P7_DONE_GATE_PROOF_BOUND_ONLY != MERGE_AUTHORITY
 P7_DONE_GATE_PROOF_BOUND_ONLY != APPROVAL
 P7_DONE_GATE_PROOF_BOUND_ONLY != RELEASE_AUTHORITY
@@ -145,7 +151,7 @@ PROVIDER_SPEND = NOT_AUTHORIZED
 SECRET_ACCESS = NOT_AUTHORIZED
 NETWORK_ACCESS = NOT_AUTHORIZED
 PERSISTENCE_DATABASE_TELEMETRY_UPLOAD_LEARNING = NOT_AUTHORIZED
-CLI_API_PACKAGE_ROOT_PRODUCT_INTEGRATION = NOT_AUTHORIZED_BY_THIS_CLOSEOUT
+CLI_API_PACKAGE_ROOT_PRODUCT_INTEGRATION = NOT_AUTHORIZED_BY_THIS_RECONCILIATION
 DONE_GATE_PROOF = ESTABLISHED_ONLY_AT_BOUNDED_P7_R30_PROOF_BINDING_MEANING
 DONE_GATE_INVOCATION_OR_MUTATION = NOT_AUTHORIZED_BEYOND_CANONICAL_R30_BINDING
 P8_P9_IMPLEMENTATION = NOT_AUTHORIZED
@@ -155,4 +161,4 @@ PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-After external post-merge closeout proof, the next product frontier must come from a fresh repository-required post-closeout current-view reconciliation analysis against live `main`; numbering, plan sequence, closeout state, and `PROVEN_READY` are not authority.
+After external post-merge proof of this reconciliation, the next product frontier must come from fresh evidence-driven successor-authority analysis against live `main`; numbering, plan sequence, bounded closeout state, reconciliation state, and `PROVEN_READY` are not authority.
