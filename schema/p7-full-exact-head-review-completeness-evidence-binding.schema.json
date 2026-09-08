@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-full-exact-head-review-completeness-evidence-binding.schema.json",
+  "title": "Kodac P7-R28 Full Exact-Head Review Completeness Evidence Binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "evidenceIdentity",
+    "state",
+    "repositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "targetTree",
+    "changedPathSetIdentity",
+    "reviewUniverseIdentity",
+    "reviewContextEvidenceIdentity",
+    "reviewRunIdentity",
+    "reviewCoverageUniverseEvidenceIdentity",
+    "securityPrescanEvidenceIdentity",
+    "riskCoverageEvidenceIdentity",
+    "skillCoverageEvidenceIdentity",
+    "providerAttemptTerminationEvidenceIdentity",
+    "reviewUniversePathSetIdentity",
+    "reviewedPathSetIdentity",
+    "unreviewedPathSetIdentity",
+    "pathCoverageDebtIdentity",
+    "riskCoverageDebtIdentity",
+    "skillCoverageDebtIdentity",
+    "providerCompletionDebtIdentity",
+    "compositeCompletenessDebtIdentity",
+    "reviewedPathCount",
+    "unreviewedPathCount",
+    "knownNonreviewablePathCount",
+    "unknownCoveragePathCount",
+    "riskCoverageState",
+    "skillCoverageState",
+    "providerCompletionState",
+    "reviewedPaths",
+    "unreviewedPaths",
+    "pathReviewRecords"
+  ],
+  "properties": {
+    "version": { "const": "p7-r28-full-exact-head-review-completeness-evidence-binding-v1" },
+    "evidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "state": { "const": "BOUNDED_FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF_ONLY" },
+    "repositoryIdentity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "canonicalBase": { "$ref": "#/$defs/gitSha" },
+    "targetHead": { "$ref": "#/$defs/gitSha" },
+    "targetTree": { "$ref": "#/$defs/gitSha" },
+    "changedPathSetIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewUniverseIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewContextEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewRunIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewCoverageUniverseEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "securityPrescanEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "riskCoverageEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "skillCoverageEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "providerAttemptTerminationEvidenceIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewUniversePathSetIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewedPathSetIdentity": { "$ref": "#/$defs/sha256" },
+    "unreviewedPathSetIdentity": { "$ref": "#/$defs/sha256" },
+    "pathCoverageDebtIdentity": { "$ref": "#/$defs/sha256" },
+    "riskCoverageDebtIdentity": { "$ref": "#/$defs/sha256" },
+    "skillCoverageDebtIdentity": { "$ref": "#/$defs/sha256" },
+    "providerCompletionDebtIdentity": { "$ref": "#/$defs/sha256" },
+    "compositeCompletenessDebtIdentity": { "$ref": "#/$defs/sha256" },
+    "reviewedPathCount": { "$ref": "#/$defs/count" },
+    "unreviewedPathCount": { "$ref": "#/$defs/count" },
+    "knownNonreviewablePathCount": { "$ref": "#/$defs/count" },
+    "unknownCoveragePathCount": { "const": 0 },
+    "riskCoverageState": { "const": "ACCOUNTED_NO_UNCOVERED_OR_UNKNOWN" },
+    "skillCoverageState": { "const": "ACCOUNTED_NO_COVERAGE_DEBT" },
+    "providerCompletionState": { "const": "CALLER_ASSERTED_COMPLETED_NO_KNOWN_TRUNCATION" },
+    "reviewedPaths": { "$ref": "#/$defs/pathArray" },
+    "unreviewedPaths": { "$ref": "#/$defs/pathArray" },
+    "pathReviewRecords": {
+      "type": "array",
+      "maxItems": 64,
+      "items": { "$ref": "#/$defs/pathReviewRecord" }
+    }
+  },
+  "$defs": {
+    "gitSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "pathArray": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/path" }
+    },
+    "pathReviewRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "disposition",
+        "unreviewedReason",
+        "reviewMethod",
+        "reviewEvidenceIdentities"
+      ],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "disposition": { "enum": ["REVIEWED_CONTEXT", "KNOWN_NONREVIEWABLE"] },
+        "unreviewedReason": {
+          "anyOf": [
+            { "type": "null" },
+            {
+              "enum": [
+                "NOT_APPLICABLE",
+                "OPAQUE_BINARY",
+                "UNREADABLE",
+                "SIZE_LIMIT",
+                "UNSUPPORTED_ENCODING",
+                "POLICY_EXCLUDED",
+                "REQUIRES_SPECIALIZED_SKILL",
+                "REQUIRES_SANDBOX",
+                "UNKNOWN"
+              ]
+            }
+          ]
+        },
+        "reviewMethod": { "enum": ["R22_COMPLETE_CONTEXT", "R23_KNOWN_DISPOSITION"] },
+        "reviewEvidenceIdentities": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    }
+  }
+}
