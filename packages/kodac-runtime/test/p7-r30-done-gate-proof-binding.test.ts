@@ -244,8 +244,10 @@ test("P7-R30 deterministically binds the exact canonical R29/R6 lineage to the e
 
 test("P7-R30 requires exact R29/R6 repository-base-head convergence and complete semantic predecessor lineage", async () => {
   await withCanonicalR30(async ({ input, r29Input, r6Input }) => {
-    const foreignHead = input.targetHead === "d".repeat(40) ? "e".repeat(40) : "d".repeat(40)
-    const foreignModule = await r6Fixture(input.canonicalBase, foreignHead)
+    const canonicalBase = input.sourceP7ToK5ReconciliationEvidenceBinding.canonicalBase
+    const targetHead = input.sourceP7ToK5ReconciliationEvidenceBinding.targetHead
+    const foreignHead = targetHead === "d".repeat(40) ? "e".repeat(40) : "d".repeat(40)
+    const foreignModule = await r6Fixture(canonicalBase, foreignHead)
     const foreignR6Input = foreignModule.fixtureInput()
     const foreignR6 = buildP7PostApplyVerificationReportBinding(foreignR6Input)
     await assert.rejects(
