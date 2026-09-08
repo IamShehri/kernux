@@ -74,6 +74,20 @@ type CliArgs = ApplyPatchArgs | AskArgs | SolveArgs
 type ActivateSession = (session: RuntimeSession) => void
 type ActivateEvidenceLease = (release: () => Promise<void>) => void
 
+const CLI_HELP = [
+  "Kodac CLI",
+  "",
+  "Usage:",
+  "  kodac apply-patch <patch-file> [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
+  "  kodac ask <prompt> [--provider fixture] [--model <id>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
+  "  kodac solve <task> [--provider fixture] [--model <id>] [--approve-writes] [--approve-verification] [--verify-command <json>] [--max-turns <n>] [--max-tool-calls <n>] [--max-elapsed-ms <n>] [--max-failures <n>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
+  "",
+  "Commands:",
+  "  apply-patch  Apply an explicit patch through the existing guarded patch path.",
+  "  ask          Run the existing read-oriented model request path.",
+  "  solve        Run the existing bounded agent-loop solve path.",
+].join("\n")
+
 function workspaceKey(workspace: string): string {
   return createHash("sha256").update(resolve(workspace), "utf8").digest("hex").slice(0, 16)
 }
@@ -605,6 +619,11 @@ export async function runCli(
   cwd = process.cwd(),
   runtimeOptions: CliRuntimeOptions = {},
 ): Promise<number> {
+  if (argv.length === 1 && argv[0] === "--help") {
+    io.stdout(CLI_HELP)
+    return 0
+  }
+
   let session: RuntimeSession | undefined
   let releaseEvidenceLease: (() => Promise<void>) | undefined
   const activateSession: ActivateSession = (created) => {
