@@ -25,7 +25,7 @@ Live GitHub, root `AGENTS.md`, and exact canonical authorization/evidence record
 | P4 | **OVERALL OPEN** | Bounded R1-R2 engineering scope closed only |
 | P5 | **NOT CLOSED** | P5-R3+ not authorized |
 | P6 | **NOT CLOSED** | P6-R2+ not authorized by numbering |
-| P7 | **NOT CLOSED** | Current bounded frontier is the R23 five-view reconciliation candidate |
+| P7 | **NOT CLOSED** | Current bounded frontier is the R24 five-view reconciliation candidate |
 | P8-P9 | **IMPLEMENTATION NOT AUTHORIZED** | Planning direction only |
 | Project | **COMPLETION NOT ESTABLISHED** | No release/project closure inference |
 
@@ -62,10 +62,16 @@ Live GitHub, root `AGENTS.md`, and exact canonical authorization/evidence record
 | P7-R23 review coverage universe evidence-binding implementation | **CLOSED_CANONICAL / REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY** | PR #450 / proof `5576403450` |
 | P7-R23 current-view drift analysis | **ANALYSIS_ONLY** | PR #450 / comment `5576422367` |
 | P7-R23 post-merge current-view reconciliation authorization | **CLOSED_CANONICAL** | PR #451 / proof `5576453670` |
-| P7-R23 post-merge current-view reconciliation | **CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL** | Exactly five authorized current-view paths |
-| Post-R23 successor implementation | **NOT_AUTHORIZED_BY_NUMBERING** | Fresh analysis only after reconciliation proof |
-| A2 deterministic security pre-scan implementation | **NOT_AUTHORIZED_BY_PLAN_COMPOSITION** | V3 sequence position is not authority |
-| P7 overall | **NOT_CLOSED** | R23 bounded closure is not overall closure |
+| P7-R23 post-merge current-view reconciliation | **CLOSED_CANONICAL** | PR #452 / proof `5576546888` |
+| Post-R23 successor analysis | **ANALYSIS_ONLY** | PR #452 / comment `5576567428` |
+| P7-R24 deterministic security pre-scan signal evidence-binding authorization | **CLOSED_CANONICAL** | PR #453 / proof `5576692339` |
+| P7-R24 deterministic security pre-scan signal evidence-binding implementation | **CLOSED_CANONICAL / DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY** | PR #454 / proof `5576882384` |
+| P7-R24 current-view drift analysis | **ANALYSIS_ONLY** | PR #454 / comment `5576887561` |
+| P7-R24 post-merge current-view reconciliation authorization | **CLOSED_CANONICAL** | PR #455 / proof `5576909838` |
+| P7-R24 post-merge current-view reconciliation | **CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL** | Exactly five authorized current-view paths |
+| Post-R24 successor implementation | **NOT_AUTHORIZED_BY_NUMBERING** | Fresh analysis only after reconciliation proof |
+| A3 risk coverage implementation | **NOT_AUTHORIZED_BY_PLAN_COMPOSITION** | V3 sequence position is not authority |
+| P7 overall | **NOT_CLOSED** | R24 bounded closure is not overall closure |
 | P8-P9 | **IMPLEMENTATION NOT AUTHORIZED** | No authority by sequence/composition |
 | Project completion | **NOT ESTABLISHED** | No release/project closure inference |
 
@@ -73,9 +79,9 @@ All still-effective predecessor P7 non-grants remain in force. Omission from thi
 
 ---
 
-## Active unit — P7-R23 current-view reconciliation
+## Active unit — P7-R24 current-view reconciliation
 
-Authorization is canonical only through PR #451 / proof `5576453670`.
+Authorization is canonical only through PR #455 / proof `5576909838`.
 
 The active candidate may modify exactly:
 
@@ -87,14 +93,14 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. The candidate is documentation-only, records only already-proven R22/V3/R23 facts, preserves unrelated canonical state, and cannot certify its own closure.
+No sixth path is authorized. The candidate is documentation-only, records only already-proven R23/R24 facts, preserves unrelated canonical state, and cannot certify its own closure.
 
 Until guarded merge plus complete mandatory post-merge proof:
 
 ```text
-P7_R23_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
-POST_R23_SUCCESSOR_IMPLEMENTATION = NOT_AUTHORIZED_BY_NUMBERING
-A2_DETERMINISTIC_SECURITY_PRE_SCAN_IMPLEMENTATION = NOT_AUTHORIZED_BY_PLAN_COMPOSITION
+P7_R24_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_R24_SUCCESSOR_IMPLEMENTATION = NOT_AUTHORIZED_BY_NUMBERING
+A3_RISK_COVERAGE_IMPLEMENTATION = NOT_AUTHORIZED_BY_PLAN_COMPOSITION
 P7_OVERALL = NOT_CLOSED
 P8_P9_IMPLEMENTATION = NOT_AUTHORIZED
 PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
@@ -104,39 +110,42 @@ WAIVER = NO
 
 ---
 
-## P7-R23 bounded implementation identity and meaning
+## P7-R24 bounded implementation identity and meaning
 
 ```text
-QUALIFIED_HEAD = 7f6a2cf8d317a4fb420511c0767d5603857ab75b
-QUALIFIED_HEAD_TREE = 06b40a08305cc8a567713cfc523fc0b2af4effa7
-MERGE = 73be7054778c99fbc1968e76f7022bbefebb452e
-IMPLEMENTATION_PROOF = 5576403450
-STATE = REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY
+QUALIFIED_HEAD = 46b89ce801153ed269526da256429e89842a5153
+QUALIFIED_HEAD_TREE = d45b1995eed6a86c38a9952d570e35f2c460b3e5
+MERGE = 37a7f14f8c3c81c33752a24d52ba888c9b8eb88f
+IMPLEMENTATION_PROOF = 5576882384
+STATE = DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY
 ```
 
-The contract establishes only deterministic validation, normalization, ordering, explicit disposition and identity binding for one caller-supplied exact changed-path descriptor set. Opaque/compiled, generated, referenced hidden payload, unreadable, unsupported/suspicious-encoding, oversized, symlink, submodule, LFS, policy-excluded and deleted paths remain explicit instead of being silently dropped.
+The contract establishes only deterministic static pre-scan signal binding for the exact R23 reviewable-text universe from caller-supplied bytes bound to R23 descriptors, raw-byte identity, byte length and exact Git blob identity. UTF-8 / UTF-8-BOM behavior is derived from R23; structured signals bind deterministic rule/source/range identities and retain only matched-text digests rather than raw matches.
 
-`reviewUniverseIdentity` binds the normalized descriptor projection. `evidenceIdentity` binds the complete repository/base/head/tree/path-set context and the derived universe identity. The implementation remains pure, synchronous, data-only and side-effect free.
+The implementation remains pure, synchronous, data-only and side-effect free. Its closed Kodac-owned rule registry was independently reimplemented from pinned AI-Infra-Guard study inputs; donor mappings remain inert provenance/reference input rather than risk truth.
 
 ---
 
 ## Mandatory non-equivalences at the current frontier
 
 ```text
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != PATH_REVIEW_COVERAGE_PROOF
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != REVIEWED_PATH_SET_PROOF
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != DETERMINISTIC_SECURITY_PRE_SCAN_PROOF
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != RISK_COVERAGE_PROOF
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != SKILL_COVERAGE_PROOF
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != PROVIDER_TERMINATION_REASON_PROOF
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != PROVIDER_INVOCATION_PROVENANCE_PROOF
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != K5_RECONCILIATION_PROOF
-REVIEW_COVERAGE_UNIVERSE_BOUND_ONLY != DONE_GATE_PROOF
-P7_R23_CLOSED != POST_R23_SUCCESSOR_IMPLEMENTATION_AUTHORITY
-P7_R23_CLOSED != P7_OVERALL_CLOSED
-P7_R23_CLOSED != RELEASE_AUTHORITY
-P7_R23_CLOSED != PROJECT_COMPLETION
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != P6_DETERMINISTIC_SECURITY_FINDING
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != REVIEWER_FINDING
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != VERIFIED_FINDING
+ZERO_SIGNALS != CLEAN_SCAN
+ZERO_SIGNALS != COMPLETE_REVIEW
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != PATH_REVIEW_COVERAGE_PROOF
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != RISK_COVERAGE_PROOF
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != SKILL_COVERAGE_PROOF
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != PROVIDER_TERMINATION_REASON_PROOF
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != PROVIDER_INVOCATION_PROVENANCE_PROOF
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != K5_RECONCILIATION_PROOF
+DETERMINISTIC_SECURITY_PRE_SCAN_SIGNAL_BOUND_ONLY != DONE_GATE_PROOF
+P7_R24_CLOSED != POST_R24_SUCCESSOR_IMPLEMENTATION_AUTHORITY
+P7_R24_CLOSED != P7_OVERALL_CLOSED
+P7_R24_CLOSED != RELEASE_AUTHORITY
+P7_R24_CLOSED != PROJECT_COMPLETION
 ```
 
 ---
@@ -156,6 +165,9 @@ PROVIDER_MODEL_INVOCATION = NOT_AUTHORIZED
 SECRET_ACCESS = NOT_AUTHORIZED
 NETWORK_ACCESS = NOT_AUTHORIZED
 PERSISTENCE_DATABASE_TELEMETRY_UPLOAD_LEARNING = NOT_AUTHORIZED
+RISK_COVERAGE_PROOF = NOT_ESTABLISHED
+SKILL_COVERAGE_PROOF = NOT_ESTABLISHED
+PROVIDER_TERMINATION_REASON_PROOF = NOT_ESTABLISHED
 FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF = NOT_ESTABLISHED
 P7_TO_K5_RECONCILIATION_PROOF = NOT_ESTABLISHED
 DONE_GATE_INVOCATION_OR_MUTATION = NOT_AUTHORIZED
@@ -165,4 +177,4 @@ PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-After this reconciliation closes canonically, perform a fresh successor-authority analysis from live `main`. Do not infer A2 or any later implementation from numbering, V3 sequence, or composition.
+After this reconciliation closes canonically, perform a fresh successor-authority analysis from live `main`. Do not infer A3 or any later implementation from numbering, V3 sequence, or composition.
