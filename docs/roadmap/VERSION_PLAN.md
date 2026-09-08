@@ -33,16 +33,15 @@ P6 BOUNDED R1 = CLOSED_CANONICAL
 P6-R2+ = NOT_AUTHORIZED_BY_NUMBERING
 P6 OVERALL = NOT_CLOSED
 
-P7-R1 THROUGH P7-R28 = BOUNDED UNITS CLOSED_CANONICAL AT THEIR EXACT RECORDED STATES
-P7-R27 POST-MERGE CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #469 / proof 5588027874
-POST-R27 SUCCESSOR AUTHORITY ANALYSIS = PR #469 / comment 5588092657 / ANALYSIS_ONLY
-P7-R28 A6 COMPOSITE FULL EXACT-HEAD REVIEW COMPLETENESS AUTHORIZATION = CLOSED_CANONICAL / PR #470 / proof 5588278399
-P7-R28 A6 COMPOSITE FULL EXACT-HEAD REVIEW COMPLETENESS IMPLEMENTATION = CLOSED_CANONICAL / PR #471 / proof 5588734402 / BOUNDED_FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF_ONLY
-P7-R28 CURRENT-VIEW DRIFT ANALYSIS = PR #471 / comment 5588764025 / ANALYSIS_ONLY
-P7-R28 POST-MERGE CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #472 / proof 5588820719
-P7-R28 POST-MERGE CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
-POST-R28 SUCCESSOR AUTHORITY ANALYSIS = BLOCKED_UNTIL_RECONCILIATION_CLOSURE
-P7-TO-K5 RECONCILIATION = NOT_AUTHORIZED_BY_NUMBERING_OR_PLAN_SEQUENCE
+P7-R1 THROUGH P7-R29 = BOUNDED UNITS CLOSED_CANONICAL AT THEIR EXACT RECORDED STATES
+P7-R28 POST-MERGE CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #473 / proof 5588939785
+POST-R28 SUCCESSOR AUTHORITY ANALYSIS = PR #473 / comment 5589035328 / ANALYSIS_ONLY
+P7-R29 P7-TO-K5 RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #474 / proof 5589259309
+P7-R29 P7-TO-K5 RECONCILIATION IMPLEMENTATION = CLOSED_CANONICAL / PR #475 / proof 5589627739 / P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY
+P7-R29 CURRENT-VIEW DRIFT ANALYSIS = PR #475 / comment 5589633485 / ANALYSIS_ONLY
+P7-R29 POST-MERGE CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #476 / proof 5589687791
+P7-R29 POST-MERGE CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST-R29 SUCCESSOR AUTHORITY ANALYSIS = BLOCKED_UNTIL_RECONCILIATION_CLOSURE
 DONE GATE = NOT_AUTHORIZED_BY_NUMBERING_OR_PLAN_SEQUENCE
 P7 OVERALL = NOT_CLOSED
 P8-P9 IMPLEMENTATION = NOT_AUTHORIZED
@@ -57,7 +56,7 @@ All still-effective predecessor non-grants remain in force. Omission from this c
 
 ## Active planned unit
 
-The only active version-plan mutation is the documentation-only P7-R28 current-view reconciliation authorized by PR #472 / proof `5588820719`.
+The only active version-plan mutation is the documentation-only P7-R29 current-view reconciliation authorized by PR #476 / proof `5589687791`.
 
 Exact allowlist:
 
@@ -69,37 +68,37 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. The candidate may reconcile only already-proven R27/R28 truth, must preserve unrelated state and predecessor non-grants, cannot certify its own closure, and cannot create P7-to-K5, Done Gate, or other successor authority.
+No sixth path is authorized. The candidate may reconcile only already-proven R28/R29 truth, must preserve unrelated state and predecessor non-grants, cannot certify its own closure, and cannot create Done Gate or other successor authority.
 
 ---
 
-## P7-R28 bounded implementation contract
+## P7-R29 bounded implementation contract
 
 ```text
-BOUNDED_FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF_ONLY = ESTABLISHED_BY_P7_R28_CONTRACT
+P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY = ESTABLISHED_BY_P7_R29_CONTRACT
 ```
 
-The contract validates exact canonical R27 evidence and its exact build lineage, independently revalidates nested R22-R26 predecessor contracts, and deterministically binds exact lineage, path coverage, risk coverage, skill coverage, provider-completion debt, and composite completeness debt. It issues the bounded proof only with zero unknown reviewable-path coverage, no uncovered/unknown risk debt, no skill coverage debt, and caller-asserted completed/no-known-truncation R27 state.
+The contract requires the claimed R28 completeness evidence plus complete R28 build lineage, revalidates R28 through the canonical lineage-aware validator, enforces the exact one-requirement/one-`CUSTOM`-evidence K5-R1 bridge profile, requires exact repository/base/head convergence, recomputes K5-R1 judgment, recomputes empty-source K5-R2/R3 linkage and K5-R4 reconciliation, and requires exact K5-R4 `NOT_APPLICABLE` with the custom bridge evidence out of scope.
 
 Canonical implementation identities:
 
 ```text
-P7_R28_QUALIFIED_HEAD = 24aeeb4de8b19f660b6a8a4cc80fa717e6243f21
-P7_R28_QUALIFIED_HEAD_TREE = 04ebdb5730610c3232db4a24671a74668d39887e
-P7_R28_MERGE = c93b8c69292fb14a84ead8ff244ea2a0dc6833c2
-P7_R28_IMPLEMENTATION_PROOF = 5588734402
+P7_R29_QUALIFIED_HEAD = eddce0473a55a006c1c5f817bdbbcec03e114778
+P7_R29_QUALIFIED_HEAD_TREE = 7dccb68d4807791dd31117f1029bc3e4790ff3a4
+P7_R29_MERGE = 0d5cbf21c20398ce7ee21cf8886e311b41fb1b3a
+P7_R29_IMPLEMENTATION_PROOF = 5589627739
 ```
 
-Known nonreviewable paths remain explicit accounting facts rather than semantic-review claims. The implementation is bounded, deterministic, content-addressed, deeply immutable, data-only, and side-effect-free.
+The output is bounded, deterministic, content-addressed, deeply immutable, data-only, and side-effect-free. The JSON Schema is structural interoperability only.
 
 ---
 
-## R28 reconciliation authorization identity
+## R29 reconciliation authorization identity
 
 ```text
-AUTHORIZATION_PR = 472
-AUTHORIZATION_MERGE = 67a54a987f8d1bc78e6ba4bd6d57c116b6409a18
-AUTHORIZATION_CLOSURE_PROOF = 5588820719
+AUTHORIZATION_PR = 476
+AUTHORIZATION_MERGE = aa6ccb3ae85301197b140b920b2c127d0543db99
+AUTHORIZATION_CLOSURE_PROOF = 5589687791
 AUTHORIZATION_SCOPE = EXACTLY_FIVE_CURRENT_VIEW_PATHS
 SUCCESSOR_IMPLEMENTATION_AUTHORITY = NONE
 ```
@@ -109,18 +108,18 @@ SUCCESSOR_IMPLEMENTATION_AUTHORITY = NONE
 ## Current non-equivalences
 
 ```text
-BOUNDED_FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF_ONLY != ALL_BYTES_SEMANTICALLY_REVIEWED
-BOUNDED_FULL_EXACT_HEAD_RE_REVIEW_COMPLETENESS_PROOF_ONLY != DEFECT_FREE
-ZERO_FINDINGS != COMPLETE_REVIEW
-DETERMINISTIC_SECURITY_SIGNAL != VERIFIED_FINDING
-RISK_COVERAGE_ACCOUNTED != RISK_ABSENT
-SKILL_COVERAGE_ACCOUNTED != SKILL_TRUSTED
-CALLER_ASSERTED_COMPLETED != PROVIDER_AUTHENTICATED_COMPLETION
-P7_R28_CLOSED != P7_TO_K5_RECONCILIATION_PROOF
-P7_R28_CLOSED != DONE_GATE_PROOF
-P7_R28_CLOSED != P7_OVERALL_CLOSED
-P7_R28_CLOSED != RELEASE_AUTHORITY
-P7_R28_CLOSED != PROJECT_COMPLETION
+P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != DONE_GATE_PROOF
+P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != PROVEN_READY
+P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != APPROVAL
+P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != RELEASE_AUTHORITY
+P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != PROJECT_COMPLETION
+K5_R1_SUFFICIENT_PACKAGE != PROVEN_READY
+K5_R4_NOT_APPLICABLE != PROVEN_READY
+JSON_SCHEMA_ACCEPTANCE != PROVEN_READY
+EVIDENCE_BINDING != AUTHORITY_TRANSFER
+P7_R29_CLOSED != P7_OVERALL_CLOSED
+P7_R29_CLOSED != RELEASE_AUTHORITY
+P7_R29_CLOSED != PROJECT_COMPLETION
 ```
 
 ---
@@ -145,7 +144,7 @@ PROVIDER_SPEND = NOT_AUTHORIZED
 SECRET_ACCESS = NOT_AUTHORIZED
 NETWORK_ACCESS = NOT_AUTHORIZED
 PERSISTENCE_DATABASE_TELEMETRY_UPLOAD_LEARNING = NOT_AUTHORIZED
-P7_TO_K5_RECONCILIATION_PROOF = NOT_ESTABLISHED
+DONE_GATE_PROOF = NOT_ESTABLISHED
 DONE_GATE_INVOCATION_OR_MUTATION = NOT_AUTHORIZED
 P8_P9_IMPLEMENTATION = NOT_AUTHORIZED
 PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
@@ -154,4 +153,4 @@ PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-After the active reconciliation closes canonically, perform a fresh successor-authority analysis from the resulting live `main`. A future implementation requires its own explicit canonical authorization; numbering and plan sequence are not authority.
+After the active reconciliation closes canonically, perform a fresh successor-authority analysis from the resulting live `main`. A future Done Gate unit requires its own explicit canonical authorization; numbering and plan sequence are not authority.
