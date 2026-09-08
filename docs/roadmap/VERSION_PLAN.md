@@ -33,16 +33,16 @@ P6 BOUNDED R1 = CLOSED_CANONICAL
 P6-R2+ = NOT_AUTHORIZED_BY_NUMBERING
 P6 OVERALL = NOT_CLOSED
 
-P7-R1 THROUGH P7-R29 = BOUNDED UNITS CLOSED_CANONICAL AT THEIR EXACT RECORDED STATES
-P7-R28 POST-MERGE CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #473 / proof 5588939785
-POST-R28 SUCCESSOR AUTHORITY ANALYSIS = PR #473 / comment 5589035328 / ANALYSIS_ONLY
-P7-R29 P7-TO-K5 RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #474 / proof 5589259309
-P7-R29 P7-TO-K5 RECONCILIATION IMPLEMENTATION = CLOSED_CANONICAL / PR #475 / proof 5589627739 / P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY
-P7-R29 CURRENT-VIEW DRIFT ANALYSIS = PR #475 / comment 5589633485 / ANALYSIS_ONLY
-P7-R29 POST-MERGE CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #476 / proof 5589687791
-P7-R29 POST-MERGE CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
-POST-R29 SUCCESSOR AUTHORITY ANALYSIS = BLOCKED_UNTIL_RECONCILIATION_CLOSURE
-DONE GATE = NOT_AUTHORIZED_BY_NUMBERING_OR_PLAN_SEQUENCE
+P7-R1 THROUGH P7-R30 = BOUNDED UNITS CLOSED_CANONICAL AT THEIR EXACT RECORDED STATES
+P7-R29 POST-MERGE CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #477 / proof 5589809061
+POST-R29 SUCCESSOR AUTHORITY ANALYSIS = PR #477 / comment 5589847062 / ANALYSIS_ONLY
+P7-R30 DONE GATE PROOF-BINDING AUTHORIZATION = CLOSED_CANONICAL / PR #478 / proof 5589920210
+P7-R30 DONE GATE PROOF-BINDING IMPLEMENTATION = CLOSED_CANONICAL / PR #479 / proof 5590242046 / P7_DONE_GATE_PROOF_BOUND_ONLY
+P7-R30 DONE GATE STATUS BOUND = PROVEN_READY
+P7-R30 CURRENT-VIEW DRIFT ANALYSIS = PR #479 / comment 5590255416 / ANALYSIS_ONLY
+P7-R30 POST-MERGE CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #480 / proof 5590298973
+P7-R30 POST-MERGE CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST-R30 SUCCESSOR AUTHORITY ANALYSIS = BLOCKED_UNTIL_RECONCILIATION_CLOSURE
 P7 OVERALL = NOT_CLOSED
 P8-P9 IMPLEMENTATION = NOT_AUTHORIZED
 PUBLIC RELEASE / PACKAGE PUBLICATION / DEPLOYMENT = NOT_AUTHORIZED
@@ -56,7 +56,7 @@ All still-effective predecessor non-grants remain in force. Omission from this c
 
 ## Active planned unit
 
-The only active version-plan mutation is the documentation-only P7-R29 current-view reconciliation authorized by PR #476 / proof `5589687791`.
+The only active version-plan mutation is the documentation-only P7-R30 current-view reconciliation authorized by PR #480 / proof `5590298973`.
 
 Exact allowlist:
 
@@ -68,37 +68,40 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. The candidate may reconcile only already-proven R28/R29 truth, must preserve unrelated state and predecessor non-grants, cannot certify its own closure, and cannot create Done Gate or other successor authority.
+No sixth path is authorized. The candidate may reconcile only already-proven R29/R30 truth, must preserve unrelated state and predecessor non-grants, cannot certify its own closure, and cannot create P7 closeout or other successor authority.
 
 ---
 
-## P7-R29 bounded implementation contract
+## P7-R30 bounded implementation contract
 
 ```text
-P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY = ESTABLISHED_BY_P7_R29_CONTRACT
+P7_DONE_GATE_PROOF_BOUND_ONLY = ESTABLISHED_BY_P7_R30_CONTRACT
+DONE_GATE_STATUS_BOUND = PROVEN_READY
 ```
 
-The contract requires the claimed R28 completeness evidence plus complete R28 build lineage, revalidates R28 through the canonical lineage-aware validator, enforces the exact one-requirement/one-`CUSTOM`-evidence K5-R1 bridge profile, requires exact repository/base/head convergence, recomputes K5-R1 judgment, recomputes empty-source K5-R2/R3 linkage and K5-R4 reconciliation, and requires exact K5-R4 `NOT_APPLICABLE` with the custom bridge evidence out of scope.
+The contract semantically revalidates the complete canonical P7-R29 P7-to-K5 reconciliation lineage and the complete canonical P7-R6 post-apply verification-report lineage, requires exact repository/base/head convergence, and invokes only the existing unchanged `DoneGate.evaluate()` algorithm. It requires exact `PROVEN_READY`, empty reasons, and non-empty evidence and creates no second readiness algorithm.
 
 Canonical implementation identities:
 
 ```text
-P7_R29_QUALIFIED_HEAD = eddce0473a55a006c1c5f817bdbbcec03e114778
-P7_R29_QUALIFIED_HEAD_TREE = 7dccb68d4807791dd31117f1029bc3e4790ff3a4
-P7_R29_MERGE = 0d5cbf21c20398ce7ee21cf8886e311b41fb1b3a
-P7_R29_IMPLEMENTATION_PROOF = 5589627739
+P7_R30_QUALIFIED_HEAD = af73e24adfa3b45668711003bb5465effbc4c30a
+P7_R30_QUALIFIED_HEAD_TREE = d9344cb15ac90b3db674ca19ae0216b0eda7e6bd
+P7_R30_MERGE = acec886b7c3296c0c58409ef987e6ea85c63e14e
+P7_R30_IMPLEMENTATION_PROOF = 5590242046
 ```
 
 The output is bounded, deterministic, content-addressed, deeply immutable, data-only, and side-effect-free. The JSON Schema is structural interoperability only.
 
+Post-merge evidence preserves one disclosed first-attempt Ubuntu failure in an unchanged pre-existing Linux-only H4-R3G-B synthetic-host fixture outside the R30 path set. The fixture blob remained `e58cbcd6f68a56ab9850a495f9b19c71ee279a95`. The qualified-head and merge trees were identical; pre-merge Ubuntu plus post-merge macOS/Windows passed. Exactly one no-code/no-tree-drift same-SHA controlled rerun passed Ubuntu typecheck, full tests, benchmark hook, and final `k2-runtime-gate`. The first failure is not rewritten as first-attempt green and `WAIVER = NO`.
+
 ---
 
-## R29 reconciliation authorization identity
+## R30 reconciliation authorization identity
 
 ```text
-AUTHORIZATION_PR = 476
-AUTHORIZATION_MERGE = aa6ccb3ae85301197b140b920b2c127d0543db99
-AUTHORIZATION_CLOSURE_PROOF = 5589687791
+AUTHORIZATION_PR = 480
+AUTHORIZATION_MERGE = 0b470cc17f6921a86b996330bad39875b328423b
+AUTHORIZATION_CLOSURE_PROOF = 5590298973
 AUTHORIZATION_SCOPE = EXACTLY_FIVE_CURRENT_VIEW_PATHS
 SUCCESSOR_IMPLEMENTATION_AUTHORITY = NONE
 ```
@@ -108,18 +111,24 @@ SUCCESSOR_IMPLEMENTATION_AUTHORITY = NONE
 ## Current non-equivalences
 
 ```text
-P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != DONE_GATE_PROOF
+P7_DONE_GATE_PROOF_BOUND_ONLY != MERGE_AUTHORITY
+P7_DONE_GATE_PROOF_BOUND_ONLY != APPROVAL
+P7_DONE_GATE_PROOF_BOUND_ONLY != RELEASE_AUTHORITY
+P7_DONE_GATE_PROOF_BOUND_ONLY != PACKAGE_PUBLICATION_AUTHORITY
+P7_DONE_GATE_PROOF_BOUND_ONLY != DEPLOYMENT_AUTHORITY
+P7_DONE_GATE_PROOF_BOUND_ONLY != PROJECT_COMPLETION
+PROVEN_READY != MERGE_AUTHORITY
+PROVEN_READY != RELEASE_AUTHORITY
+PROVEN_READY != PROJECT_COMPLETION
 P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != PROVEN_READY
-P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != APPROVAL
-P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != RELEASE_AUTHORITY
-P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != PROJECT_COMPLETION
 K5_R1_SUFFICIENT_PACKAGE != PROVEN_READY
 K5_R4_NOT_APPLICABLE != PROVEN_READY
 JSON_SCHEMA_ACCEPTANCE != PROVEN_READY
 EVIDENCE_BINDING != AUTHORITY_TRANSFER
-P7_R29_CLOSED != P7_OVERALL_CLOSED
-P7_R29_CLOSED != RELEASE_AUTHORITY
-P7_R29_CLOSED != PROJECT_COMPLETION
+P7_R30_CLOSED != P7_OVERALL_CLOSED
+P7_R30_CLOSED != P8_P9_AUTHORITY
+P7_R30_CLOSED != RELEASE_AUTHORITY
+P7_R30_CLOSED != PROJECT_COMPLETION
 ```
 
 ---
@@ -128,7 +137,9 @@ P7_R29_CLOSED != PROJECT_COMPLETION
 
 ```text
 K2_SIDE_EFFECT_AUTHORITY = UNCHANGED
-K5_DONE_GATE_AUTHORITY = UNCHANGED
+K5_EXISTING_R1_R5_CONTRACTS = UNCHANGED
+DONE_GATE_IMPLEMENTATION = UNCHANGED
+DONE_GATE_ALGORITHM = UNCHANGED
 PROOFGRAPH = NOT_AUTHORIZED
 AUTOMATIC_FRESHNESS_DEPENDENCY_INVALIDATION = NOT_AUTHORIZED
 PATCH_RETRY = NOT_AUTHORIZED
@@ -144,8 +155,8 @@ PROVIDER_SPEND = NOT_AUTHORIZED
 SECRET_ACCESS = NOT_AUTHORIZED
 NETWORK_ACCESS = NOT_AUTHORIZED
 PERSISTENCE_DATABASE_TELEMETRY_UPLOAD_LEARNING = NOT_AUTHORIZED
-DONE_GATE_PROOF = NOT_ESTABLISHED
-DONE_GATE_INVOCATION_OR_MUTATION = NOT_AUTHORIZED
+DONE_GATE_PROOF = ESTABLISHED_ONLY_AT_BOUNDED_P7_R30_PROOF_BINDING_MEANING
+DONE_GATE_INVOCATION_OR_MUTATION = NOT_AUTHORIZED_BEYOND_CANONICAL_R30_BINDING
 P8_P9_IMPLEMENTATION = NOT_AUTHORIZED
 PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
 RULESET_CHANGE_BYPASS = NOT_AUTHORIZED
@@ -153,4 +164,4 @@ PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-After the active reconciliation closes canonically, perform a fresh successor-authority analysis from the resulting live `main`. A future Done Gate unit requires its own explicit canonical authorization; numbering and plan sequence are not authority.
+After the active reconciliation closes canonically, perform a fresh successor-authority analysis from the resulting live `main`. A future P7 closeout or downstream unit requires its own explicit canonical authorization; numbering, plan sequence, and `PROVEN_READY` are not authority.
