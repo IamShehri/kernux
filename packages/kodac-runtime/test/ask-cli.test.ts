@@ -18,15 +18,25 @@ test("kodac ask persists the exact model-visible request snapshot and keeps resp
 
   assert.equal(code, 0)
   assert.deepEqual(stderr, [])
-  const payload = JSON.parse(stdout[0]) as {
+  const envelope = JSON.parse(stdout[0]) as {
+    protocol: string
+    version: number
+    command: string
     status: string
-    assistant: string
+    proven: boolean
     evidence: { events: string }
+    payload: { provider: string; model: string; assistant: string }
   }
-  assert.equal(payload.status, "COMPLETE")
-  assert.equal(payload.assistant, "[fixture:fixture/deterministic-v1] hello kodac")
+  assert.equal(envelope.protocol, "kodac.cli-result")
+  assert.equal(envelope.version, 1)
+  assert.equal(envelope.command, "ask")
+  assert.equal(envelope.status, "COMPLETE")
+  assert.equal(envelope.proven, false)
+  assert.equal(envelope.payload.provider, "fixture")
+  assert.equal(envelope.payload.model, "fixture/deterministic-v1")
+  assert.equal(envelope.payload.assistant, "[fixture:fixture/deterministic-v1] hello kodac")
 
-  const metadata = JSON.parse(await readFile(join(dirname(payload.evidence.events), "session.json"), "utf8")) as {
+  const metadata = JSON.parse(await readFile(join(dirname(envelope.evidence.events), "session.json"), "utf8")) as {
     protocol: string
     retentionDays: number
     mayContainLosslessModelRequestSnapshots: boolean
@@ -34,9 +44,9 @@ test("kodac ask persists the exact model-visible request snapshot and keeps resp
   assert.equal(metadata.protocol, "kodac.evidence-session")
   assert.equal(metadata.retentionDays, 7)
   assert.equal(metadata.mayContainLosslessModelRequestSnapshots, true)
-  await assert.rejects(() => access(join(dirname(payload.evidence.events), "active-session.json")), { code: "ENOENT" })
+  await assert.rejects(() => access(join(dirname(envelope.evidence.events), "active-session.json")), { code: "ENOENT" })
 
-  const eventsText = await readFile(payload.evidence.events, "utf8")
+  const eventsText = await readFile(envelope.evidence.events, "utf8")
   const events = eventsText.trim().split("\n").map((line) => JSON.parse(line)) as Array<{
     type: string
     payload: Record<string, unknown>
