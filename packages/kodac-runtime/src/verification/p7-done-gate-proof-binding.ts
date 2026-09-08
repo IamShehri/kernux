@@ -345,7 +345,7 @@ function normalizeBinding(value: unknown): P7DoneGateProofBinding {
     p7VerificationReportIdentity: sha256(record.p7VerificationReportIdentity, "p7DoneGateProofBinding.p7VerificationReportIdentity"),
     p7ToK5ReconciliationEvidenceIdentity: sha256(record.p7ToK5ReconciliationEvidenceIdentity, "p7DoneGateProofBinding.p7ToK5ReconciliationEvidenceIdentity"),
     k5PackageIdentity: sha256(record.k5PackageIdentity, "p7DoneGateProofBinding.k5PackageIdentity"),
-    k5JudgmentIdentity: sha256(record.k5JudgmentIdentity, "p7DoneGateProofBinding.k7PackageIdentity"),
+    k5JudgmentIdentity: sha256(record.k5JudgmentIdentity, "p7DoneGateProofBinding.k5JudgmentIdentity"),
     k5ReconciliationIdentity: sha256(record.k5ReconciliationIdentity, "p7DoneGateProofBinding.k5ReconciliationIdentity"),
     doneGateStatus: fixed(record.doneGateStatus, "PROVEN_READY", "p7DoneGateProofBinding.doneGateStatus"),
     doneGateEvidence: normalizeDoneGateEvidence(record.doneGateEvidence, "p7DoneGateProofBinding.doneGateEvidence"),
