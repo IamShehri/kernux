@@ -54,7 +54,9 @@ K5 is already closed for its bounded R1-R5 proof-review scope. Its closeout pres
 
 The immediately preceding P7-R28 evidence-binding implementation used the repository's established evidence-contract shape of one production source, one focused test and one JSON interoperability schema. R29 preserves that shape. It does not add a root runtime export or broaden the public runtime surface.
 
-Therefore the next eligible unit is a narrow compatibility/evidence bridge from exact P7-R28 completeness evidence into existing K5 proof-review identity semantics, without changing K5's existing contracts and without invoking or mutating Done Gate.
+The canonical R28 validator is lineage-aware: validation requires both the claimed R28 evidence object and its complete `P7FullExactHeadReviewCompletenessEvidenceBindingBuildInput`, then independently rebuilds/revalidates the nested predecessor chain. R29 must preserve that property rather than reducing R28 to structural output validation.
+
+Therefore the next eligible unit is a narrow compatibility/evidence bridge from exact revalidated P7-R28 completeness evidence into existing K5 proof-review identity semantics, without changing K5's existing contracts and without invoking or mutating Done Gate.
 
 ## 3. Exact future implementation allowlist
 
@@ -74,6 +76,7 @@ The implementation must not modify:
 packages/kodac-runtime/src/index.ts
 packages/kodac-runtime/src/remediation/p7-full-exact-head-review-completeness-evidence-binding.ts
 packages/kodac-runtime/src/proof-review/contracts.ts
+packages/kodac-runtime/src/proof-review/judge.ts
 packages/kodac-runtime/src/proof-review/linkage-contracts.ts
 packages/kodac-runtime/src/proof-review/linkage.ts
 packages/kodac-runtime/src/proof-review/review-adjudication-contracts.ts
@@ -104,6 +107,7 @@ Observed at candidate start:
 ```text
 P7_R28_COMPLETENESS_RUNTIME_BLOB = cada5c8f40616df8a30db20a369e42f8ea669343
 K5_R1_CONTRACTS_BLOB = ef0ae26c2a44157fb20ad33145788ba1255239f5
+K5_R1_JUDGE_BLOB = 1b6093d6ec9239427e5f50a1dd9483d2c5603e36
 K5_R4_CONTRACTS_BLOB = acf758a6f17180448c1c46b0397bfe6742b4f04b
 K5_R4_RUNTIME_BLOB = ec82ed7f1b941f7c523739ccd2e2663176edc30b
 DONE_GATE_BLOB = 067e147569fa52cc2b04c5df26fbe20a01e958e9
@@ -116,18 +120,37 @@ These are observations, not permission to overwrite predecessor paths. The runti
 
 The future implementation may add one deterministic, content-addressed, deeply immutable, data-only, side-effect-free contract that validates and binds exact caller-materialized evidence from both sides.
 
+Because canonical R28 validation is asynchronous and rebuilds nested evidence lineage, the R29 build/validation entry points may also be asynchronous solely for that validation dependency. Async execution does not grant network, provider, process, filesystem or side-effect authority.
+
 ### 5.1 Required inputs
 
 The bridge may accept only caller-materialized objects equivalent to:
 
 ```text
 sourceP7FullExactHeadReviewCompletenessEvidenceBinding
+sourceP7FullExactHeadReviewCompletenessEvidenceBindingBuildInput
 sourceK5R1ProofPackage
 sourceK5R1ProofJudgment
 sourceK5R4ProofStateReconciliation
 ```
 
 It must validate each object with the existing canonical validators before trusting any field.
+
+For P7-R28 specifically it must invoke the canonical semantic validator equivalently to:
+
+```text
+await validateP7FullExactHeadReviewCompletenessEvidenceBinding(
+  sourceP7FullExactHeadReviewCompletenessEvidenceBinding,
+  sourceP7FullExactHeadReviewCompletenessEvidenceBindingBuildInput,
+)
+```
+
+The resulting validated/rebuilt R28 object must equal the claimed R28 evidence at its canonical identity and bounded semantic fields. The bridge must fail closed if the claimed output and supplied build lineage do not converge.
+
+```text
+R28_OUTPUT_WITHOUT_BUILD_LINEAGE != VALIDATED_R28_PREDECESSOR
+STRUCTURAL_R28_SHAPE != R28_SEMANTIC_REVALIDATION
+```
 
 ### 5.2 Exact P7 lineage requirements
 
@@ -190,16 +213,24 @@ The validated K5-R1 judgment must bind the exact package identity and must prove
 
 ```text
 package status = SUFFICIENT_PACKAGE
-bridge requirement status = SATISFIED
+bridge requirement result = {
+  requirementId = p7.full-exact-head-review-completeness
+  kind = CUSTOM
+  minimumEvidence = 1
+  satisfiedFingerprintCount = 1
+  status = SATISFIED
+}
+reasons = []
+evidenceIds = [p7-r28.full-exact-head-review-completeness]
 ```
 
-No stronger meaning may be inferred.
+No stronger meaning may be inferred. The bridge may independently recompute `judgeK5R1ProofPackage(sourceK5R1ProofPackage)` and require identity/deep equality with the supplied judgment so a structurally valid foreign judgment cannot be substituted.
 
 ### 5.4 K5-R4 preservation rule
 
 `CUSTOM` evidence is intentionally outside the existing K5-R4 linked-evidence domain. This unit must preserve that contract rather than broadening K5-R4.
 
-For the exact one-evidence bridge package, the validated K5-R4 reconciliation must therefore prove:
+For the exact one-evidence bridge package, canonical K5-R2 and K5-R3 linkage over empty caller source lists produces no linked evidence and preserves the custom evidence as out-of-scope. Canonical K5-R4 reconciliation must therefore prove:
 
 ```text
 packageIdentity = exact bridge package identity
@@ -208,6 +239,8 @@ status = NOT_APPLICABLE
 results = []
 outOfScopeEvidenceIds = [p7-r28.full-exact-head-review-completeness]
 ```
+
+The bridge must validate the supplied K5-R4 reconciliation and may independently recompute the expected K5-R2/K5-R3 empty linkages plus `reconcileK5R4ProofState(...)`, requiring exact reconciliation identity/deep equality. This prevents a structurally valid but foreign `NOT_APPLICABLE` object from being accepted.
 
 This explicit `NOT_APPLICABLE` is required evidence that the bridge did not silently reinterpret P7 completeness as K5-R4 linked evidence.
 
@@ -261,18 +294,20 @@ JSON_SCHEMA_ACCEPTANCE != DONE_GATE_PROOF
 The implementation must reject at least:
 
 1. any invalid or tampered P7-R28 evidence object;
-2. any invalid K5-R1 package, judgment or K5-R4 reconciliation;
-3. repository/base/head mismatch between P7 and K5 revision identity;
-4. P7 subject identity mismatch;
-5. missing, duplicate or additional requirements/evidence in the bounded bridge package;
-6. wrong requirement/evidence kind, status, ref or digest;
-7. a K5-R1 judgment other than `SUFFICIENT_PACKAGE` with the exact bridge requirement `SATISFIED`;
-8. a K5-R4 status other than exact `NOT_APPLICABLE` for this bounded custom-only package;
-9. any non-empty K5-R4 result set or wrong out-of-scope membership;
-10. stale/foreign package, judgment or reconciliation identity;
-11. malformed Unicode, prototype/proxy/accessor/symbol/sparse/alias/cycle inputs where predecessor validators or this bridge require ordinary JSON data;
-12. any attempt to represent Done Gate, `PROVEN_READY`, merge, release or project-completion state as an output field or inferred state;
-13. runtime/schema shape disagreement in focused qualification.
+2. any invalid, incomplete, tampered or foreign R28 build lineage supplied with the claimed R28 output;
+3. any invalid K5-R1 package, judgment or K5-R4 reconciliation;
+4. repository/base/head mismatch between P7 and K5 revision identity;
+5. P7 subject identity mismatch;
+6. missing, duplicate or additional requirements/evidence in the bounded bridge package;
+7. wrong requirement/evidence kind, status, ref or digest;
+8. a K5-R1 judgment other than the canonical recomputation for the exact package;
+9. any K5-R1 result other than `SUFFICIENT_PACKAGE` with the exact single bridge requirement `SATISFIED` and no reasons;
+10. a K5-R4 reconciliation other than the canonical recomputation for the exact custom-only package with empty R2/R3 source lists;
+11. any K5-R4 status other than exact `NOT_APPLICABLE`, any non-empty K5-R4 result set, or wrong out-of-scope membership;
+12. stale/foreign package, judgment or reconciliation identity;
+13. malformed Unicode, prototype/proxy/accessor/symbol/sparse/alias/cycle inputs where predecessor validators or this bridge require ordinary JSON data;
+14. any attempt to represent Done Gate, `PROVEN_READY`, merge, release or project-completion state as an output field or inferred state;
+15. runtime/schema shape disagreement in focused qualification.
 
 The output must be deeply immutable and deterministic for equivalent normalized input.
 
@@ -288,6 +323,7 @@ P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != RELEASE_AUTHORITY
 P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY != PROJECT_COMPLETION
 P7_R28_BOUNDED_COMPLETENESS != ALL_BYTES_SEMANTICALLY_REVIEWED
 P7_R28_BOUNDED_COMPLETENESS != DEFECT_FREE
+R28_OUTPUT_WITHOUT_BUILD_LINEAGE != VALIDATED_R28_PREDECESSOR
 K5_R1_SUFFICIENT_PACKAGE != PROVEN_READY
 K5_R4_NOT_APPLICABLE != PROVEN_READY
 JSON_SCHEMA_ACCEPTANCE != PROVEN_READY
@@ -333,9 +369,9 @@ BASE == THEN_CURRENT_CANONICAL_MAIN
 BEHIND_BY = 0
 CHANGED_PATHS = EXACTLY_3_AUTHORIZED_PATHS
 NO_FOURTH_PATH = PASS
-P7_R28_PREDECESSOR = EXACTLY_REVALIDATED
-K5_R1_PREDECESSOR = EXACTLY_REVALIDATED
-K5_R4_PREDECESSOR = EXACTLY_REVALIDATED
+P7_R28_PREDECESSOR = EXACTLY_REBUILT_AND_REVALIDATED_FROM_BOUND_BUILD_LINEAGE
+K5_R1_PREDECESSOR = EXACTLY_REVALIDATED_AND_JUDGMENT_RECOMPUTED
+K5_R4_PREDECESSOR = EXACTLY_REVALIDATED_AND_RECONCILIATION_RECOMPUTED
 DONE_GATE_BLOB = UNCHANGED
 RUNTIME_INDEX_BLOB = UNCHANGED
 STRICT_TYPESCRIPT = PASS
@@ -371,6 +407,7 @@ NO_SECOND_PATH = PASS
 R28_RECONCILIATION_PROOF = EXACTLY_REVERIFIED / 5588939785
 POST_R28_SUCCESSOR_ANALYSIS = EXACTLY_REVERIFIED / 5589035328 / ANALYSIS_ONLY
 FUTURE_IMPLEMENTATION_ALLOWLIST = EXACTLY_3_PATHS / SOURCE_TEST_SCHEMA
+R28_VALIDATION_DEPENDENCY = OUTPUT_PLUS_BUILD_INPUT / SEMANTIC_REVALIDATION_REQUIRED
 REQUIRED_CI = TERMINAL_SUCCESS OR CANONICALLY_PROVEN PATH_FILTER_NON_APPLICABILITY
 SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
 KNOWN_ACTIONABLE_DEFECTS = 0
