@@ -15,7 +15,7 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 4096,
-      "pattern": "^(?!.*[\\u0000-\\u001F\\u007F])(?=.*\\S)(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])+$"
+      "pattern": "^(?![\\s\\S]*[\\u0000-\\u001F\\u007F])(?=[\\s\\S]*\\S)(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])+$"
     },
     "sessionId": {
       "allOf": [
@@ -38,7 +38,7 @@
     "contentText": {
       "type": "string",
       "maxLength": 65536,
-      "pattern": "^(?!.*[\\u0000\\u007F])(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$"
+      "pattern": "^(?![\\s\\S]*[\\u0000\\u007F])(?:[^\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])*$"
     },
     "messageText": {
       "allOf": [
@@ -123,7 +123,7 @@
       "required": ["reason", "budget"],
       "properties": {
         "reason": {
-          "enum": ["completed", "max_turns", "max_tool_calls", "max_elapsed", "max_failures", "duplicate_tool_call", "cycle_detected", "aborted"]
+          "enum": ["max_turns", "max_tool_calls", "max_elapsed", "max_failures", "duplicate_tool_call", "cycle_detected", "aborted"]
         },
         "budget": { "$ref": "#/$defs/budget" }
       }
