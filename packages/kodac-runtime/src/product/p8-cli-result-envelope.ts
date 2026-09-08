@@ -495,17 +495,20 @@ function normalizeCore(value: unknown): P8CliResultEnvelope {
     })
   }
 
+  const payload = normalizeSolveCompletedPayload(input.payload)
   const completed = {
     protocol: P8_CLI_RESULT_PROTOCOL,
     version: P8_CLI_RESULT_VERSION,
     command: "solve" as const,
     sessionId,
     evidence: normalizeSolveCompletedEvidence(input.evidence),
-    payload: normalizeSolveCompletedPayload(input.payload),
+    payload,
   }
   if (input.status === "PROVEN_READY") {
+    if (payload.reasons.length !== 0) fail("envelope.payload.reasons", "must be empty for PROVEN_READY")
     return Object.freeze({ ...completed, status: "PROVEN_READY", proven: exactBoolean(input.proven, true, "envelope.proven") as true })
   }
+  if (payload.reasons.length === 0) fail("envelope.payload.reasons", "must contain at least one reason for NOT_READY")
   return Object.freeze({ ...completed, status: "NOT_READY", proven: exactBoolean(input.proven, false, "envelope.proven") as false })
 }
 
