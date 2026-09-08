@@ -220,6 +220,14 @@ test("P8-R1 preserves proof semantics and rejects false readiness claims", () =>
   ready.proven = false
   invalid.push(full(ready))
 
+  const readyWithReasons = solveCompletedInput("PROVEN_READY")
+  readyWithReasons.payload.reasons = ["contradicts PROVEN_READY"]
+  invalid.push(full(readyWithReasons))
+
+  const notReadyWithoutReasons = solveCompletedInput("NOT_READY")
+  notReadyWithoutReasons.payload.reasons = []
+  invalid.push(full(notReadyWithoutReasons))
+
   for (const candidate of invalid) {
     assert.equal(runtimeAccepts(candidate), false)
     assert.equal(schemaAccepts(schema, candidate), false)
@@ -374,6 +382,8 @@ test("P8-R1 runtime and schema agree on representative accepted and rejected JSO
   const wrongVersion = full(askInput()); wrongVersion.version = 2; rejected.push(wrongVersion)
   const unknownField = full(askInput()); unknownField.payload.extra = true; rejected.push(unknownField)
   const wrongProof = full(solveCompletedInput("PROVEN_READY")); wrongProof.proven = false; rejected.push(wrongProof)
+  const readyReason = full(solveCompletedInput("PROVEN_READY")); readyReason.payload.reasons = ["bad reason"]; rejected.push(readyReason)
+  const missingNotReadyReason = full(solveCompletedInput("NOT_READY")); missingNotReadyReason.payload.reasons = []; rejected.push(missingNotReadyReason)
   const wrongRisk = full(solveCompletedInput("NOT_READY")); wrongRisk.payload.verificationRisk = "critical"; rejected.push(wrongRisk)
   const wrongStop = full(solveStoppedInput()); wrongStop.payload.reason = "timeout"; rejected.push(wrongStop)
   const completedStop = full(solveStoppedInput()); completedStop.payload.reason = "completed"; rejected.push(completedStop)
