@@ -5,7 +5,6 @@ export const P8_CLI_RESULT_VERSION = 1 as const
 export const P8_CLI_COMMANDS = Object.freeze(["apply-patch", "ask", "solve"] as const)
 export const P8_SOLVE_STATUSES = Object.freeze(["STOPPED", "PROVEN_READY", "NOT_READY"] as const)
 export const P8_SOLVE_STOP_REASONS = Object.freeze([
-  "completed",
   "max_turns",
   "max_tool_calls",
   "max_elapsed",
