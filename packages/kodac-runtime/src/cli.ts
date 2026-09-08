@@ -17,7 +17,7 @@ import { FixtureModelProvider } from "./model/fixture.ts"
 import { ProviderRegistry, type ModelProvider } from "./model/provider.ts"
 import { AgentTurnRunner } from "./model/turn.ts"
 import { JsonlEventSink } from "./protocol/event.ts"
-import { buildP8CliResultEnvelope } from "./product/p8-cli-result-envelope.ts"
+import { buildP8CliResultEnvelope, P8_CLI_RESULT_LIMITS } from "./product/p8-cli-result-envelope.ts"
 import { RuntimeOrchestrator } from "./runtime/orchestrator.ts"
 import { RuntimeSession } from "./session/session.ts"
 import { createApplyPatchTool, type ApplyPatchToolInput, type ApplyPatchToolOutput } from "./tools/apply-patch.ts"
@@ -308,6 +308,42 @@ async function changedPathsFromReceipts(receiptPath: string): Promise<string[]> 
   }
 }
 
+function p8MessageCodePoints(value: string): string[] {
+  const codePoints: string[] = []
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index)
+    if (code === 0 || code === 0x7f) throw new TypeError("P8 bounded projection source must not contain NUL or DEL control characters")
+    if (code >= 0xd800 && code <= 0xdbff) {
+      if (index + 1 >= value.length) throw new TypeError("P8 bounded projection source must contain only valid Unicode scalar values")
+      const next = value.charCodeAt(index + 1)
+      if (next < 0xdc00 || next > 0xdfff) throw new TypeError("P8 bounded projection source must contain only valid Unicode scalar values")
+      codePoints.push(value.slice(index, index + 2))
+      index += 1
+      continue
+    }
+    if (code >= 0xdc00 && code <= 0xdfff) throw new TypeError("P8 bounded projection source must contain only valid Unicode scalar values")
+    codePoints.push(value[index])
+  }
+  return codePoints
+}
+
+function projectP8BoundedMessage(value: string): string {
+  const codePoints = p8MessageCodePoints(value)
+  const limit = P8_CLI_RESULT_LIMITS.maxMessageCodePoints
+  if (codePoints.length <= limit) return value
+  const digest = createHash("sha256").update(value, "utf8").digest("hex")
+  const suffix = `
+[P8_BOUNDED_PROJECTION originalCodePoints=${codePoints.length} sha256=${digest}]`
+  const suffixCodePoints = p8MessageCodePoints(suffix)
+  if (suffixCodePoints.length > limit) throw new TypeError("P8 bounded projection suffix exceeds the canonical message limit")
+  const prefixBudget = limit - suffixCodePoints.length
+  return `${codePoints.slice(0, prefixBudget).join("")}${suffix}`
+}
+
+function projectP8BoundedMessages(values: readonly string[]): string[] {
+  return values.map(projectP8BoundedMessage)
+}
+
 function modelRuntime(
   session: RuntimeSession,
   input: {
@@ -451,15 +487,17 @@ async function runSolve(
   })
 
   if (result.status === "stopped") {
+    if (result.reason === "completed") throw new Error("Stopped agent loop returned an invalid completed reason")
     await session.fail(new Error(`Agent loop stopped: ${result.reason}`))
     if (args.json) {
-      io.stdout(JSON.stringify({
-        status: "STOPPED",
+      io.stdout(JSON.stringify(buildP8CliResultEnvelope({
+        command: "solve",
         sessionId,
-        reason: result.reason,
-        budget: result.budget,
+        status: "STOPPED",
+        proven: false,
         evidence: { events: eventPath, receipts: receiptPath },
-      }))
+        payload: { reason: result.reason, budget: result.budget },
+      })))
     } else {
       io.stderr(`Agent loop stopped: ${result.reason}`)
       io.stderr(`Evidence: ${eventPath}`)
@@ -514,20 +552,36 @@ async function runSolve(
   })
 
   if (args.json) {
-    io.stdout(JSON.stringify({
-      status: gate.status,
-      proven: gate.status === "PROVEN_READY",
-      sessionId,
+    const payload = {
       provider: args.provider,
       model: args.model,
       assistant: result.assistant,
       budget: result.budget,
       verificationRisk: plan.risk,
       verificationCommands: plan.commands.map((command) => command.id),
-      warnings: plan.warnings,
-      reasons: gate.reasons,
-      evidence: { events: eventPath, receipts: receiptPath, plan: planPath, proof: proofPath },
-    }))
+      warnings: projectP8BoundedMessages(plan.warnings),
+      reasons: projectP8BoundedMessages(gate.reasons),
+    }
+    const evidence = { events: eventPath, receipts: receiptPath, plan: planPath, proof: proofPath }
+    if (gate.status === "PROVEN_READY") {
+      io.stdout(JSON.stringify(buildP8CliResultEnvelope({
+        command: "solve",
+        sessionId,
+        status: "PROVEN_READY",
+        proven: true,
+        evidence,
+        payload,
+      })))
+    } else {
+      io.stdout(JSON.stringify(buildP8CliResultEnvelope({
+        command: "solve",
+        sessionId,
+        status: "NOT_READY",
+        proven: false,
+        evidence,
+        payload,
+      })))
+    }
   } else {
     if (result.assistant) io.stdout(result.assistant)
     io.stdout(`Agent loop complete: ${result.budget.turnsUsed} turn(s), ${result.budget.toolCallsUsed} tool call(s)`)

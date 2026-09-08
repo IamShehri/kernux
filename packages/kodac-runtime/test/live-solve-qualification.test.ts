@@ -11,7 +11,8 @@ import {
   REQUIRED_PROVIDER_QUALIFICATION_CHECK_IDS,
   verifyProviderQualificationReport,
 } from "../src/provider-qualification-gate.ts"
-import { runControlledLiveSolve } from "../src/live-solve.ts"
+import { parseControlledSolvePayload, runControlledLiveSolve } from "../src/live-solve.ts"
+import { buildP8CliResultEnvelope } from "../src/product/p8-cli-result-envelope.ts"
 
 const NOW = Date.parse("2026-08-11T01:15:00.000Z")
 
@@ -102,6 +103,16 @@ class UnauthorizedPatchProvider implements ModelProvider {
       }],
       finishReason: "tool_calls",
     }
+  }
+}
+
+class CompletedOpenAIProvider implements ModelProvider {
+  readonly name = "openai"
+  calls = 0
+
+  async generate(_request: ModelProviderRequest): Promise<ModelProviderResponse> {
+    this.calls += 1
+    return { assistant: "controlled answer", finishReason: "stop", toolCalls: [] }
   }
 }
 
@@ -211,7 +222,16 @@ test("controlled live solve verifies qualification and records exact write scope
   assert.equal(errors.length, 0)
   const result = JSON.parse(output.at(-1) ?? "{}") as Record<string, unknown>
   assert.equal(result.status, "STOPPED")
+  assert.equal(result.proven, false)
   assert.deepEqual(result.allowedWritePaths, ["README.md"])
+  const solve = result.solve as Record<string, unknown>
+  assert.equal(solve.protocol, "kodac.cli-result")
+  assert.equal(solve.version, 1)
+  assert.equal(solve.command, "solve")
+  assert.equal(solve.status, "STOPPED")
+  assert.equal(solve.proven, false)
+  assert.equal(Object.hasOwn(solve, "reason"), false)
+  assert.equal(Object.hasOwn(solve, "budget"), false)
   const authorizationPath = result.authorization
   const controlledReportPath = result.controlledReport
   assert.equal(typeof authorizationPath, "string")
@@ -222,6 +242,7 @@ test("controlled live solve verifies qualification and records exact write scope
   assert.deepEqual(authorization.writeScope, { mode: "exact_paths", paths: ["README.md"] })
   assert.equal(controlled.protocol, "kodac.controlled-live-solve")
   assert.deepEqual(controlled.writeScope, { mode: "exact_paths", paths: ["README.md"] })
+  assert.deepEqual(controlled.solve, solve)
   assert.equal(controlled.exitCode, 2)
   const authorizationDir = dirname(authorizationPath as string)
   const metadata = JSON.parse(await readFile(join(authorizationDir, "session.json"), "utf8")) as Record<string, unknown>
@@ -261,4 +282,73 @@ test("controlled live solve rejects an out-of-scope patch before workspace mutat
   assert.equal(await readFile(join(workspace, "README.md"), "utf8"), "Kodac controlled live solve fixture\n")
   const result = JSON.parse(output.at(-1) ?? "{}") as Record<string, unknown>
   assert.equal(result.status, "STOPPED")
+})
+
+test("controlled live solve consumes nested solve assistant/proof while preserving outer human semantics", async () => {
+  const { workspace, evidence, report } = await fixture()
+  const provider = new CompletedOpenAIProvider()
+  const output: string[] = []
+  const errors: string[] = []
+  const code = await runControlledLiveSolve(
+    [
+      "task",
+      "--provider", "openai",
+      "--model", "gpt-test",
+      "--qualification-report", report,
+      "--workspace", workspace,
+      "--evidence-dir", evidence,
+      "--allow-write-path", "README.md",
+      "--approve-writes",
+      "--approve-verification",
+    ],
+    {},
+    { stdout(line) { output.push(line) }, stderr(line) { errors.push(line) } },
+    workspace,
+    { modelProvider: provider, now: () => NOW },
+  )
+  assert.equal(code, 3, errors.join("\n"))
+  assert.equal(provider.calls, 1)
+  assert.deepEqual(errors, [])
+  assert.equal(output[0], "controlled answer")
+  assert.ok(output.includes("Controlled live solve: NOT_READY"))
+  const proofLine = output.find((line) => line.startsWith("Proof: "))
+  assert.ok(proofLine)
+  const controlledReportLine = output.find((line) => line.startsWith("Controlled report: "))
+  assert.ok(controlledReportLine)
+  const controlled = JSON.parse(await readFile(controlledReportLine.slice("Controlled report: ".length), "utf8")) as {
+    solve: { protocol: string; command: string; status: string; proven: boolean; payload: { assistant: string }; evidence: { proof: string } }
+  }
+  assert.equal(controlled.solve.protocol, "kodac.cli-result")
+  assert.equal(controlled.solve.command, "solve")
+  assert.equal(controlled.solve.status, "NOT_READY")
+  assert.equal(controlled.solve.proven, false)
+  assert.equal(controlled.solve.payload.assistant, "controlled answer")
+  assert.equal(controlled.solve.evidence.proof, proofLine.slice("Proof: ".length))
+})
+
+test("controlled live solve structured-result parser validates solve envelopes and fails closed", () => {
+  const solve = buildP8CliResultEnvelope({
+    command: "solve",
+    sessionId: "controlled-parser-session",
+    status: "STOPPED",
+    proven: false,
+    evidence: { events: "/tmp/events.jsonl", receipts: "/tmp/receipts.jsonl" },
+    payload: {
+      reason: "max_failures",
+      budget: { turnsUsed: 1, toolCallsUsed: 0, failuresUsed: 1, elapsedMs: 1 },
+    },
+  })
+  assert.deepEqual(parseControlledSolvePayload([JSON.stringify(solve)]), solve)
+
+  const ask = buildP8CliResultEnvelope({
+    command: "ask",
+    sessionId: "controlled-parser-ask",
+    status: "COMPLETE",
+    proven: false,
+    evidence: { events: "/tmp/events.jsonl" },
+    payload: { provider: "fixture", model: "fixture/model", assistant: "answer" },
+  })
+  assert.equal(parseControlledSolvePayload([JSON.stringify(ask)]), undefined)
+  assert.equal(parseControlledSolvePayload([JSON.stringify({ ...solve, protocol: "not-kodac" })]), undefined)
+  assert.equal(parseControlledSolvePayload(["not-json"]), undefined)
 })

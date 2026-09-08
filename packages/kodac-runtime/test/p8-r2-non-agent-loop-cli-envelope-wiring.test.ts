@@ -108,29 +108,3 @@ test("P8-R2 preserves human-readable apply-patch and ask output", async () => {
   assert.match(ask.out[1], /^Evidence: .*events\.jsonl$/)
   assert.equal(ask.out.some((line) => line.includes("kodac.cli-result")), false)
 })
-
-test("P8-R2 leaves solve --json on its pre-existing legacy top-level shape", async () => {
-  const workspace = await mkdtemp(join(tmpdir(), "kodac-p8-r2-solve-workspace-"))
-  const evidence = await mkdtemp(join(tmpdir(), "kodac-p8-r2-solve-evidence-"))
-  const captured = capture()
-  const code = await runCli(
-    ["solve", "inspect this", "--workspace", workspace, "--evidence-dir", evidence, "--json"],
-    captured.io,
-    workspace,
-  )
-
-  assert.equal(code, 3, captured.err.join("\n"))
-  assert.deepEqual(captured.err, [])
-  assert.equal(captured.out.length, 1)
-  const value = JSON.parse(captured.out[0]) as Record<string, unknown>
-  assert.equal(value.status, "NOT_READY")
-  assert.equal(value.proven, false)
-  assert.equal(value.provider, "fixture")
-  assert.equal(value.model, "fixture/deterministic-v1")
-  assert.equal(typeof value.assistant, "string")
-  assert.equal(typeof value.evidence, "object")
-  assert.equal(Object.hasOwn(value, "protocol"), false)
-  assert.equal(Object.hasOwn(value, "version"), false)
-  assert.equal(Object.hasOwn(value, "command"), false)
-  assert.equal(Object.hasOwn(value, "payload"), false)
-})

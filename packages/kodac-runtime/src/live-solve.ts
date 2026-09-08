@@ -19,6 +19,7 @@ import {
   type ModelProviderResponse,
 } from "./model/provider.ts"
 import { verifyProviderQualificationReport, type QualifiedProviderAuthorization } from "./provider-qualification-gate.ts"
+import { validateP8CliResultEnvelope, type P8CliResultEnvelope } from "./product/p8-cli-result-envelope.ts"
 
 interface LiveSolveArgs {
   task: string
@@ -258,16 +259,33 @@ function authorizationArtifact(
   return { ...core, authorizationDigest: sha256(stableJson(core)) }
 }
 
-function parseSolvePayload(lines: string[]): Record<string, unknown> | undefined {
+type SolveCliResultEnvelope = Extract<P8CliResultEnvelope, { command: "solve" }>
+
+export function parseControlledSolvePayload(lines: string[]): SolveCliResultEnvelope | undefined {
   for (let index = lines.length - 1; index >= 0; index--) {
+    let value: unknown
     try {
-      const value = JSON.parse(lines[index])
-      if (value && typeof value === "object" && !Array.isArray(value)) return value as Record<string, unknown>
+      value = JSON.parse(lines[index])
     } catch {
-      // Continue searching for the structured solve result.
+      continue
+    }
+    if (!value || typeof value !== "object" || Array.isArray(value)) continue
+    try {
+      const envelope = validateP8CliResultEnvelope(value)
+      return envelope.command === "solve" ? envelope : undefined
+    } catch {
+      return undefined
     }
   }
   return undefined
+}
+
+function solveAssistant(solve: SolveCliResultEnvelope | undefined): string | undefined {
+  return solve && solve.status !== "STOPPED" ? solve.payload.assistant : undefined
+}
+
+function solveProof(solve: SolveCliResultEnvelope | undefined): string | undefined {
+  return solve && solve.status !== "STOPPED" ? solve.evidence.proof : undefined
 }
 
 export async function runControlledLiveSolve(
@@ -332,7 +350,7 @@ export async function runControlledLiveSolve(
       cwd,
       { modelProvider },
     )
-    const solve = parseSolvePayload(capturedOut)
+    const solve = parseControlledSolvePayload(capturedOut)
     const completedAt = new Date(runtimeOptions.now?.() ?? Date.now()).toISOString()
     const reportCore = {
       protocol: "kodac.controlled-live-solve",
@@ -378,17 +396,15 @@ export async function runControlledLiveSolve(
         exitCode,
       }))
     } else {
-      if (typeof solve?.assistant === "string" && solve.assistant) io.stdout(solve.assistant)
+      const assistant = solveAssistant(solve)
+      if (assistant) io.stdout(assistant)
       io.stdout(`Controlled live solve: ${String(solve?.status ?? "ERROR")}`)
       io.stdout(`Write scope: ${args.allowedWritePaths.join(", ")}`)
       io.stdout(`Qualification: ${args.qualificationReport}`)
       io.stdout(`Authorization: ${authorizationPath}`)
       io.stdout(`Controlled report: ${controlledReportPath}`)
-      const evidence = solve?.evidence
-      if (evidence && typeof evidence === "object" && !Array.isArray(evidence)) {
-        const proof = (evidence as Record<string, unknown>).proof
-        if (typeof proof === "string") io.stdout(`Proof: ${proof}`)
-      }
+      const proof = solveProof(solve)
+      if (proof) io.stdout(`Proof: ${proof}`)
       for (const line of capturedErr) io.stderr(line)
     }
     return exitCode
