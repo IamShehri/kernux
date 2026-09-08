@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-done-gate-proof-binding.schema.json",
+  "title": "Kodac P7-R30 Done Gate Proof Binding",
+  "description": "Structural interoperability projection for the bounded P7-R30 proof binding. Schema acceptance is not Done Gate execution, authority transfer, release authority, or project completion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "proofIdentity",
+    "state",
+    "repositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "p7VerificationReportBindingIdentity",
+    "p7VerificationReportIdentity",
+    "p7ToK5ReconciliationEvidenceIdentity",
+    "k5PackageIdentity",
+    "k5JudgmentIdentity",
+    "k5ReconciliationIdentity",
+    "doneGateStatus",
+    "doneGateEvidence"
+  ],
+  "properties": {
+    "version": {
+      "const": "p7-r30-done-gate-proof-binding-v1"
+    },
+    "proofIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "state": {
+      "const": "P7_DONE_GATE_PROOF_BOUND_ONLY"
+    },
+    "repositoryIdentity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^[^\\u0000-\\u001F\\u007F]+$"
+    },
+    "canonicalBase": {
+      "$ref": "#/$defs/gitObject"
+    },
+    "targetHead": {
+      "$ref": "#/$defs/gitObject"
+    },
+    "p7VerificationReportBindingIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "p7VerificationReportIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "p7ToK5ReconciliationEvidenceIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "k5PackageIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "k5JudgmentIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "k5ReconciliationIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "doneGateStatus": {
+      "const": "PROVEN_READY"
+    },
+    "doneGateEvidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1536,
+      "items": {
+        "$ref": "#/$defs/evidenceRef"
+      }
+    }
+  },
+  "$defs": {
+    "gitObject": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref"],
+      "properties": {
+        "kind": {
+          "enum": ["receipt", "artifact", "event", "workspace"]
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^[^\\u0000-\\u001F\\u007F]+$"
+        },
+        "digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}
