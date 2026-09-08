@@ -208,8 +208,9 @@ test("P7-R25 requires exactly one applicability record for every canonical risk"
   const base = applicability()
   const prescan = prescanInput()
   assert.throws(() => buildP7RiskCoverageEvidenceBinding(r25Input(prescan, base.slice(1))), /exactly one applicability record/)
+  const duplicate = { ...base[0]!, evidenceIdentities: [...base[0]!.evidenceIdentities] }
   assert.throws(
-    () => buildP7RiskCoverageEvidenceBinding(r25Input(prescan, [...base, { ...base[0]! } ])),
+    () => buildP7RiskCoverageEvidenceBinding(r25Input(prescan, [...base, duplicate])),
     /duplicate risk|at most 16|exactly one applicability record/,
   )
   assert.throws(
