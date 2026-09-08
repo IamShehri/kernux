@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p7-k5-reconciliation-evidence-binding.schema.json",
+  "title": "Kodac P7-R29 P7-to-K5 Reconciliation Evidence Binding",
+  "description": "Structural interoperability schema for the bounded P7-R29 P7-to-K5 reconciliation evidence-binding output. Schema acceptance is not Done Gate proof, PROVEN_READY, approval, merge authority, release authority, or project completion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "evidenceIdentity",
+    "state",
+    "repositoryIdentity",
+    "canonicalBase",
+    "targetHead",
+    "targetTree",
+    "changedPathSetIdentity",
+    "reviewUniverseIdentity",
+    "p7CompletenessEvidenceIdentity",
+    "k5PackageIdentity",
+    "k5JudgmentIdentity",
+    "k5ReconciliationIdentity",
+    "bridgeRequirementId",
+    "bridgeEvidenceId",
+    "k5PackageStatus",
+    "k5R4Status"
+  ],
+  "properties": {
+    "version": {
+      "const": "p7-r29-p7-k5-reconciliation-evidence-binding-v1"
+    },
+    "evidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "state": {
+      "const": "P7_TO_K5_RECONCILIATION_EVIDENCE_BOUND_ONLY"
+    },
+    "repositoryIdentity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "canonicalBase": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "targetHead": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "targetTree": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "changedPathSetIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reviewUniverseIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "p7CompletenessEvidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "k5PackageIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "k5JudgmentIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "k5ReconciliationIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "bridgeRequirementId": {
+      "const": "p7.full-exact-head-review-completeness"
+    },
+    "bridgeEvidenceId": {
+      "const": "p7-r28.full-exact-head-review-completeness"
+    },
+    "k5PackageStatus": {
+      "const": "SUFFICIENT_PACKAGE"
+    },
+    "k5R4Status": {
+      "const": "NOT_APPLICABLE"
+    }
+  }
+}
