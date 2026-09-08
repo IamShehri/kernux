@@ -17,6 +17,7 @@ import { FixtureModelProvider } from "./model/fixture.ts"
 import { ProviderRegistry, type ModelProvider } from "./model/provider.ts"
 import { AgentTurnRunner } from "./model/turn.ts"
 import { JsonlEventSink } from "./protocol/event.ts"
+import { buildP8CliResultEnvelope } from "./product/p8-cli-result-envelope.ts"
 import { RuntimeOrchestrator } from "./runtime/orchestrator.ts"
 import { RuntimeSession } from "./session/session.ts"
 import { createApplyPatchTool, type ApplyPatchToolInput, type ApplyPatchToolOutput } from "./tools/apply-patch.ts"
@@ -354,14 +355,14 @@ async function runApplyPatch(args: ApplyPatchArgs, io: CliIO, activateSession: A
   await session.complete({ receiptId: result.receipt.receiptId, tool: "repo.apply_patch", mode: "tool", verified: false })
 
   if (args.json) {
-    io.stdout(JSON.stringify({
+    io.stdout(JSON.stringify(buildP8CliResultEnvelope({
+      command: "apply-patch",
+      sessionId,
       status: "PATCH_APPLIED",
       proven: false,
-      sessionId,
-      affected: result.affected,
-      receiptId: result.receipt.receiptId,
       evidence: { events: eventPath, receipts: receiptPath },
-    }))
+      payload: { affected: result.affected, receiptId: result.receipt.receiptId },
+    })))
   } else {
     io.stdout(`Session: ${sessionId}`)
     io.stdout("✓ intent created")
@@ -402,14 +403,18 @@ async function runAsk(
   await session.complete({ mode: "model_turn", provider: args.provider, model: args.model })
 
   if (args.json) {
-    io.stdout(JSON.stringify({
-      status: "COMPLETE",
+    io.stdout(JSON.stringify(buildP8CliResultEnvelope({
+      command: "ask",
       sessionId,
-      provider: args.provider,
-      model: args.model,
-      assistant: result.assistant,
+      status: "COMPLETE",
+      proven: false,
       evidence: { events: eventPath },
-    }))
+      payload: {
+        provider: args.provider,
+        model: args.model,
+        assistant: result.assistant,
+      },
+    })))
   } else {
     io.stdout(result.assistant)
     io.stdout(`Evidence: ${eventPath}`)
