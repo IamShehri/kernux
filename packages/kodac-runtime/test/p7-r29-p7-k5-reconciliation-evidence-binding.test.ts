@@ -235,13 +235,15 @@ test("P7-R29 deterministically binds fully revalidated R28 completeness into can
 test("P7-R29 fails closed on foreign K5 revision/package identity and noncanonical judgment or reconciliation", async () => {
   await withCanonicalBridge(async ({ input, p7 }) => {
     const foreignHead = p7.targetHead === "d".repeat(40) ? "e".repeat(40) : "d".repeat(40)
-    const foreignPackageInput = bridgePackageInput(p7)
-    foreignPackageInput.revision = { ...foreignPackageInput.revision, candidateHead: foreignHead }
-    foreignPackageInput.evidence = foreignPackageInput.evidence.map((evidence) => ({
-      ...evidence,
-      candidateHead: foreignHead,
-    }))
-    const foreignPackage = createK5R1ProofPackage(foreignPackageInput)
+    const canonicalPackageInput = bridgePackageInput(p7)
+    const foreignPackage = createK5R1ProofPackage({
+      ...canonicalPackageInput,
+      revision: { ...canonicalPackageInput.revision, candidateHead: foreignHead },
+      evidence: canonicalPackageInput.evidence.map((evidence) => ({
+        ...evidence,
+        candidateHead: foreignHead,
+      })),
+    })
     const foreignK5 = canonicalK5Inputs(foreignPackage)
 
     await assert.rejects(
@@ -257,14 +259,20 @@ test("P7-R29 fails closed on foreign K5 revision/package identity and noncanonic
     const tamperedJudgment = structuredClone(input.sourceK5R1ProofJudgment) as MutableRecord
     tamperedJudgment.status = "INSUFFICIENT_PACKAGE"
     await assert.rejects(
-      buildP7ToK5ReconciliationEvidenceBinding({ ...input, sourceK5R1ProofJudgment: tamperedJudgment }),
+      buildP7ToK5ReconciliationEvidenceBinding({
+        ...input,
+        sourceK5R1ProofJudgment: tamperedJudgment as unknown as typeof input.sourceK5R1ProofJudgment,
+      }),
       TypeError,
     )
 
     const tamperedReconciliation = structuredClone(input.sourceK5R4ProofStateReconciliation) as MutableRecord
     tamperedReconciliation.status = "VALID"
     await assert.rejects(
-      buildP7ToK5ReconciliationEvidenceBinding({ ...input, sourceK5R4ProofStateReconciliation: tamperedReconciliation }),
+      buildP7ToK5ReconciliationEvidenceBinding({
+        ...input,
+        sourceK5R4ProofStateReconciliation: tamperedReconciliation as unknown as typeof input.sourceK5R4ProofStateReconciliation,
+      }),
       TypeError,
     )
   })
@@ -277,14 +285,15 @@ test("P7-R29 requires convergent R28 build lineage and rejects hostile top-level
     await assert.rejects(
       buildP7ToK5ReconciliationEvidenceBinding({
         ...input,
-        sourceP7FullExactHeadReviewCompletenessEvidenceBindingBuildInput: mismatchedR28Input,
+        sourceP7FullExactHeadReviewCompletenessEvidenceBindingBuildInput:
+          mismatchedR28Input as unknown as typeof input.sourceP7FullExactHeadReviewCompletenessEvidenceBindingBuildInput,
       }),
       TypeError,
     )
 
-    const proxyInput = new Proxy(input as MutableRecord, {})
+    const proxyInput = new Proxy(input as unknown as MutableRecord, {})
     await assert.rejects(
-      buildP7ToK5ReconciliationEvidenceBinding(proxyInput as P7ToK5ReconciliationEvidenceBindingBuildInput),
+      buildP7ToK5ReconciliationEvidenceBinding(proxyInput as unknown as P7ToK5ReconciliationEvidenceBindingBuildInput),
       /Proxy/,
     )
 
@@ -294,7 +303,7 @@ test("P7-R29 requires convergent R28 build lineage and rejects hostile top-level
       get: () => input.sourceK5R1ProofPackage,
     })
     await assert.rejects(
-      buildP7ToK5ReconciliationEvidenceBinding(accessorInput as P7ToK5ReconciliationEvidenceBindingBuildInput),
+      buildP7ToK5ReconciliationEvidenceBinding(accessorInput as unknown as P7ToK5ReconciliationEvidenceBindingBuildInput),
       /enumerable data property/,
     )
 
