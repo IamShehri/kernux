@@ -182,9 +182,10 @@ test("P7-R28 deterministically composes exact R20-R27 lineage into one bounded n
     const reorderedR27 = structuredClone(input.sourceProviderAttemptTerminationEvidenceBindingInput) as MutableRecord
     reorderedR27.provenanceEvidence.reverse()
     reorderedR27.attempt.retryLineageEvidenceIdentities.reverse()
+    const reorderedR27Input = reorderedR27 as P7ProviderAttemptTerminationEvidenceBindingBuildInput
     const reorderedInput: P7FullExactHeadReviewCompletenessEvidenceBindingBuildInput = {
-      sourceProviderAttemptTerminationEvidenceBinding: await buildP7ProviderAttemptTerminationEvidenceBinding(reorderedR27),
-      sourceProviderAttemptTerminationEvidenceBindingInput: reorderedR27 as P7ProviderAttemptTerminationEvidenceBindingBuildInput,
+      sourceProviderAttemptTerminationEvidenceBinding: await buildP7ProviderAttemptTerminationEvidenceBinding(reorderedR27Input),
+      sourceProviderAttemptTerminationEvidenceBindingInput: reorderedR27Input,
     }
     const second = await buildP7FullExactHeadReviewCompletenessEvidenceBinding(reorderedInput)
 
@@ -273,7 +274,10 @@ test("P7-R28 fails closed on unknown reviewable path debt, risk debt, provider c
     const prescanInput = missingPathR26.riskCoverageBuildInput.securityPrescanBuildInput
     prescanInput.reviewUniverseBuildInput.changedPaths[0].path = "src/missing-from-r22-context.ts"
     prescanInput.sources[0].path = "src/missing-from-r22-context.ts"
-    const missingInput = await replaceR26(baseR27, rebuildSkillCoverageLineage(missingPathR26))
+    const missingInput = await replaceR26(
+      baseR27,
+      rebuildSkillCoverageLineage(missingPathR26 as P7SkillCoverageEvidenceBindingBuildInput),
+    )
     await assert.rejects(
       buildP7FullExactHeadReviewCompletenessEvidenceBinding(missingInput),
       /unknownCoveragePaths.*missing exact R22 context/,
@@ -283,7 +287,10 @@ test("P7-R28 fails closed on unknown reviewable path debt, risk debt, provider c
     const firstRisk = riskDebtR26.riskCoverageBuildInput.riskApplicability[0]
     firstRisk.applicability = "UNKNOWN"
     firstRisk.evidenceIdentities = []
-    const riskDebtInput = await replaceR26(baseR27, rebuildSkillCoverageLineage(riskDebtR26))
+    const riskDebtInput = await replaceR26(
+      baseR27,
+      rebuildSkillCoverageLineage(riskDebtR26 as P7SkillCoverageEvidenceBindingBuildInput),
+    )
     await assert.rejects(
       buildP7FullExactHeadReviewCompletenessEvidenceBinding(riskDebtInput),
       /riskCoverageState.*ACCOUNTED_NO_UNCOVERED_OR_UNKNOWN/,
