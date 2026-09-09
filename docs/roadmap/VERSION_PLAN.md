@@ -96,6 +96,8 @@ P8_R4_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSE
 
 Qualification requires one unchanged exact head, exactly five authorized paths, no sixth path, frozen blobs, unchanged historical records, preserved P8-R4 first local failure, applicable required CI, clean substantive review, zero actionable defects/threads, active no-bypass ruleset `20707483`, exact expected-head guarded normal merge, external post-merge proof, and `WAIVER = NO`.
 
+Mandatory external post-merge proof is required before this reconciliation may become `CLOSED_CANONICAL`. This candidate cannot certify its own closure.
+
 ---
 
 ## Bounded P8 version meaning
@@ -105,9 +107,19 @@ PROTOCOL = kodac.cli-result
 VERSION = 1
 COMMANDS = apply-patch | ask | solve
 P8_R1_SCOPE = PURE_DATA_ONLY_MACHINE_READABLE_CLI_RESULT_ENVELOPE_FOUNDATION
-P8_R2_SCOPE = NON_AGENT_LOOP_CLI_ENVELOPE_WIRING_ONLY
+P8_R2_SCOPE = NON_AGENT_LOOP_CLI_RESULT_ENVELOPE_WIRING_ONLY
 P8_R3_SCOPE = SOLVE_JSON_ENVELOPE_WIRING_AND_CONTROLLED_LIVE_SOLVE_CONSUMER_ADAPTATION_ONLY
 P8_R4_SCOPE = EXACT_LOCAL_CLI_HELP_ONLY
+APPLY_PATCH_JSON = P8_R1_ENVELOPE_WIRED
+ASK_JSON = P8_R1_ENVELOPE_WIRED / proven=false
+SOLVE_JSON = P8_R1_ENVELOPE_WIRED / STOPPED | NOT_READY | PROVEN_READY
+COMPLETED_SOLVE_OVERSIZED_WARNING_REASON_TRANSPORT = DETERMINISTIC_BOUNDED_SHA256_BOUND_PROJECTION
+COMPLETE_PLAN_WARNINGS = PRESERVED_IN_EXISTING_PLAN_ARTIFACT
+COMPLETE_DONE_GATE_REASONS = PRESERVED_IN_EXISTING_PROOF_ARTIFACT
+CONTROLLED_LIVE_SOLVE = VALIDATES_AND_CONSUMES_CANONICAL_COMMAND_SOLVE_ENVELOPE
+SOLVE_HUMAN_OUTPUT = UNCHANGED
+EXISTING_COMMAND_CLI_EXIT_CODES = UNCHANGED
+P8_R1_CONTRACT_SCHEMA = UNCHANGED
 EXACT_HELP_INVOCATION = kodac --help
 HELP_EXIT_CODE = 0
 HELP_STDERR = EMPTY
@@ -122,9 +134,10 @@ UNKNOWN_COMMAND_USAGE_ERROR_EXIT_1 = PRESERVED
 PACKAGE_NAME_VERSION_CHANGE = NOT_AUTHORIZED
 PACKAGE_PUBLICATION = NOT_AUTHORIZED
 PUBLIC_RELEASE_DEPLOYMENT = NOT_AUTHORIZED
+DONE_GATE_IMPLEMENTATION_AND_ALGORITHM = UNCHANGED
 ```
 
-The word `VERSION` above is the version of the existing `kodac.cli-result` protocol. It is not package-version, release-version, `--version`, package publication, or public release authority.
+The word `VERSION` above is the version of the existing `kodac.cli-result` protocol. It is not package-version, release-version, `--version`, package publication, or public release authority. P8-R1 through P8-R3 envelope semantics and bounded transport-projection semantics remain unchanged; P8-R4 added exact local `kodac --help` only.
 
 ---
 
@@ -169,6 +182,7 @@ PROVIDER_RETRY_REPLAY_RESUME = NOT_AUTHORIZED
 PROVIDER_SPEND = NOT_AUTHORIZED
 SECRET_ACCESS = NOT_AUTHORIZED
 NETWORK_ACCESS = NOT_AUTHORIZED
+FILESYSTEM_WRITE_AUTHORITY = NOT_AUTHORIZED_BY_THIS_RECONCILIATION
 PERSISTENCE_DATABASE_TELEMETRY_UPLOAD_LEARNING = NOT_AUTHORIZED
 FURTHER_SOLVE_JSON_SEMANTIC_EXPANSION = NOT_AUTHORIZED
 CONTROLLED_LIVE_SOLVE_AUTHORITY_EXPANSION = NOT_AUTHORIZED
@@ -189,5 +203,27 @@ RULESET_CHANGE_BYPASS = NOT_AUTHORIZED
 PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
+
+Required non-equivalences remain:
+
+```text
+PROTOCOL_VERSION != PACKAGE_VERSION
+P8_R4_IMPLEMENTATION_CLOSED != P8_PRODUCT_DISTRIBUTION_HARDENING_CLOSED
+P8_R4_IMPLEMENTATION_CLOSED != P8_R5_PLUS_AUTHORITY
+P8_R4_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
+CURRENT_VIEW_RECONCILIATION != SUCCESSOR_IMPLEMENTATION_AUTHORITY
+CURRENT_VIEW_RECONCILIATION != RELEASE_AUTHORITY
+P8_CLI_RESULT_ENVELOPE != INDEPENDENT_PROOF
+P8_CLI_RESULT_STATUS != DONE_GATE_AUTHORITY
+BOUNDED_TRANSPORT_PROJECTION != COMPLETE_EVIDENCE_ARTIFACT
+PLANNING_DIRECTION != IMPLEMENTATION_AUTHORITY
+POST_MERGE_PROOF != SUCCESSOR_AUTHORITY
+PROVEN_READY != MERGE_AUTHORITY
+PROVEN_READY != RELEASE_AUTHORITY
+PROVEN_READY != PROJECT_COMPLETION
+EVIDENCE_BINDING != AUTHORITY_TRANSFER
+```
+
+Historical P7 R1-R30 authorization/evidence/repair/anomaly records and all earlier canonical program records remain authoritative and unchanged in their dedicated sources. Omission from this condensed current view is not erasure, relabeling, supersession, waiver, or authority.
 
 After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No package/version change, `--version`, P8-R5+, P9, release, publication, deployment, or project-completion authority may be inferred from this version-plan view or reconciliation closure.
