@@ -214,9 +214,37 @@ K2_SIDE_EFFECT_AUTHORITY_CHANGE = NO
 
 The fallback may occur only after the existing ask session exists because the canonical CLI already creates the session before model execution. It must use existing evidence/session primitives only; no event protocol type or evidence schema change is authorized.
 
-If the underlying provider path emitted an existing `model.failed` event before surfacing the eligible missing-credential error, that historical event must remain preserved. The fallback must not delete, relabel, rewrite, or conceal it.
+If the underlying provider path emitted an existing `model.failed` event before surfacing the eligible missing-credential error, that historical event must remain preserved. The fallback must not delete, relabel, rewrite, or conceal it. Some eligible failures may arise before `AgentTurnRunner` has emitted `model.failed`; this unit does not authorize fabricating that event when canonical execution did not emit it.
 
-The successful fallback terminal may use the existing `session.completed` event with a bounded mode/value that clearly distinguishes static fallback from a provider-generated model turn. No new event type is authorized.
+### Exact terminal-event compatibility boundary
+
+Canonical `RuntimeSession.complete()` has a closed TypeScript `mode` union (`tool | model_turn | agent_loop`) and is outside the future allowlist. Canonical `RuntimeSession.emit(...)` is the existing generic event primitive, and canonical evidence tests already prove that the existing `session.completed` event type accepts bounded payload data without a closed `mode` schema.
+
+The future implementation must therefore terminalize the static fallback from `cli.ts` by emitting the existing event type directly, exactly in this semantic form:
+
+```text
+session.emit("session.completed", {
+  status: "complete",
+  mode: "static_fallback"
+})
+```
+
+Required constraints:
+
+```text
+RuntimeSession.complete SIGNATURE = UNCHANGED
+packages/kodac-runtime/src/session/session.ts = BYTE_IDENTICAL_TO_AUTHORIZATION_BASE
+packages/kodac-runtime/src/protocol/event.ts = BYTE_IDENTICAL_TO_AUTHORIZATION_BASE
+NEW_EVENT_TYPE = NO
+session.failed AFTER_ELIGIBLE_FALLBACK = NO
+session.completed COUNT_FOR_ELIGIBLE_FALLBACK = EXACTLY_1
+session.completed.mode = static_fallback
+session.completed.status = complete
+session.completed.provider = ABSENT
+session.completed.model = ABSENT
+```
+
+The static terminal event must not imply that a model/provider produced the fallback text. No new event type or session helper signature is authorized.
 
 The implementation must not claim that a model answered, that fixture generated the result, that the request was proven, or that Kodac is globally offline.
 
@@ -294,10 +322,11 @@ The new test file must prove at least:
 13. `apply-patch --static-fallback` is rejected.
 14. fallback static output does not contain prompt content, credential material, provider/model identifiers, or claims of model generation.
 15. no fixture provider is invoked as fallback.
-16. fallback evidence preserves any existing `model.failed` event and terminates via existing session machinery without adding a new event type.
-17. `packages/kodac-runtime/src/product/p8-cli-result-envelope.ts` remains byte-identical to canonical base.
-18. the existing P8-R4 help test changes only as necessary to freeze the newly authorized `ask` help text and the human-output-only boundary, while preserving all prior deterministic/side-effect-free/alias/usage assertions.
-19. existing P8 result-envelope, ask, solve, runtime-spine, provider, agent-loop, governance, and K2 tests remain green on the exact implementation head.
+16. fallback evidence preserves any existing `model.failed` event when canonical execution emitted it, does not fabricate one when failure arose earlier, and terminates with exactly one existing `session.completed` event whose payload is exactly bounded to `status=complete` and `mode=static_fallback` with no provider/model fields.
+17. `packages/kodac-runtime/src/session/session.ts` and `packages/kodac-runtime/src/protocol/event.ts` remain byte-identical to canonical authorization base.
+18. `packages/kodac-runtime/src/product/p8-cli-result-envelope.ts` remains byte-identical to canonical authorization base.
+19. the existing P8-R4 help test changes only as necessary to freeze the newly authorized `ask` help text and the human-output-only boundary, while preserving all prior deterministic/side-effect-free/alias/usage assertions.
+20. existing P8 result-envelope, ask, solve, runtime-spine, provider, agent-loop, governance, and K2 tests remain green on the exact implementation head.
 
 Tests must use injected/local deterministic providers only. Qualification must not invoke a real provider/model, read a real credential, perform external network access, or incur provider spend.
 
