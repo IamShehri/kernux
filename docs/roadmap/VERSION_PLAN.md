@@ -4,7 +4,7 @@
 
 This is a current planning/status view. It does not create implementation, execution, dependency, provider/model, persistence, benchmark, successor, merge, release, or project-completion authority.
 
-Live GitHub, root `AGENTS.md`, and exact canonical authorization/evidence records override this page.
+Live GitHub, root `AGENTS.md`, `docs/roadmap/NEXT.md`, and exact canonical authorization/evidence records override this page.
 
 ---
 
@@ -54,9 +54,16 @@ P8-R3 BOUNDED-MESSAGE COMPATIBILITY AMENDMENT = CLOSED_CANONICAL / PR #495 / pro
 P8-R3 SOLVE CLI RESULT ENVELOPE WIRING IMPLEMENTATION = CLOSED_CANONICAL / PR #496 / merge 5b8caf8d1e75beff8cd47a4ee5fdf125e34aa6d3 / proof 5593082712
 POST-P8-R3 SUCCESSOR/CURRENT-VIEW ANALYSIS = PR #496 / comment 5593100818 / ANALYSIS_ONLY
 P8-R3 POST-MERGE CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #497 / merge 7df65f246ef584ff352b91f8b7c9e73771ac9acd / proof 5593164802
-P8-R3 POST-MERGE CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P8-R3 POST-MERGE CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #498 / merge 32124d9264704805cdbb4e25d893c5d6ec0523a5 / proof 5593301740
+POST-P8-R3-RECONCILIATION SUCCESSOR ANALYSIS = PR #498 / comment 5593354435 / ANALYSIS_ONLY
+P8-R4 LOCAL CLI HELP AUTHORIZATION = CLOSED_CANONICAL / PR #499 / merge f2268e52e5efe24e4d97780ceb25aa9f47704705 / proof 5593419034
+P8-R4 LOCAL CLI HELP IMPLEMENTATION = CLOSED_CANONICAL / PR #500 / merge cc1653acc2ae35c353d04207441877d2888602f4 / proof 5593608278
+POST-P8-R4 CURRENT-VIEW ANALYSIS = PR #500 / comment 5593623581 / ANALYSIS_ONLY
+P8-R4 POST-MERGE CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #501 / merge 49a04e30804486f08e220db7e2c86c2d96293838 / proof 5593658679
+P8-R4 POST-MERGE CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
-P8-R4+ = NOT_AUTHORIZED_BY_NUMBERING
+P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
+P9 = NOT_AUTHORIZED_BY_IMPLICATION
 
 PUBLIC RELEASE / PACKAGE PUBLICATION / DEPLOYMENT = NOT_AUTHORIZED
 PROJECT COMPLETION = NOT_ESTABLISHED
@@ -67,11 +74,11 @@ All still-effective predecessor state and non-grants remain in force. Omission f
 
 ---
 
-## Active unit — P8-R3 post-merge current-view reconciliation candidate
+## Active version-plan unit — P8-R4 post-merge current-view reconciliation candidate
 
-Canonical authority exists only through PR #497 / post-merge proof `5593164802`.
+Canonical authority exists only through PR #501 / post-merge proof `5593658679`.
 
-This candidate may modify exactly:
+The exact authorized candidate paths are:
 
 ```text
 docs/roadmap/NEXT.md
@@ -81,92 +88,62 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized.
-
-The candidate may only reconcile these views to already-proven truth by binding:
-
-- P8-R2 post-merge current-view reconciliation as `CLOSED_CANONICAL / PR #493 / proof 5592657114`;
-- post-P8-R2-reconciliation successor analysis as `PR #493 / comment 5592680727 / ANALYSIS_ONLY`;
-- P8-R3 authorization as `CLOSED_CANONICAL / PR #494 / proof 5592724962`;
-- P8-R3 implementation compatibility analysis as `PR #494 / comment 5592826024 / ANALYSIS_ONLY`;
-- P8-R3 bounded-message compatibility amendment as `CLOSED_CANONICAL / PR #495 / proof 5592874704`;
-- bounded P8-R3 implementation as `CLOSED_CANONICAL / PR #496 / merge 5b8caf8d1e75beff8cd47a4ee5fdf125e34aa6d3 / proof 5593082712`;
-- post-P8-R3 successor/current-view analysis as `PR #496 / comment 5593100818 / ANALYSIS_ONLY`;
-- P8-R3 current-view reconciliation authorization as `CLOSED_CANONICAL / PR #497 / merge 7df65f246ef584ff352b91f8b7c9e73771ac9acd / proof 5593164802`.
-
-For its own result it must remain candidate-safe until external post-merge proof:
+No sixth path is authorized. The reconciliation may only bind already-proven P8-R3/P8-R4 truth, preserve the real P8-R4 unsupported Node 22 first-attempt failure, preserve all still-effective authority boundaries, and keep its own state candidate-safe:
 
 ```text
-P8_R3_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P8_R4_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
-Before guarded merge, one unchanged exact head must prove:
-
-```text
-BASE == CURRENT_CANONICAL_MAIN
-BEHIND_BY = 0
-CHANGED_PATHS = EXACTLY_5_AUTHORIZED_PATHS
-NO_SIXTH_PATH = PASS
-ALL_FIVE_BLOBS = FROZEN
-HISTORICAL_AUTHORIZATION_EVIDENCE_RUNTIME_RECORDS = UNCHANGED
-REQUIRED_CI = TERMINAL_SUCCESS OR CANONICALLY_PROVEN NONAPPLICABILITY
-SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
-KNOWN_ACTIONABLE_DEFECTS = 0
-UNRESOLVED_ACTIONABLE_REVIEW_THREADS = 0
-REQUIRED_EXTERNAL_SEMANTIC_REVIEW_COUNT = 0
-RULESET_20707483 = ACTIVE / NO_BYPASS
-EXPECTED_HEAD_GUARDED_MERGE = REQUIRED
-WAIVER = NO
-```
-
-Mandatory external post-merge proof is required before this reconciliation may become `CLOSED_CANONICAL`. This candidate cannot certify its own closure.
+Qualification requires one unchanged exact head, exactly five authorized paths, no sixth path, frozen blobs, unchanged historical records, preserved P8-R4 first local failure, applicable required CI, clean substantive review, zero actionable defects/threads, active no-bypass ruleset `20707483`, exact expected-head guarded normal merge, external post-merge proof, and `WAIVER = NO`.
 
 ---
 
-## Bounded P8 result-envelope meaning
+## Bounded P8 version meaning
 
 ```text
 PROTOCOL = kodac.cli-result
 VERSION = 1
 COMMANDS = apply-patch | ask | solve
 P8_R1_SCOPE = PURE_DATA_ONLY_MACHINE_READABLE_CLI_RESULT_ENVELOPE_FOUNDATION
-P8_R2_SCOPE = NON_AGENT_LOOP_CLI_RESULT_ENVELOPE_WIRING_ONLY
+P8_R2_SCOPE = NON_AGENT_LOOP_CLI_ENVELOPE_WIRING_ONLY
 P8_R3_SCOPE = SOLVE_JSON_ENVELOPE_WIRING_AND_CONTROLLED_LIVE_SOLVE_CONSUMER_ADAPTATION_ONLY
-APPLY_PATCH_JSON = P8_R1_ENVELOPE_WIRED
-ASK_JSON = P8_R1_ENVELOPE_WIRED / proven=false
-SOLVE_JSON = P8_R1_ENVELOPE_WIRED / STOPPED | NOT_READY | PROVEN_READY
-COMPLETED_SOLVE_OVERSIZED_WARNING_REASON_TRANSPORT = DETERMINISTIC_BOUNDED_SHA256_BOUND_PROJECTION
-COMPLETE_PLAN_WARNINGS = PRESERVED_IN_EXISTING_PLAN_ARTIFACT
-COMPLETE_DONE_GATE_REASONS = PRESERVED_IN_EXISTING_PROOF_ARTIFACT
-CONTROLLED_LIVE_SOLVE = VALIDATES_AND_CONSUMES_CANONICAL_COMMAND_SOLVE_ENVELOPE
-SOLVE_HUMAN_OUTPUT = UNCHANGED
-CLI_EXIT_CODES = UNCHANGED
-P8_R1_CONTRACT_SCHEMA = UNCHANGED
-DONE_GATE_IMPLEMENTATION_AND_ALGORITHM = UNCHANGED
+P8_R4_SCOPE = EXACT_LOCAL_CLI_HELP_ONLY
+EXACT_HELP_INVOCATION = kodac --help
+HELP_EXIT_CODE = 0
+HELP_STDERR = EMPTY
+HELP_STDOUT = DETERMINISTIC_STATIC_HELP_TEXT
+HELP_EARLY_RETURN_BEFORE_RUNTIME_SESSION_EVIDENCE_PROVIDER_K2_WORKSPACE_MUTATION = YES
+-h = NOT_ADMITTED
+help = NOT_ADMITTED
+--version = NOT_ADMITTED
+version = NOT_ADMITTED
+NO_ARG_USAGE_ERROR_EXIT_1 = PRESERVED
+UNKNOWN_COMMAND_USAGE_ERROR_EXIT_1 = PRESERVED
+PACKAGE_NAME_VERSION_CHANGE = NOT_AUTHORIZED
+PACKAGE_PUBLICATION = NOT_AUTHORIZED
+PUBLIC_RELEASE_DEPLOYMENT = NOT_AUTHORIZED
 ```
 
-P8-R1 established the pure versioned envelope contract. P8-R2 wired `apply-patch --json` and `ask --json`. P8-R3 wired `solve --json` for the existing STOPPED, NOT_READY, and PROVEN_READY outcomes and adapted the existing controlled live-solve consumer to validate and consume that canonical nested solve envelope. The canonical P8-R3 compatibility amendment permits only deterministic bounded transport projection of oversized completed-solve warnings/reasons while complete originals remain in the existing plan/proof artifacts.
+The word `VERSION` above is the version of the existing `kodac.cli-result` protocol. It is not package-version, release-version, `--version`, package publication, or public release authority.
 
-P8-R3 did not change human-readable solve behavior, CLI exit codes, the P8-R1 builder/schema, Done Gate, verification execution, provider/model authority, K2 side-effect authority, package export/publication, GitHub/CI product behavior, persistence/telemetry/learning, release, deployment, or project-completion authority.
+---
 
-Required non-equivalences remain:
+## Preserved P8-R4 local evidence distinction
 
 ```text
-P8_R3_IMPLEMENTATION_CLOSED != P8_PRODUCT_DISTRIBUTION_HARDENING_CLOSED
-P8_R3_IMPLEMENTATION_CLOSED != P8_R4_PLUS_AUTHORITY
-P8_R3_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
-CURRENT_VIEW_RECONCILIATION != SUCCESSOR_IMPLEMENTATION_AUTHORITY
-CURRENT_VIEW_RECONCILIATION != RELEASE_AUTHORITY
-P8_CLI_RESULT_ENVELOPE != INDEPENDENT_PROOF
-P8_CLI_RESULT_STATUS != DONE_GATE_AUTHORITY
-BOUNDED_TRANSPORT_PROJECTION != COMPLETE_EVIDENCE_ARTIFACT
-PLANNING_DIRECTION != IMPLEMENTATION_AUTHORITY
-POST_MERGE_PROOF != SUCCESSOR_AUTHORITY
-PROVEN_READY != MERGE_AUTHORITY
-PROVEN_READY != RELEASE_AUTHORITY
-PROVEN_READY != PROJECT_COMPLETION
-EVIDENCE_BINDING != AUTHORITY_TRANSFER
+LOCAL_FULL_SUITE_FIRST_ATTEMPT = FAIL
+NODE = 22.22.3 / UNSUPPORTED_BY_PACKAGE_ENGINE
+TOTAL = 1973
+PASS = 1870
+SKIPPED = 102
+FAIL = 1
+FAILURE = K3-R2 repeated capture without mutation preserves RepositoryContentIdentity
+ERROR = ENOTEMPTY during temporary .git/ai/working_logs cleanup
+CANONICAL_NODE_24_PR_EVIDENCE = SUCCESS
+POST_MERGE_NODE_24_REQUIRED_GATES = SUCCESS
 ```
+
+The unsupported local Node 22 first-attempt failure remains a real preserved failure and is not authoritative Node 24 qualification evidence.
 
 ---
 
@@ -192,24 +169,25 @@ PROVIDER_RETRY_REPLAY_RESUME = NOT_AUTHORIZED
 PROVIDER_SPEND = NOT_AUTHORIZED
 SECRET_ACCESS = NOT_AUTHORIZED
 NETWORK_ACCESS = NOT_AUTHORIZED
-FILESYSTEM_WRITE_AUTHORITY = NOT_AUTHORIZED_BY_THIS_RECONCILIATION
 PERSISTENCE_DATABASE_TELEMETRY_UPLOAD_LEARNING = NOT_AUTHORIZED
-FURTHER_SOLVE_JSON_SEMANTIC_EXPANSION = NOT_AUTHORIZED_BY_THIS_RECONCILIATION
-CONTROLLED_LIVE_SOLVE_AUTHORITY_EXPANSION = NOT_AUTHORIZED_BY_THIS_RECONCILIATION
+FURTHER_SOLVE_JSON_SEMANTIC_EXPANSION = NOT_AUTHORIZED
+CONTROLLED_LIVE_SOLVE_AUTHORITY_EXPANSION = NOT_AUTHORIZED
 CLI_EXIT_CODE_CHANGE = NOT_AUTHORIZED
 PACKAGE_ROOT_EXPORT = NOT_AUTHORIZED
 PACKAGE_RENAME_VERSION_PUBLICATION = NOT_AUTHORIZED
+INSTALLATION_UPDATE_INTEGRITY_IMPLEMENTATION = NOT_AUTHORIZED
 GITHUB_CI_PRODUCT_INTEGRATION = NOT_AUTHORIZED
+MCP_EDITOR_DAEMON_SDK_INTEGRATION = NOT_AUTHORIZED
+OPERATIONAL_DOCS_EXAMPLES_MUTATION = NOT_AUTHORIZED
 NEW_DEPENDENCY = NOT_AUTHORIZED
 PROVIDER_MODEL_AUTHORITY_EXPANSION = NOT_AUTHORIZED
 NETWORK_SECRET_FILESYSTEM_AUTHORITY_EXPANSION = NOT_AUTHORIZED
-P8_R4_PLUS = NOT_AUTHORIZED_BY_NUMBERING
+P8_R5_PLUS = NOT_AUTHORIZED_BY_NUMBERING
+P9 = NOT_AUTHORIZED_BY_IMPLICATION
 PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
 RULESET_CHANGE_BYPASS = NOT_AUTHORIZED
 PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-Historical P7 R1-R30 authorization/evidence/repair/anomaly records and all earlier canonical program records remain authoritative and unchanged in their dedicated sources. Omission from this condensed current view is not erasure, relabeling, supersession, waiver, or authority.
-
-After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. Do not infer P8-R4+, P9, release, publication, deployment, or project completion from numbering, roadmap sequence, bounded closure, this reconciliation, or `PROVEN_READY`.
+After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No package/version change, `--version`, P8-R5+, P9, release, publication, deployment, or project-completion authority may be inferred from this version-plan view or reconciliation closure.
