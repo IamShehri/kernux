@@ -76,7 +76,13 @@ REPOSITORY-LOCAL CLI HELP DOCUMENTATION AUTHORIZATION = CLOSED_CANONICAL / PR #5
 REPOSITORY-LOCAL CLI HELP README DOCUMENTATION = CLOSED_CANONICAL / PR #504 / merge b1b304394f399286da32092dabd995a251e9b660 / proof 5593972791
 POST-README CURRENT-VIEW / SUCCESSOR ANALYSIS = PR #504 / comment 5593978571 / ANALYSIS_ONLY
 POST-README CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #505 / merge aa557630a62977253f49f4f45f272aaeb0529f9f / proof 5594022489
-POST-README CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST-README CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #506 / merge 534de2b4ba4b25d31fb2448361221efe871f2d74 / proof 5594139062
+POST-README-RECONCILIATION SUCCESSOR ANALYSIS = PR #506 / comment 5594156143 / ANALYSIS_ONLY
+P8 AGENT INTEGRATION CONTRACT DOCUMENTATION AUTHORIZATION = CLOSED_CANONICAL / PR #507 / merge 00b1e0bddc692ccc6baecb9e4f4adc21699df441 / proof 5594212227
+P8 AGENT INTEGRATION CONTRACT DOCUMENTATION = CLOSED_CANONICAL / PR #508 / merge 81baf574d9b2a5e67d814524aee85d9c0b7b0bc9 / proof 5594257305
+POST-AGENT-CONTRACT CURRENT-VIEW ANALYSIS = PR #508 / comment 5594261463 / ANALYSIS_ONLY
+POST-AGENT-CONTRACT CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #509 / merge c099a2262ec6de43a1306aeb44701d4a48724674 / proof 5594297840
+POST-AGENT-CONTRACT CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
 P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
 P9 = NOT_AUTHORIZED_BY_IMPLICATION
@@ -90,9 +96,9 @@ All still-effective predecessor state and non-grants remain in force. Omission f
 
 ---
 
-## Active unit — post-README current-view reconciliation candidate
+## Active unit — post-agent-contract current-view reconciliation candidate
 
-Canonical authority exists only through PR #505 / post-merge proof `5594022489`.
+Canonical authority exists only through PR #509 / post-merge proof `5594297840`.
 
 This candidate may modify exactly:
 
@@ -106,10 +112,10 @@ docs/product/STATUS.md
 
 No sixth path is authorized.
 
-This reconciliation may only bind the already-proven P8-R4 reconciliation and repository-local README documentation lineage above, preserve the P8-R1 through P8-R4 semantics, preserve the real P8-R4 unsupported Node 22 first-attempt failure, preserve the private/unpublished package and repository-local-only README boundary, preserve all still-effective authority boundaries, and keep its own result candidate-safe until external post-merge proof.
+This reconciliation may only bind already-proven truth through PR #508, preserve P8-R1 through P8-R4 semantics, preserve the real P8-R4 unsupported Node 22 first-attempt failure, preserve the private/unpublished package and repository-local-only README boundary, preserve the agent-consumer contract as an interpretation contract rather than authority transfer, preserve all still-effective authority boundaries, and keep its own result candidate-safe until external post-merge proof.
 
 ```text
-POST_README_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_AGENT_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
 Before guarded merge, one unchanged exact head must prove:
@@ -125,6 +131,7 @@ HISTORICAL_AUTHORIZATION_EVIDENCE_RUNTIME_RECORDS = UNCHANGED
 P8_R4_FIRST_LOCAL_FAILURE_PRESERVED = YES
 PACKAGE_PRIVATE_UNPUBLISHED_TRUTH = PRESERVED
 README_REPOSITORY_LOCAL_ONLY_BOUNDARY = PRESERVED
+AGENT_CONSUMER_CONTRACT_NON_AUTHORITY_BOUNDARY = PRESERVED
 REQUIRED_CI = TERMINAL_SUCCESS_OR_CANONICALLY_PROVEN_NONAPPLICABILITY
 SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
 KNOWN_ACTIONABLE_DEFECTS = 0
@@ -173,12 +180,16 @@ NO_ARG_USAGE_ERROR_EXIT_1 = PRESERVED
 UNKNOWN_COMMAND_USAGE_ERROR_EXIT_1 = PRESERVED
 RUNTIME_PACKAGE_PRIVATE_UNPUBLISHED = YES
 README_HELP_INVOCATION = REPOSITORY_LOCAL_ONLY / cd packages/kodac-runtime && npm run cli -- --help
+AGENT_CONSUMER_CONTRACT = DOCUMENTATION_ONLY / SCHEMA_BOUND / FAIL_CLOSED_ON_UNKNOWN_OR_INCOMPATIBLE_ENVELOPE
+AGENT_CONSUMER_CONTRACT_PATH = docs/product/AGENT_INTEGRATION_CONTRACT.md
 DONE_GATE_IMPLEMENTATION_AND_ALGORITHM = UNCHANGED
 ```
 
 P8-R1 established the pure versioned envelope contract. P8-R2 wired `apply-patch --json` and `ask --json`. P8-R3 wired `solve --json` for the existing STOPPED, NOT_READY, and PROVEN_READY outcomes and adapted the existing controlled live-solve consumer to validate and consume that canonical nested solve envelope. The canonical P8-R3 compatibility amendment permits only deterministic bounded transport projection of oversized completed-solve warnings/reasons while complete originals remain in the existing plan/proof artifacts. P8-R4 then added exact local `kodac --help` only, without changing those prior semantics.
 
 PR #504 later documented only the already-supported repository-local development invocation `npm run cli -- --help` from `packages/kodac-runtime`. That documentation does not imply package publication, global installation, public release, or any new command/provider/write/verification authority.
+
+PR #508 documents only how a consumer interprets the existing `kodac.cli-result` v1 envelope. It does not establish an executable external-agent integration, GitHub/CI integration, MCP/editor/daemon/SDK integration, provider/model execution, or authority transfer.
 
 ---
 
@@ -252,6 +263,7 @@ P8_R4_IMPLEMENTATION_CLOSED != P8_PRODUCT_DISTRIBUTION_HARDENING_CLOSED
 P8_R4_IMPLEMENTATION_CLOSED != P8_R5_PLUS_AUTHORITY
 P8_R4_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
 POST_README_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
+POST_AGENT_CONTRACT_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != SUCCESSOR_IMPLEMENTATION_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != RELEASE_AUTHORITY
 P8_CLI_RESULT_ENVELOPE != INDEPENDENT_PROOF
@@ -260,6 +272,9 @@ BOUNDED_TRANSPORT_PROJECTION != COMPLETE_EVIDENCE_ARTIFACT
 REPOSITORY_LOCAL_HELP_DOCUMENTATION != PACKAGE_PUBLICATION
 REPOSITORY_LOCAL_HELP_DOCUMENTATION != GLOBAL_INSTALLABILITY
 REPOSITORY_LOCAL_HELP_DOCUMENTATION != PUBLIC_RELEASE
+AGENT_CONSUMER_CONTRACT != AGENT_EXECUTION_AUTHORITY
+AGENT_CONSUMER_CONTRACT != GITHUB_CI_INTEGRATION
+AGENT_CONSUMER_CONTRACT != MCP_EDITOR_DAEMON_SDK_INTEGRATION
 PLANNING_DIRECTION != IMPLEMENTATION_AUTHORITY
 POST_MERGE_PROOF != SUCCESSOR_AUTHORITY
 PROVEN_READY != MERGE_AUTHORITY
@@ -270,4 +285,4 @@ EVIDENCE_BINDING != AUTHORITY_TRANSFER
 
 Historical P7 R1-R30 authorization/evidence/repair/anomaly records and all earlier canonical program records remain authoritative and unchanged in their dedicated sources. Omission from this condensed current view is not erasure, relabeling, supersession, waiver, or authority.
 
-After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. Do not infer P8-R5+, P9, release, publication, deployment, or project completion from numbering, roadmap sequence, bounded closure, this reconciliation, repository-local documentation, or `PROVEN_READY`.
+After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. Do not infer P8-R5+, P9, release, publication, deployment, or project completion from numbering, roadmap sequence, bounded closure, this reconciliation, repository-local documentation, agent-consumer documentation, or `PROVEN_READY`.
