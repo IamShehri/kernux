@@ -73,7 +73,11 @@ POST_PROVIDER_FALLBACK_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL /
 P8_INSTALLATION_UPDATE_INTEGRITY_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #538 / merge c6b05daf2f75c11ad17f838dca60fffd524ad93c / proof 5608989633
 P8_INSTALLATION_UPDATE_INTEGRITY_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #539 / merge 9c1aef9f3879dbadaad9b52ecabc7eb426a6f023 / proof 5609169160
 P8_POST_INSTALLATION_UPDATE_INTEGRITY_CONTRACT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #540 / merge 9d3ba740ff436e0d66ddfd076226c7fbb11cfe56 / proof 5609387267
-POST_INSTALLATION_UPDATE_INTEGRITY_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_INSTALLATION_UPDATE_INTEGRITY_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #541 / merge 22ccacf95e93da6e504b92912910433854c5a4ef / proof 5609501964
+P8_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #542 / merge 43463b3b98f2d8277b15e35aded620fb946ac528 / proof 5609589933
+P8_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #543 / merge 51d24f3b837ab88be7d7b42d249cd0bd197b33d3 / proof 5609693966
+P8_POST_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #544 / merge 4fa9cf1bd0981591ffcfe11151adcbefbddbfcb8 / proof 5609781291
+POST_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
 P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
@@ -110,9 +114,9 @@ All intervening exact authorization, reconciliation, and analysis records remain
 
 ---
 
-## Current active roadmap unit — post-installation/update integrity contract current-view reconciliation candidate
+## Current active roadmap unit — post-operational-docs/examples contract current-view reconciliation candidate
 
-Canonical authority exists only through PR #540 / post-merge proof `5609387267`.
+Canonical authority exists through PR #544 / post-merge proof `5609781291`.
 
 This candidate may modify exactly:
 
@@ -124,13 +128,19 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. `docs/product/INSTALLATION_UPDATE_INTEGRITY_CONTRACT.md` is outside this candidate and must remain byte-identical to canonical `main` at blob `717dfd39fa3abbb2692c06b3596c105de0c10e33`.
+No sixth path is authorized. `docs/product/OPERATIONAL_DOCS_EXAMPLES_CONTRACT.md` is outside this candidate and must remain byte-identical to canonical `main` at blob `1263f384735a6494f6cc6a2ba49d20680c8e0261`.
 
-The reconciliation may bind only already-proven truth through PR #540. It preserves PR #520 as adverse merged-but-not-closed evidence, PR #522/#523 as separately authorized and proven fix-forward remediation, PR #537 as the closed predecessor current-view reconciliation, PR #538 as the installation/update integrity contract documentation authorization, PR #539 as the closed evidence-scoped installation/update integrity contract, and PR #540 as this reconciliation authorization. Bounded PR #531 fallback semantics remain bounded and are not generalized.
+The reconciliation may bind only already-proven truth through PR #544. It preserves PR #520 as adverse merged-but-not-closed evidence, PR #522/#523 as separately authorized and proven fix-forward remediation, bounded PR #531 static `ask` fallback semantics, the unsupported Node 22 P8-R4 historical failure, PR #541 as the closed post-installation/update reconciliation, PR #542 as the operational docs/examples contract authorization, PR #543 as the closed evidence-scoped operational docs/examples contract, and PR #544 as this reconciliation authorization.
 
 ```text
-POST_INSTALLATION_UPDATE_INTEGRITY_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_INSTALLATION_UPDATE_INTEGRITY_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #541 / merge 22ccacf95e93da6e504b92912910433854c5a4ef / proof 5609501964
+P8_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #542 / merge 43463b3b98f2d8277b15e35aded620fb946ac528 / proof 5609589933
+P8_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #543 / merge 51d24f3b837ab88be7d7b42d249cd0bd197b33d3 / proof 5609693966
+P8_POST_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #544 / merge 4fa9cf1bd0981591ffcfe11151adcbefbddbfcb8 / proof 5609781291
+POST_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
+
+Operational documentation remains interpretation-only: documented commands are not execution authority, fixture examples are not a global offline guarantee, local evidence is not automatic redaction, and repository-local invocation is not public installability. Release/version separation remains a distinct future concern and is not authorized by this reconciliation.
 
 Mandatory external post-merge proof is required before this reconciliation may become `CLOSED_CANONICAL`. This candidate cannot certify its own closure.
 
@@ -224,6 +234,10 @@ INSTALLATION_UPDATE_INTEGRITY_CONTRACT = DOCUMENTATION_ONLY / EVIDENCE_SCOPED / 
 INSTALLATION_UPDATE_INTEGRITY_CONTRACT_PATH = docs/product/INSTALLATION_UPDATE_INTEGRITY_CONTRACT.md
 P8_INSTALLATION_UPDATE_INTEGRITY_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #538 / proof 5608989633
 P8_INSTALLATION_UPDATE_INTEGRITY_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #539 / merge 9c1aef9f3879dbadaad9b52ecabc7eb426a6f023 / proof 5609169160
+OPERATIONAL_DOCS_EXAMPLES_CONTRACT = DOCUMENTATION_ONLY / EVIDENCE_SCOPED / FAIL_CLOSED
+OPERATIONAL_DOCS_EXAMPLES_CONTRACT_PATH = docs/product/OPERATIONAL_DOCS_EXAMPLES_CONTRACT.md
+P8_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #542 / proof 5609589933
+P8_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #543 / merge 51d24f3b837ab88be7d7b42d249cd0bd197b33d3 / proof 5609693966
 DOCUMENTATION != RUNTIME_ENFORCEMENT
 DOCUMENTATION != RUNTIME_OR_DISTRIBUTION_ENFORCEMENT
 ```
