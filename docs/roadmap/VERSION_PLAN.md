@@ -60,7 +60,13 @@ P8-R4 LOCAL CLI HELP AUTHORIZATION = CLOSED_CANONICAL / PR #499 / merge f2268e52
 P8-R4 LOCAL CLI HELP IMPLEMENTATION = CLOSED_CANONICAL / PR #500 / merge cc1653acc2ae35c353d04207441877d2888602f4 / proof 5593608278
 POST-P8-R4 CURRENT-VIEW ANALYSIS = PR #500 / comment 5593623581 / ANALYSIS_ONLY
 P8-R4 POST-MERGE CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #501 / merge 49a04e30804486f08e220db7e2c86c2d96293838 / proof 5593658679
-P8-R4 POST-MERGE CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P8-R4 POST-MERGE CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #502 / merge a4da1902fa7f4cabf692d6efdaab7579d78b6fbb / proof 5593778310
+POST-P8-R4-RECONCILIATION SUCCESSOR ANALYSIS = PR #502 / comment 5593799498 / ANALYSIS_ONLY
+REPOSITORY-LOCAL CLI HELP DOCUMENTATION AUTHORIZATION = CLOSED_CANONICAL / PR #503 / merge 0f975835ab947102a2b44ea9744a5a44a1fbee6d / proof 5593929619
+REPOSITORY-LOCAL CLI HELP README DOCUMENTATION = CLOSED_CANONICAL / PR #504 / merge b1b304394f399286da32092dabd995a251e9b660 / proof 5593972791
+POST-README CURRENT-VIEW / SUCCESSOR ANALYSIS = PR #504 / comment 5593978571 / ANALYSIS_ONLY
+POST-README CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #505 / merge aa557630a62977253f49f4f45f272aaeb0529f9f / proof 5594022489
+POST-README CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
 P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
 P9 = NOT_AUTHORIZED_BY_IMPLICATION
@@ -74,9 +80,9 @@ All still-effective predecessor state and non-grants remain in force. Omission f
 
 ---
 
-## Active version-plan unit — P8-R4 post-merge current-view reconciliation candidate
+## Active version-plan unit — post-README current-view reconciliation candidate
 
-Canonical authority exists only through PR #501 / post-merge proof `5593658679`.
+Canonical authority exists only through PR #505 / post-merge proof `5594022489`.
 
 The exact authorized candidate paths are:
 
@@ -88,13 +94,13 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. The reconciliation may only bind already-proven P8-R3/P8-R4 truth, preserve the real P8-R4 unsupported Node 22 first-attempt failure, preserve all still-effective authority boundaries, and keep its own state candidate-safe:
+No sixth path is authorized. The reconciliation may only bind the already-proven P8-R4 reconciliation and repository-local README documentation lineage above, preserve P8-R1 through P8-R4 semantics, preserve the real P8-R4 unsupported Node 22 first-attempt failure, preserve private/unpublished package truth and the repository-local-only README boundary, preserve all still-effective authority boundaries, and keep its own state candidate-safe:
 
 ```text
-P8_R4_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_README_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
-Qualification requires one unchanged exact head, exactly five authorized paths, no sixth path, frozen blobs, unchanged historical records, preserved P8-R4 first local failure, applicable required CI, clean substantive review, zero actionable defects/threads, active no-bypass ruleset `20707483`, exact expected-head guarded normal merge, external post-merge proof, and `WAIVER = NO`.
+Qualification requires one unchanged exact head, exactly five authorized paths, no sixth path, frozen blobs, proven lineage binding, unchanged historical records, preserved P8-R4 first local failure, preserved package/README boundaries, applicable required CI, clean substantive review, zero actionable defects/threads, active no-bypass ruleset `20707483`, exact expected-head guarded normal merge, external post-merge proof, and `WAIVER = NO`.
 
 Mandatory external post-merge proof is required before this reconciliation may become `CLOSED_CANONICAL`. This candidate cannot certify its own closure.
 
@@ -131,6 +137,8 @@ help = NOT_ADMITTED
 version = NOT_ADMITTED
 NO_ARG_USAGE_ERROR_EXIT_1 = PRESERVED
 UNKNOWN_COMMAND_USAGE_ERROR_EXIT_1 = PRESERVED
+RUNTIME_PACKAGE_PRIVATE_UNPUBLISHED = YES
+README_HELP_INVOCATION = REPOSITORY_LOCAL_ONLY / cd packages/kodac-runtime && npm run cli -- --help
 PACKAGE_NAME_VERSION_CHANGE = NOT_AUTHORIZED
 PACKAGE_PUBLICATION = NOT_AUTHORIZED
 PUBLIC_RELEASE_DEPLOYMENT = NOT_AUTHORIZED
@@ -138,6 +146,8 @@ DONE_GATE_IMPLEMENTATION_AND_ALGORITHM = UNCHANGED
 ```
 
 The word `VERSION` above is the version of the existing `kodac.cli-result` protocol. It is not package-version, release-version, `--version`, package publication, or public release authority. P8-R1 through P8-R3 envelope semantics and bounded transport-projection semantics remain unchanged; P8-R4 added exact local `kodac --help` only.
+
+PR #504 later documented only the already-supported repository-local development invocation `npm run cli -- --help` from `packages/kodac-runtime`. That documentation does not imply package publication, global installation, release-version identity, public release, or any new command/provider/write/verification authority.
 
 ---
 
@@ -211,11 +221,15 @@ PROTOCOL_VERSION != PACKAGE_VERSION
 P8_R4_IMPLEMENTATION_CLOSED != P8_PRODUCT_DISTRIBUTION_HARDENING_CLOSED
 P8_R4_IMPLEMENTATION_CLOSED != P8_R5_PLUS_AUTHORITY
 P8_R4_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
+POST_README_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != SUCCESSOR_IMPLEMENTATION_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != RELEASE_AUTHORITY
 P8_CLI_RESULT_ENVELOPE != INDEPENDENT_PROOF
 P8_CLI_RESULT_STATUS != DONE_GATE_AUTHORITY
 BOUNDED_TRANSPORT_PROJECTION != COMPLETE_EVIDENCE_ARTIFACT
+REPOSITORY_LOCAL_HELP_DOCUMENTATION != PACKAGE_PUBLICATION
+REPOSITORY_LOCAL_HELP_DOCUMENTATION != GLOBAL_INSTALLABILITY
+REPOSITORY_LOCAL_HELP_DOCUMENTATION != PUBLIC_RELEASE
 PLANNING_DIRECTION != IMPLEMENTATION_AUTHORITY
 POST_MERGE_PROOF != SUCCESSOR_AUTHORITY
 PROVEN_READY != MERGE_AUTHORITY
@@ -226,4 +240,4 @@ EVIDENCE_BINDING != AUTHORITY_TRANSFER
 
 Historical P7 R1-R30 authorization/evidence/repair/anomaly records and all earlier canonical program records remain authoritative and unchanged in their dedicated sources. Omission from this condensed current view is not erasure, relabeling, supersession, waiver, or authority.
 
-After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No package/version change, `--version`, P8-R5+, P9, release, publication, deployment, or project-completion authority may be inferred from this version-plan view or reconciliation closure.
+After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No package/version change, `--version`, P8-R5+, P9, release, publication, deployment, or project-completion authority may be inferred from this version-plan view, repository-local documentation, or reconciliation closure.
