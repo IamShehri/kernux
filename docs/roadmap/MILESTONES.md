@@ -220,8 +220,6 @@ PR_520_INCIDENT_PRESERVATION = REQUIRED
 PR_523_FIX_FORWARD_REMEDIATION != RETROACTIVE_VALIDATION_OF_PR_520
 ```
 
-PR #520 remains adverse historical evidence. PR #522 authorized and PR #523 completed a separate fix-forward remediation. That remediation closes the mandatory documentation-coverage defect; it does not rewrite the earlier merge as clean.
-
 ---
 
 ## Preserved authority boundaries
@@ -288,6 +286,8 @@ WAIVER = NO
 Required authority boundaries also include:
 
 ```text
+P8_R4_IMPLEMENTATION_CLOSED != P8_PRODUCT_DISTRIBUTION_HARDENING_CLOSED
+P8_R4_IMPLEMENTATION_CLOSED != P8_R5_PLUS_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != SUCCESSOR_IMPLEMENTATION_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != RELEASE_AUTHORITY
 REPOSITORY_LOCAL_HELP_DOCUMENTATION != PACKAGE_PUBLICATION
