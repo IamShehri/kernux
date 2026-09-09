@@ -131,6 +131,8 @@ UNKNOWN_COMMAND_USAGE_ERROR_EXIT_1 = PRESERVED
 DONE_GATE_IMPLEMENTATION_AND_ALGORITHM = UNCHANGED
 ```
 
+P8-R1 established the pure versioned result-envelope foundation. P8-R2 wired only the non-agent-loop CLI result-envelope consumers. P8-R3 wired `solve --json` and the controlled live-solve consumer adaptation. P8-R4 added exact local CLI help only. None of those closures imply later P8 authority.
+
 ---
 
 ## Preserved P8-R4 local evidence distinction
@@ -205,6 +207,8 @@ UNKNOWN_OR_UNPROVEN_PRIVACY_EGRESS_BEHAVIOR = DO_NOT_CLAIM
 ```
 
 Neither product contract is a network sandbox, provider-admission mechanism, credential grant, telemetry implementation, automatic fallback implementation, or runtime privacy-enforcement layer.
+
+P8 remains a partially hardened product surface, not a public release, publication, deployment, global-installation, or project-completion claim.
 
 ---
 
@@ -286,6 +290,8 @@ WAIVER = NO
 Required non-equivalences remain:
 
 ```text
+P8_R4_IMPLEMENTATION_CLOSED != P8_PRODUCT_DISTRIBUTION_HARDENING_CLOSED
+P8_R4_IMPLEMENTATION_CLOSED != P8_R5_PLUS_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != SUCCESSOR_IMPLEMENTATION_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != RELEASE_AUTHORITY
 REPOSITORY_LOCAL_HELP_DOCUMENTATION != PACKAGE_PUBLICATION
