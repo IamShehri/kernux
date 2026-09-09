@@ -1,10 +1,10 @@
 # Product Document Authority Status
 
-The pre-existing files in `docs/product/` remain preserved historical planning inputs. They do not override accepted Kodac ADRs, live GitHub truth, root `AGENTS.md`, `docs/roadmap/NEXT.md`, current roadmap views, exact canonical authorization/evidence records, or mandatory external post-merge proofs.
+The files in `docs/product/` are product-facing documentation and preserved planning inputs. They do not override accepted Kodac ADRs, live GitHub truth, root `AGENTS.md`, `docs/roadmap/NEXT.md`, exact canonical authorization/evidence records, or mandatory external post-merge proofs.
 
-This file is a current product-status view only. It grants no implementation, execution, provider/model, persistence, dependency, network, secret, integration, product, release, successor, merge, publication, deployment, or project-completion authority.
+This file is a current product-status view only. It grants no implementation, execution, provider/model, persistence, dependency, network, secret, integration, product, release, successor, merge, publication, deployment, package-version, or project-completion authority.
 
-All still-effective predecessor state and non-grants remain in force. Omission from this condensed current view is not authorization, proof, waiver, supersession, narrowing, or completion.
+All still-effective predecessor state and non-grants remain in force. Omission from this condensed current view is not authorization, proof, waiver, supersession, narrowing, retroactive validation, or completion.
 
 ---
 
@@ -45,17 +45,21 @@ REPOSITORY-LOCAL CLI HELP README DOCUMENTATION = CLOSED_CANONICAL / PR #504 / me
 P8 AGENT INTEGRATION CONTRACT DOCUMENTATION = CLOSED_CANONICAL / PR #508 / merge 81baf574d9b2a5e67d814524aee85d9c0b7b0bc9 / proof 5594257305
 POST-AGENT-CONTRACT CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #510 / merge 24ba233cc3cd38a6c740c486c8d8917553b9114d / proof 5603198241
 P8 GITHUB CI INTEGRATION CONTRACT DOCUMENTATION = CLOSED_CANONICAL / PR #515 / merge 895b13c24e36d721a5cf228fa7ff15f0e42fbaba / proof 5603510999
-POST-GITHUB-CI-CONTRACT CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #517 / merge a3eac8e45e39536ae0de9b630526eb41c2812cc0 / proof 5605372989
+POST_GITHUB_CI_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #517 / merge a3eac8e45e39536ae0de9b630526eb41c2812cc0 / proof 5605372989
 
-P8 PRIVACY / EGRESS CONTRACT DOCUMENTATION AUTHORIZATION = CLOSED_CANONICAL / PR #518 / merge b92dc12a9cc695d412a0e1530acfe97b6f1130c3 / proof 5605476348
-P8 PRIVACY / EGRESS CONTRACT PR #520 = MERGED_WITH_STALE_QUALIFICATION / NOT_CLOSED_CANONICAL / merge 519c685eafd7f5be021b0225cc53df190d0b41c3
+P8_PRIVACY_EGRESS_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #518 / merge b92dc12a9cc695d412a0e1530acfe97b6f1130c3 / proof 5605476348
+P8_PRIVACY_EGRESS_CONTRACT_DOCUMENTATION_PR_520 = MERGED_WITH_STALE_QUALIFICATION / NOT_CLOSED_CANONICAL / merge 519c685eafd7f5be021b0225cc53df190d0b41c3
 PR_520_MATERIAL_REVIEW = 5157366894 / MANDATORY_CONTRACT_COVERAGE_OMISSION
 PR_520_INCIDENT_RECORD = 5605587262
 PR_520_RETROACTIVE_VALIDATION = NO
-P8 PRIVACY / EGRESS CONTRACT REMEDIATION AUTHORIZATION = CLOSED_CANONICAL / PR #522 / merge c7f127e4c152276463f2541bbed80bece1e6e187 / proof 5605901830
-P8 PRIVACY / EGRESS CONTRACT DOCUMENTATION REMEDIATION = CLOSED_CANONICAL / PR #523 / merge 3f81040e15b03760ad37e0567a2ee6c893a7ed6a / proof 5605992600
-POST-PRIVACY-EGRESS CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #524 / merge c8b275e35aaa8bdd2823ed7c567b67b760ea4300 / proof 5606089890
-POST-PRIVACY-EGRESS CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P8_PRIVACY_EGRESS_CONTRACT_REMEDIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #522 / merge c7f127e4c152276463f2541bbed80bece1e6e187 / proof 5605901830
+P8_PRIVACY_EGRESS_CONTRACT_DOCUMENTATION_REMEDIATION = CLOSED_CANONICAL / PR #523 / merge 3f81040e15b03760ad37e0567a2ee6c893a7ed6a / proof 5605992600
+P8_POST_PRIVACY_EGRESS_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #524 / merge c8b275e35aaa8bdd2823ed7c567b67b760ea4300 / proof 5606089890
+POST_PRIVACY_EGRESS_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #525 / merge cd072f489a6b1d89330e85f5a85772cb8c0d8a8b / proof 5606374984
+P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #526 / merge 65f0c20a8e41071e0d833b8915d82e39e4d8168c / proof 5606510695
+P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #527 / merge de91dc968086e88bb7452dc20dc32ae4338c26b0 / proof 5606599167
+P8_POST_PROVIDER_AVAILABILITY_FALLBACK_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #528 / merge bc17eb381ba18d1699c74899be48e04365d19541 / proof 5606684229
+POST_PROVIDER_AVAILABILITY_FALLBACK_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
 P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
@@ -69,9 +73,9 @@ Historical authorization, reconciliation, repair, anomaly, and adverse-evidence 
 
 ---
 
-## Active product-status unit — post-privacy/egress current-view reconciliation candidate
+## Active product-status unit — post-provider availability/fallback current-view reconciliation candidate
 
-Canonical authority exists only through PR #524 / post-merge proof `5606089890`.
+Canonical authority exists only through PR #528 / post-merge proof `5606684229`.
 
 The exact authorized candidate paths are:
 
@@ -83,15 +87,13 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. This reconciliation may only bind already-proven truth through PR #524 and must preserve PR #520 as adverse merged-but-not-closed evidence plus PR #522/#523 as the separately authorized and proven fix-forward remediation.
+No sixth path is authorized.
 
 ```text
-POST_PRIVACY_EGRESS_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_PROVIDER_AVAILABILITY_FALLBACK_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
-Qualification requires one unchanged exact head, exactly five authorized paths, no sixth path, frozen blobs, proven lineage binding, applicable required CI, a clean substantive exact-head semantic/security/governance review, zero actionable defects, zero unresolved actionable review threads, active no-bypass ruleset `20707483`, exact expected-head guarded normal merge, mandatory external post-merge proof, and `WAIVER = NO`.
-
-This candidate cannot certify its own closure.
+This candidate may bind only already-proven truth through PR #528. It cannot certify its own closure.
 
 ---
 
@@ -152,7 +154,7 @@ The unsupported local Node 22 first-attempt failure remains real historical evid
 
 ---
 
-## Product/distribution and privacy/egress interpretation boundaries
+## Product/distribution interpretation boundaries
 
 ```text
 RUNTIME_PACKAGE_NAME = @kodac/runtime-internal
@@ -166,10 +168,27 @@ GITHUB_CI_CONSUMER_CONTRACT = DOCUMENTATION_ONLY / INTERPRETATION_ONLY
 GITHUB_CI_CONSUMER_CONTRACT_PATH = docs/product/GITHUB_CI_INTEGRATION_CONTRACT.md
 PRIVACY_EGRESS_CONTRACT = DOCUMENTATION_ONLY / EVIDENCE_SCOPED / FAIL_CLOSED
 PRIVACY_EGRESS_CONTRACT_PATH = docs/product/PRIVACY_EGRESS_CONTRACT.md
+PROVIDER_AVAILABILITY_FALLBACK_CONTRACT = DOCUMENTATION_ONLY / INTERPRETATION_ONLY
+PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_PATH = docs/product/PROVIDER_AVAILABILITY_FALLBACK_CONTRACT.md
 DOCUMENTATION != RUNTIME_ENFORCEMENT
 ```
 
-Current privacy/egress documentation establishes only evidence-scoped facts:
+Current safe provider/fallback interpretation includes:
+
+```text
+DEFAULT_PROVIDER = fixture
+DEFAULT_MODEL = fixture/deterministic-v1
+DEFAULT_FIXTURE_PROVIDER != PROOF_THAT_ALL_PROVIDER_CAPABLE_PATHS_ARE_OFFLINE
+DEFAULT_FIXTURE_PROVIDER != AUTOMATIC_FALLBACK_FROM_ANY_PROVIDER_FAILURE
+FIXTURE_DETERMINISM != GLOBAL_OFFLINE_PRODUCT_GUARANTEE
+SAME_PROVIDER_BOUNDED_RETRY != CROSS_PROVIDER_FALLBACK
+UNKNOWN_PROVIDER_FAILURE != FALLBACK_TO_FIXTURE
+PROVIDER_GENERATION_FAILURE != FALLBACK_TO_FIXTURE
+PLANNED_STATIC_FALLBACK != IMPLEMENTED_STATIC_FALLBACK
+PROVIDER_ABSTRACTION_EXISTENCE != PROVIDER_INVOCATION_AUTHORITY
+```
+
+Current privacy/egress interpretation remains evidence-scoped:
 
 ```text
 DEFAULT_EVIDENCE_ROOT = ~/.kodac/evidence/<workspace-key>
@@ -184,12 +203,10 @@ WINDOWS_ACCESS_CONTROL_STATE = WINDOWS_INHERITED_ACL_UNVERIFIED
 GLOBAL_OFFLINE_GUARANTEE = NOT_PROVEN
 BOUNDED_NO_EGRESS_EVIDENCE != GLOBAL_ALL_COMMANDS_OFFLINE_CLAIM
 LOCAL_EVIDENCE_STORAGE_BEHAVIOR != TELEMETRY_OR_UPLOAD_AUTHORITY
-DEFAULT_FIXTURE_PROVIDER != PROOF_THAT_ALL_PROVIDER_CAPABLE_PATHS_ARE_OFFLINE
-PROVIDER_ABSTRACTION_EXISTENCE != PROVIDER_INVOCATION_AUTHORITY
 UNKNOWN_OR_UNPROVEN_PRIVACY_EGRESS_BEHAVIOR = DO_NOT_CLAIM
 ```
 
-The privacy/egress contract is documentation of already-proven evidence boundaries. It is not a network sandbox, firewall, secret-redaction system, telemetry implementation, provider-admission mechanism, or runtime privacy-enforcement layer.
+Neither product contract is a network sandbox, provider-admission mechanism, credential grant, telemetry implementation, automatic fallback implementation, or runtime privacy-enforcement layer.
 
 P8 remains a partially hardened product surface, not a public release, publication, deployment, global-installation, or project-completion claim.
 
@@ -205,7 +222,7 @@ PR_520_INCIDENT_PRESERVATION = REQUIRED
 PR_523_FIX_FORWARD_REMEDIATION != RETROACTIVE_VALIDATION_OF_PR_520
 ```
 
-PR #520 remains adverse historical evidence. PR #522 authorized and PR #523 completed a separate fix-forward remediation. The remediation closes the mandatory documentation-coverage defect but does not rewrite the earlier merge as clean.
+PR #520 remains adverse historical evidence. PR #522 authorized and PR #523 completed a separate fix-forward remediation; the remediation does not rewrite the earlier merge as clean.
 
 ---
 
@@ -217,21 +234,41 @@ K5_EXISTING_R1_R5_CONTRACTS = UNCHANGED
 K5_DONE_GATE_AUTHORITY = UNCHANGED
 DONE_GATE_IMPLEMENTATION = UNCHANGED
 DONE_GATE_ALGORITHM = UNCHANGED
+PROOFGRAPH = NOT_AUTHORIZED
+AUTOMATIC_FRESHNESS_DEPENDENCY_INVALIDATION = NOT_AUTHORIZED
+PATCH_RETRY = NOT_AUTHORIZED
+AUTOFIX_REMEDIATION_EXECUTION = NOT_AUTHORIZED
+SKILL_TRUST_QUALIFICATION = NOT_AUTHORIZED
+SKILL_INSTALLATION_ACTIVATION_ROUTING_EXECUTION = NOT_AUTHORIZED
+CAPABILITY_APPROVAL = NOT_AUTHORIZED
+VERIFICATION_EXECUTION = NOT_AUTHORIZED
+LIVE_REVIEWER_PROVIDER_INVOCATION = NOT_AUTHORIZED
+PROVIDER_MODEL_TOOL_INVOCATION = NOT_AUTHORIZED
 SOURCE_RUNTIME_MUTATION = NOT_AUTHORIZED
 SCHEMA_TEST_PACKAGE_BIN_MUTATION = NOT_AUTHORIZED
 WORKFLOW_DEPENDENCY_LOCKFILE_MUTATION = NOT_AUTHORIZED
 CLI_BEHAVIOR_CHANGE = NOT_AUTHORIZED
 NETWORK_FIREWALL_ENFORCEMENT = NOT_AUTHORIZED
 NETWORK_EGRESS_IMPLEMENTATION = NOT_AUTHORIZED
+NETWORK_ACCESS = NOT_AUTHORIZED
 SECRET_CREDENTIAL_ACCESS = NOT_AUTHORIZED
 SECRET_REDACTION_IMPLEMENTATION = NOT_AUTHORIZED
-PROVIDER_MODEL_INVOCATION = NOT_AUTHORIZED
+PROVIDER_SELECTION_BEHAVIOR_CHANGE = NOT_AUTHORIZED
+AUTOMATIC_PROVIDER_FALLBACK_IMPLEMENTATION = NOT_AUTHORIZED
+DETERMINISTIC_STATIC_FALLBACK_IMPLEMENTATION = NOT_AUTHORIZED
 NEW_PROVIDER_MODEL_ADMISSION = NOT_AUTHORIZED
+PROVIDER_MODEL_INVOCATION = NOT_AUTHORIZED
+NEW_PROVIDER_RETRY_REPLAY_RESUME = NOT_AUTHORIZED
+PROVIDER_RETRY_REPLAY_RESUME = NOT_AUTHORIZED
+PROVIDER_SPEND = NOT_AUTHORIZED
 PERSISTENCE_IMPLEMENTATION = NOT_AUTHORIZED
+PERSISTENCE_DATABASE_MUTATION = NOT_AUTHORIZED
 TELEMETRY_UPLOAD_ANALYTICS_IMPLEMENTATION = NOT_AUTHORIZED
+TELEMETRY_UPLOAD_ANALYTICS_LEARNING = NOT_AUTHORIZED
 RETENTION_DELETION_RUNTIME_BEHAVIOR_CHANGE = NOT_AUTHORIZED
 CROSS_REPOSITORY_ACCESS = NOT_AUTHORIZED
 GITHUB_ACTION_WORKFLOW_API_APP_WEBHOOK_CHECK_STATUS_IMPLEMENTATION = NOT_AUTHORIZED
+GITHUB_ACTION_WORKFLOW_API_CHECK_STATUS_IMPLEMENTATION = NOT_AUTHORIZED
 GITHUB_CI_PRODUCT_INTEGRATION = NOT_AUTHORIZED
 MCP_EDITOR_DAEMON_SDK_INTEGRATION = NOT_AUTHORIZED
 INSTALLATION_UPDATE_INTEGRITY_IMPLEMENTATION = NOT_AUTHORIZED
@@ -239,6 +276,7 @@ PACKAGE_ROOT_EXPORT = NOT_AUTHORIZED
 PACKAGE_VERSION_MUTATION = NOT_AUTHORIZED
 PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
 K2_K5_DONE_GATE_AUTHORITY_CHANGE = NOT_AUTHORIZED
+FURTHER_SOLVE_JSON_SEMANTIC_EXPANSION = NOT_AUTHORIZED
 P8_R5_PLUS = NOT_AUTHORIZED_BY_NUMBERING
 P9 = NOT_AUTHORIZED_BY_IMPLICATION
 PROJECT_COMPLETION = NOT_ESTABLISHED
@@ -265,7 +303,9 @@ GITHUB_CI_CONSUMER_CONTRACT != GITHUB_WORKFLOW_MUTATION
 GITHUB_CI_CONSUMER_CONTRACT != GITHUB_API_INTEGRATION
 GITHUB_CI_CONSUMER_CONTRACT != CHECK_RUN_STATUS_CREATION
 PRIVACY_EGRESS_DOCUMENTATION != PRIVACY_EGRESS_RUNTIME_ENFORCEMENT
-BOUNDED_NO_EGRESS_EVIDENCE != GLOBAL_ALL_COMMANDS_OFFLINE_CLAIM
+PROVIDER_AVAILABILITY_FALLBACK_DOCUMENTATION != PROVIDER_FALLBACK_RUNTIME_ENFORCEMENT
+PROVIDER_CODE_EXISTS != PROVIDER_INVOCATION_AUTHORIZED
+NETWORK_ENDPOINT_EXISTS_IN_SOURCE != NETWORK_ACCESS_AUTHORIZED
 POST_MERGE_PROOF != SUCCESSOR_AUTHORITY
 PROVEN_READY != MERGE_AUTHORITY
 PROVEN_READY != RELEASE_AUTHORITY
@@ -273,4 +313,4 @@ PROVEN_READY != PROJECT_COMPLETION
 EVIDENCE_BINDING != AUTHORITY_TRANSFER
 ```
 
-After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No P8-R5+, P9, package publication, release, deployment, or project-completion authority may be inferred from P8-R4 closure, repository-local documentation, agent/GitHub-CI/privacy documentation, or reconciliation closure.
+After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No runtime fallback, installation/update work, package/version change, P8-R5+, P9, release, publication, deployment, or project-completion authority may be inferred from this product-status view or reconciliation closure.
