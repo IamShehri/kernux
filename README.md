@@ -165,6 +165,15 @@ Useful entry points:
 
 The runtime currently targets **Node.js 24+**.
 
+To inspect the already-supported CLI help from this repository checkout, use the repository-local development invocation:
+
+```bash
+cd packages/kodac-runtime
+npm run cli -- --help
+```
+
+This does not imply that the private runtime package is published, globally installable, or publicly released.
+
 ```bash
 cd packages/kodac-runtime
 npm test
