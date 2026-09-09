@@ -70,7 +70,13 @@ P8 AGENT INTEGRATION CONTRACT DOCUMENTATION AUTHORIZATION = CLOSED_CANONICAL / P
 P8 AGENT INTEGRATION CONTRACT DOCUMENTATION = CLOSED_CANONICAL / PR #508 / merge 81baf574d9b2a5e67d814524aee85d9c0b7b0bc9 / proof 5594257305
 POST-AGENT-CONTRACT CURRENT-VIEW ANALYSIS = PR #508 / comment 5594261463 / ANALYSIS_ONLY
 POST-AGENT-CONTRACT CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #509 / merge c099a2262ec6de43a1306aeb44701d4a48724674 / proof 5594297840
-POST-AGENT-CONTRACT CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST-AGENT-CONTRACT CURRENT-VIEW RECONCILIATION = CLOSED_CANONICAL / PR #510 / merge 24ba233cc3cd38a6c740c486c8d8917553b9114d / proof 5603198241
+POST-AGENT-CONTRACT-RECONCILIATION SUCCESSOR ANALYSIS = PR #510 / comment 5603281708 / ANALYSIS_ONLY
+P8 GITHUB CI INTEGRATION CONTRACT DOCUMENTATION AUTHORIZATION = CLOSED_CANONICAL / PR #513 / merge 4da0a1097f9affd0c6b5a4c6bcb45bb5e334ebc7 / proof 5603407578
+P8 GITHUB CI INTEGRATION CONTRACT DOCUMENTATION = CLOSED_CANONICAL / PR #515 / merge 895b13c24e36d721a5cf228fa7ff15f0e42fbaba / proof 5603510999
+POST-GITHUB-CI-CONTRACT CURRENT-VIEW / SUCCESSOR ANALYSIS = PR #515 / comment 5603534106 / ANALYSIS_ONLY
+POST-GITHUB-CI-CONTRACT CURRENT-VIEW RECONCILIATION AUTHORIZATION = CLOSED_CANONICAL / PR #516 / merge 4b5055e34e9b881283d2affdae75b6a2ae993e61 / proof 5604831102
+POST-GITHUB-CI-CONTRACT CURRENT-VIEW RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
 P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
 P9 = NOT_AUTHORIZED_BY_IMPLICATION
@@ -84,9 +90,9 @@ All still-effective predecessor state and non-grants remain in force. Omission f
 
 ---
 
-## Active product-status unit — post-agent-contract current-view reconciliation candidate
+## Active product-status unit — post-GitHub/CI-contract current-view reconciliation candidate
 
-Canonical authority exists only through PR #509 / post-merge proof `5594297840`.
+Canonical authority exists only through PR #516 / post-merge proof `5604831102`.
 
 The exact authorized candidate paths are:
 
@@ -98,13 +104,13 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. This reconciliation may only bind already-proven truth through PR #508, preserve P8-R1 through P8-R4 semantics, preserve the real P8-R4 unsupported Node 22 first-attempt failure, preserve private/unpublished package truth and repository-local README boundaries, preserve the agent-consumer contract as interpretation rather than authority transfer, preserve all still-effective authority boundaries, and keep its own state candidate-safe:
+No sixth path is authorized. This reconciliation may only bind already-proven truth through PR #515 plus the closed-canonical authorization in PR #516, preserve P8-R1 through P8-R4 semantics, preserve the real P8-R4 unsupported Node 22 first-attempt failure, preserve private/unpublished package truth and repository-local README boundaries, preserve the agent-consumer contract as interpretation rather than authority transfer, preserve the GitHub/CI consumer contract as documentation-only interpretation rather than CI execution authority, preserve all still-effective authority boundaries, and keep its own state candidate-safe:
 
 ```text
-POST_AGENT_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_GITHUB_CI_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
-Qualification requires one unchanged exact head, exactly five authorized paths, no sixth path, frozen blobs, proven lineage binding, unchanged historical records, preserved P8-R4 first local failure, preserved package/README/agent-contract boundaries, applicable required CI, clean substantive review, zero actionable defects/threads, active no-bypass ruleset `20707483`, exact expected-head guarded normal merge, external post-merge proof, and `WAIVER = NO`.
+Qualification requires one unchanged exact head, exactly five authorized paths, no sixth path, frozen blobs, proven lineage binding, unchanged historical records, preserved P8-R4 first local failure, preserved package/README/agent-contract/GitHub-CI-contract boundaries, applicable required CI, clean substantive review, zero actionable defects/threads, active no-bypass ruleset `20707483`, exact expected-head guarded normal merge, external post-merge proof, and `WAIVER = NO`.
 
 Mandatory external post-merge proof is required before this reconciliation may become `CLOSED_CANONICAL`. This candidate cannot certify its own closure.
 
@@ -117,7 +123,7 @@ PROTOCOL = kodac.cli-result
 VERSION = 1
 COMMANDS = apply-patch | ask | solve
 P8_R1_SCOPE = PURE_DATA_ONLY_MACHINE_READABLE_CLI_RESULT_ENVELOPE_FOUNDATION
-P8_R2_SCOPE = NON_AGENT_LOOP_CLI_RESULT_ENVELOPE_WIRING_ONLY
+P8_R2_SCOPE = NON_AGENT_LOOP_CLI_ENVELOPE_WIRING_ONLY
 P8_R3_SCOPE = SOLVE_JSON_ENVELOPE_WIRING_AND_CONTROLLED_LIVE_SOLVE_CONSUMER_ADAPTATION_ONLY
 P8_R4_SCOPE = EXACT_LOCAL_CLI_HELP_ONLY
 APPLY_PATCH_JSON = P8_R1_ENVELOPE_WIRED
@@ -145,6 +151,8 @@ RUNTIME_PACKAGE_PRIVATE_UNPUBLISHED = YES
 README_HELP_INVOCATION = REPOSITORY_LOCAL_ONLY / cd packages/kodac-runtime && npm run cli -- --help
 AGENT_CONSUMER_CONTRACT = DOCUMENTATION_ONLY / SCHEMA_BOUND / FAIL_CLOSED_ON_UNKNOWN_OR_INCOMPATIBLE_ENVELOPE
 AGENT_CONSUMER_CONTRACT_PATH = docs/product/AGENT_INTEGRATION_CONTRACT.md
+GITHUB_CI_CONSUMER_CONTRACT = DOCUMENTATION_ONLY / FULL_ENVELOPE_SCHEMA_VALIDATION / FAIL_CLOSED_COMPATIBILITY
+GITHUB_CI_CONSUMER_CONTRACT_PATH = docs/product/GITHUB_CI_INTEGRATION_CONTRACT.md
 DONE_GATE_IMPLEMENTATION_AND_ALGORITHM = UNCHANGED
 ```
 
@@ -153,6 +161,8 @@ P8-R1 established the pure versioned envelope contract. P8-R2 wired `apply-patch
 PR #504 later documented only the already-supported repository-local development invocation `npm run cli -- --help` from `packages/kodac-runtime`. That documentation does not imply package publication, global installation, public release, provider/model availability, or any new command/provider/write/verification authority.
 
 PR #508 documents only how a consumer interprets the existing `kodac.cli-result` v1 envelope. It does not establish an executable external-agent integration, GitHub/CI integration, MCP/editor/daemon/SDK integration, provider/model execution, or authority transfer.
+
+PR #515 documents only how a future GitHub/CI consumer may conservatively validate and interpret the existing `kodac.cli-result` v1 envelope. It does not implement a GitHub Action, mutate workflows, integrate with GitHub APIs, create check-runs/statuses, authorize tokens/secrets, or transfer merge/release/project-completion authority.
 
 P8 remains a partially hardened product surface, not a public release or distribution claim.
 
@@ -229,6 +239,7 @@ P8_R4_IMPLEMENTATION_CLOSED != P8_R5_PLUS_AUTHORITY
 P8_R4_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
 POST_README_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
 POST_AGENT_CONTRACT_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
+POST_GITHUB_CI_CONTRACT_CURRENT_VIEW_RECONCILIATION != SUCCESSOR_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != SUCCESSOR_IMPLEMENTATION_AUTHORITY
 CURRENT_VIEW_RECONCILIATION != RELEASE_AUTHORITY
 P8_CLI_RESULT_ENVELOPE != INDEPENDENT_PROOF
@@ -240,6 +251,11 @@ REPOSITORY_LOCAL_HELP_DOCUMENTATION != PUBLIC_RELEASE
 AGENT_CONSUMER_CONTRACT != AGENT_EXECUTION_AUTHORITY
 AGENT_CONSUMER_CONTRACT != GITHUB_CI_INTEGRATION
 AGENT_CONSUMER_CONTRACT != MCP_EDITOR_DAEMON_SDK_INTEGRATION
+GITHUB_CI_CONSUMER_CONTRACT != GITHUB_ACTION_IMPLEMENTATION
+GITHUB_CI_CONSUMER_CONTRACT != GITHUB_WORKFLOW_MUTATION
+GITHUB_CI_CONSUMER_CONTRACT != GITHUB_API_INTEGRATION
+GITHUB_CI_CONSUMER_CONTRACT != CHECK_RUN_STATUS_CREATION
+GITHUB_CI_CONSUMER_CONTRACT != MERGE_RELEASE_PROJECT_COMPLETION_AUTHORITY
 PLANNING_DIRECTION != IMPLEMENTATION_AUTHORITY
 PUBLIC_CLI_HELP != PACKAGE_PUBLICATION
 PUBLIC_CLI_HELP != PUBLIC_RELEASE
@@ -252,4 +268,4 @@ EVIDENCE_BINDING != AUTHORITY_TRANSFER
 
 Historical P7 R1-R30 authorization/evidence/repair/anomaly records and all earlier canonical program records remain authoritative and unchanged in their dedicated sources. Omission from this condensed current view is not erasure, relabeling, supersession, waiver, or authority.
 
-After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No P8-R5+, P9, package publication, release, deployment, or project-completion authority may be inferred from P8-R4 closure, repository-local documentation, agent-consumer documentation, or reconciliation closure.
+After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No P8-R5+, P9, package publication, release, deployment, or project-completion authority may be inferred from P8-R4 closure, repository-local documentation, agent-consumer documentation, GitHub/CI consumer documentation, or reconciliation closure.
