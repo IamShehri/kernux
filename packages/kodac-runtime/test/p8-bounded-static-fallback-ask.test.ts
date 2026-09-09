@@ -1,8 +1,10 @@
 import assert from "node:assert/strict"
+import { spawn } from "node:child_process"
 import { createHash } from "node:crypto"
 import { access, mkdtemp, readFile, readdir, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
+import { fileURLToPath } from "node:url"
 import test from "node:test"
 
 import { runCli } from "../src/cli.ts"
@@ -195,6 +197,64 @@ test("P8 bounded static fallback leaves unknown providers fail closed", async ()
     assert.ok(events.some((event) => event.type === "session.failed"))
     assert.equal(events.some((event) => event.type === "session.completed"), false)
     assert.equal(events.some((event) => event.type === "model.request.snapshot"), false)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
+
+test("P8 bounded static fallback does not fabricate model.failed when built-in credential failure occurs before model dispatch", async () => {
+  const root = await mkdtemp(join(tmpdir(), "kodac-p8-static-pre-dispatch-"))
+  const evidence = join(root, "evidence")
+  const cliPath = fileURLToPath(new URL("../src/cli.ts", import.meta.url))
+  const childEnv: NodeJS.ProcessEnv = {
+    NODE_NO_WARNINGS: "1",
+    PATH: process.env.PATH ?? "",
+    SystemRoot: process.env.SystemRoot ?? "",
+    WINDIR: process.env.WINDIR ?? "",
+    TMPDIR: process.env.TMPDIR ?? "",
+    TMP: process.env.TMP ?? "",
+    TEMP: process.env.TEMP ?? "",
+  }
+
+  try {
+    const childResult = await new Promise<{ code: number | null; stdout: string; stderr: string }>((resolve, reject) => {
+      const child = spawn(
+        process.execPath,
+        [
+          "--experimental-strip-types",
+          cliPath,
+          "ask",
+          "private prompt",
+          "--provider",
+          "openai-compatible",
+          "--model",
+          "test/model",
+          "--static-fallback",
+          "--workspace",
+          root,
+          "--evidence-dir",
+          evidence,
+        ],
+        { cwd: root, env: childEnv, stdio: ["ignore", "pipe", "pipe"] },
+      )
+      let stdout = ""
+      let stderr = ""
+      child.stdout.setEncoding("utf8")
+      child.stderr.setEncoding("utf8")
+      child.stdout.on("data", (chunk: string) => { stdout += chunk })
+      child.stderr.on("data", (chunk: string) => { stderr += chunk })
+      child.once("error", reject)
+      child.once("close", (code) => resolve({ code, stdout, stderr }))
+    })
+
+    assert.equal(childResult.code, 0)
+    assert.equal(childResult.stderr, "")
+    assert.equal(childResult.stdout.split(/\r?\n/)[0], STATIC_FALLBACK_TEXT)
+    const events = await readOnlySessionEvents(evidence)
+    assert.equal(events.some((event) => event.type === "model.failed"), false)
+    const completed = events.filter((event) => event.type === "session.completed")
+    assert.equal(completed.length, 1)
+    assert.deepEqual(completed[0].payload, { status: "complete", mode: "static_fallback" })
   } finally {
     await rm(root, { recursive: true, force: true })
   }
