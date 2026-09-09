@@ -8,6 +8,11 @@ P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_
 AUTHORIZATION_PR = #526
 AUTHORIZATION_MERGE = 65f0c20a8e41071e0d833b8915d82e39e4d8168c
 AUTHORIZATION_POST_MERGE_PROOF = 5606510695
+P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL
+RECONCILIATION_AUTHORIZATION_PR = #534
+RECONCILIATION_AUTHORIZATION_MERGE = 398263e01df4290032373fcdafa616058183d210
+RECONCILIATION_AUTHORIZATION_POST_MERGE_PROOF = 5608443224
+THIS_DOCUMENT_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 DOCUMENTATION != RUNTIME_ENFORCEMENT
 WAIVER = NO
 ```
@@ -30,7 +35,9 @@ PROVIDER_RETRYABLE_METADATA != GENERAL_RETRY_REPLAY_RESUME_AUTHORITY
 UNKNOWN_PROVIDER_FAILURE != FALLBACK_TO_FIXTURE
 PROVIDER_GENERATION_FAILURE != FALLBACK_TO_FIXTURE
 DOCUMENTATION != RUNTIME_ENFORCEMENT
-PLANNED_STATIC_FALLBACK != IMPLEMENTED_STATIC_FALLBACK
+BOUNDED_ASK_STATIC_CREDENTIAL_FALLBACK = IMPLEMENTED / CLOSED_CANONICAL
+BOUNDED_ASK_STATIC_CREDENTIAL_FALLBACK != GENERAL_DETERMINISTIC_STATIC_FALLBACK
+GENERAL_DETERMINISTIC_STATIC_FALLBACK = NOT_ESTABLISHED
 ```
 
 ## 1. Canonical provider entry points
@@ -251,15 +258,84 @@ Examples of fail-closed states include:
 
 ```text
 UNKNOWN_PROVIDER_NAME -> ERROR
-MISSING_REQUIRED_PROVIDER_CREDENTIAL -> ERROR
+MISSING_REQUIRED_PROVIDER_CREDENTIAL_WITHOUT_ELIGIBLE_ASK_STATIC_FALLBACK -> ERROR
 INVALID_PROVIDER_BASE_URL -> ERROR
-FINAL_PROVIDER_GENERATION_FAILURE -> ERROR PROPAGATION
+FINAL_NON_ELIGIBLE_PROVIDER_GENERATION_FAILURE -> ERROR PROPAGATION
 ABORTED_PROVIDER_REQUEST -> ERROR / ABORT PROPAGATION
 ```
 
-No canonical evidence currently supports silent cross-provider substitution after those states.
+The exact bounded exception is the caller-opt-in `ask --static-fallback` credential fallback documented below. It is not silent provider substitution and does not change the fail-closed handling of non-eligible failures.
 
-## 11. Static/deterministic fallback planning status
+No canonical evidence supports silent cross-provider substitution after any failure state.
+
+## 11. Bounded opt-in `ask` credential fallback
+
+PR #531 established one narrow deterministic non-model fallback path. It is canonical runtime behavior only within the following exact boundary:
+
+```text
+BOUNDED_ASK_STATIC_CREDENTIAL_FALLBACK = IMPLEMENTED / CLOSED_CANONICAL
+IMPLEMENTATION_PR = #531
+IMPLEMENTATION_MERGE = 81903b1903aa2ced085b8a926e15294112d4e7be
+IMPLEMENTATION_POST_MERGE_PROOF = 5607981953
+COMMAND = ask only
+ACTIVATION = explicit --static-fallback only
+OUTPUT_MODE = human output only
+ELIGIBLE_ERROR_TYPE = ModelProviderError
+ELIGIBLE_MAPPING_1 = openai -> credential_missing
+ELIGIBLE_MAPPING_2 = openai-compatible -> credentials_missing
+SUCCESSFUL_PROVIDER_WITH_OPT_IN = ordinary ask behavior preserved
+MISMATCHED_PROVIDER_ERROR_PAIR = fail closed
+UNKNOWN_PROVIDER = fail closed
+GENERIC_ERROR = fail closed
+HTTP_NETWORK_STREAM_ABORT_AND_OTHER_FAILURES = fail closed
+ask --static-fallback --json = usage error before session/evidence/provider/model activity
+solve --static-fallback = usage error before session/evidence/provider/model activity
+apply-patch --static-fallback = usage error before session/evidence/provider/model activity
+P8_CLI_RESULT_PROTOCOL = unchanged
+P8_CLI_RESULT_VERSION = 1 / unchanged
+RUNTIME_SESSION_COMPLETE_SIGNATURE = unchanged
+EVENT_PROTOCOL = unchanged
+```
+
+The exact human fallback text is:
+
+```text
+Kodac static fallback: requested model provider is unavailable because required credentials are not configured.
+```
+
+This text is emitted by the CLI fallback branch itself. The safe interpretation is:
+
+```text
+STATIC_FALLBACK_IS_MODEL_OUTPUT = NO
+STATIC_FALLBACK_IS_FIXTURE_PROVIDER_OUTPUT = NO
+SECOND_PROVIDER_SELECTION = NO
+FIXTURE_PROVIDER_SUBSTITUTION = NO
+MODEL_PROVIDER_RETRY_ADDED_BY_FALLBACK = NO
+NETWORK_ATTEMPT_ADDED_BY_FALLBACK = NO
+CREDENTIAL_VALUE_READ_BY_FALLBACK = NO
+```
+
+The fallback does not manufacture a successful model turn. It catches only the exact eligible `ModelProviderError` after the existing `ask` runtime path surfaces it.
+
+### Evidence compatibility
+
+Eligible fallback terminates the existing session through the existing event protocol:
+
+```text
+ELIGIBLE_FALLBACK_TERMINAL_EVENT_TYPE = session.completed / EXISTING_EVENT_TYPE
+ELIGIBLE_FALLBACK_TERMINAL_STATUS = complete
+ELIGIBLE_FALLBACK_TERMINAL_MODE = static_fallback
+ELIGIBLE_FALLBACK_TERMINAL_PROVIDER_FIELD = ABSENT
+ELIGIBLE_FALLBACK_TERMINAL_MODEL_FIELD = ABSENT
+session.completed COUNT_FOR_ELIGIBLE_FALLBACK = EXACTLY_1
+session.failed AFTER_ELIGIBLE_FALLBACK = NO
+```
+
+If canonical provider execution already emitted `model.failed` before surfacing the eligible credential error, that event remains historical evidence. When an eligible credential failure occurs before model dispatch and no `model.failed` was emitted, the fallback path does not fabricate one.
+
+These event facts do not turn the fallback into provider/model success, proof, telemetry, upload, learning, or new persistence authority.
+
+## 12. Static/deterministic fallback planning status
 
 The P8 master plan names:
 
@@ -269,18 +345,26 @@ deterministic/static fallback when models/providers are unavailable
 
 as a product-hardening direction.
 
-The master plan explicitly has no implementation authority. Current canonical repository evidence does not establish a general runtime mechanism that transforms an unavailable requested provider into a deterministic static result or automatically selects fixture after provider failure.
+The master plan explicitly has no implementation authority. PR #531 partially addresses that product-hardening direction through the bounded opt-in `ask` credential fallback above, but current canonical repository evidence still does not establish a general runtime mechanism that transforms arbitrary provider unavailability into a deterministic static result or automatically selects fixture after provider failure.
 
 Therefore:
 
 ```text
-GENERAL_DETERMINISTIC_STATIC_FALLBACK = PLANNED_CONCERN / NOT_ESTABLISHED_AS_RUNTIME_BEHAVIOR
+BOUNDED_ASK_STATIC_CREDENTIAL_FALLBACK = IMPLEMENTED / CLOSED_CANONICAL
+BOUNDED_ASK_STATIC_CREDENTIAL_FALLBACK != GENERAL_DETERMINISTIC_STATIC_FALLBACK
+GENERAL_DETERMINISTIC_STATIC_FALLBACK = NOT_ESTABLISHED
 AUTOMATIC_CROSS_PROVIDER_FALLBACK = NOT_PROVEN
+AUTOMATIC_PROVIDER_FAILURE_TO_FIXTURE_FALLBACK = NOT_PROVEN
+AUTOMATIC_FIXTURE_SUBSTITUTION = NOT_PROVEN
+MACHINE_READABLE_STATIC_FALLBACK = NOT_IMPLEMENTED_BY_PR_531
+SOLVE_STATIC_FALLBACK = NOT_IMPLEMENTED_BY_PR_531
+APPLY_PATCH_STATIC_FALLBACK = NOT_IMPLEMENTED_BY_PR_531
+FALLBACK_AFTER_HTTP_NETWORK_STREAM_ABORT_FAILURE = NOT_IMPLEMENTED_BY_PR_531
 ```
 
-A later implementation would require separate exact canonical authorization, bounded semantics, tests, exact-head review/CI, guarded merge, and post-merge proof.
+Any broader implementation would require separate exact canonical authorization, bounded semantics, tests, exact-head review/CI, guarded merge, and post-merge proof.
 
-## 12. Relationship to provider authority
+## 13. Relationship to provider authority
 
 This contract describes existing provider-capable code without granting execution authority.
 
@@ -296,7 +380,7 @@ MODEL_ID_ACCEPTED_BY_CLI != MODEL_INVOCATION_AUTHORIZED
 
 Any task that actually invokes a provider/model, accesses a real credential, incurs spend, or creates network side effects must be authorized by the governing canonical execution boundary for that task.
 
-## 13. Evidence and persistence boundary
+## 14. Evidence and persistence boundary
 
 Provider-capable requests may interact with the existing session/evidence system according to canonical runtime behavior.
 
@@ -304,7 +388,7 @@ This document does not create new evidence fields, retention behavior, persisten
 
 The privacy/egress contract remains controlling for what may be claimed about local evidence storage and remote egress.
 
-## 14. Explicit unknown or unproven behavior
+## 15. Explicit unknown or unproven behavior
 
 Unless separately established by canonical evidence, do not claim:
 
@@ -321,27 +405,34 @@ PROVIDER_UNAVAILABILITY_CANNOT_BLOCK_ASK_OR_SOLVE
 
 Unknown or implementation-specific behavior must remain bounded to the exact code/evidence that proves it.
 
-## 15. Preserved non-grants
+## 16. Preserved non-grants
 
 ```text
 SOURCE_RUNTIME_MUTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 TEST_SCHEMA_PACKAGE_BIN_MUTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 WORKFLOW_DEPENDENCY_LOCKFILE_MUTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
+CURRENT_VIEW_ROADMAP_MUTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 CLI_BEHAVIOR_CHANGE = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 PROVIDER_SELECTION_BEHAVIOR_CHANGE = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 AUTOMATIC_PROVIDER_FALLBACK_IMPLEMENTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
-DETERMINISTIC_STATIC_FALLBACK_IMPLEMENTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
+GENERAL_DETERMINISTIC_STATIC_FALLBACK_IMPLEMENTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
+HTTP_NETWORK_STREAM_ABORT_FALLBACK = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 NEW_PROVIDER_MODEL_ADMISSION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 PROVIDER_MODEL_INVOCATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 NEW_PROVIDER_RETRY_REPLAY_RESUME = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 PROVIDER_SPEND = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 NETWORK_ACCESS = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 SECRET_CREDENTIAL_ACCESS = NOT_AUTHORIZED_BY_THIS_DOCUMENT
+EVENT_PROTOCOL_MUTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
+EVIDENCE_SCHEMA_MUTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 PERSISTENCE_DATABASE_MUTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 TELEMETRY_UPLOAD_ANALYTICS_LEARNING = NOT_AUTHORIZED_BY_THIS_DOCUMENT
+CROSS_REPOSITORY_ACCESS = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 GITHUB_ACTION_WORKFLOW_API_INTEGRATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 MCP_EDITOR_DAEMON_SDK_INTEGRATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 INSTALLATION_UPDATE_INTEGRITY_IMPLEMENTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
+OPERATIONAL_DOCS_EXAMPLES_IMPLEMENTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
+PACKAGE_ROOT_EXPORT = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 PACKAGE_VERSION_MUTATION = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED_BY_THIS_DOCUMENT
 K2_K5_DONE_GATE_AUTHORITY_CHANGE = NOT_AUTHORIZED_BY_THIS_DOCUMENT
@@ -351,16 +442,18 @@ PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-## 16. Product-facing summary
+## 17. Product-facing summary
 
 The current safe interpretation is:
 
 - Kodac defaults `ask` and `solve` to the deterministic fixture provider when no provider is specified.
 - Kodac contains existing provider-capable implementations for exact `openai` and `openai-compatible` provider names.
 - Unknown provider names fail closed.
-- Final provider-generation failure propagates rather than being silently converted to fixture success.
+- Final non-eligible provider-generation failure propagates rather than being silently converted to fixture success.
 - Existing provider implementations may perform bounded same-provider attempts; that is not cross-provider fallback.
-- A general deterministic/static fallback for unavailable requested providers is not currently proven as product runtime behavior.
+- `ask --static-fallback` has one canonical human-output-only credential fallback for the exact eligible `openai` and `openai-compatible` credential error mappings.
+- That bounded fallback emits CLI-owned static text and an existing `session.completed` terminal; it is neither model output nor fixture-provider substitution.
+- A general deterministic/static fallback, automatic cross-provider fallback, fixture substitution, machine-readable fallback, `solve` fallback, and `apply-patch` fallback remain unestablished.
 - Provider-capable code does not itself grant network, credential, spend, or model-invocation authority.
 - Privacy/egress claims remain evidence-scoped and fail closed.
 
