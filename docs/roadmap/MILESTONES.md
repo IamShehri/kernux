@@ -220,6 +220,8 @@ PR_520_INCIDENT_PRESERVATION = REQUIRED
 PR_523_FIX_FORWARD_REMEDIATION != RETROACTIVE_VALIDATION_OF_PR_520
 ```
 
+PR #520 remains adverse historical evidence. PR #522 authorized and PR #523 completed a separate fix-forward remediation. That remediation closes the mandatory documentation-coverage defect; it does not rewrite the earlier merge as clean.
+
 ---
 
 ## Preserved authority boundaries
