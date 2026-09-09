@@ -65,7 +65,11 @@ POST_PROVIDER_AVAILABILITY_FALLBACK_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONIC
 P8_BOUNDED_STATIC_ASK_FALLBACK_AUTHORIZATION = CLOSED_CANONICAL / PR #530 / merge 4dd85edb3948fdea8dbdf8bb8e22ccdd4b3995b5 / proof 5607597288
 P8_BOUNDED_STATIC_ASK_FALLBACK_IMPLEMENTATION = CLOSED_CANONICAL / PR #531 / merge 81903b1903aa2ced085b8a926e15294112d4e7be / proof 5607981953
 P8_POST_BOUNDED_STATIC_FALLBACK_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #532 / merge c5842cd71e65dd0729941075e99033f23dd4a998 / proof 5608141441
-POST_BOUNDED_STATIC_FALLBACK_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_BOUNDED_STATIC_FALLBACK_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #533 / merge bec252d7c4f41c1d8baf8e20b7d70ec8be38d076 / proof 5608260944
+P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #534 / merge 398263e01df4290032373fcdafa616058183d210 / proof 5608443224
+P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_RECONCILIATION = CLOSED_CANONICAL / PR #535 / merge 9e131a12205ff728933204517c59e92750d34bf1 / proof 5608581202
+P8_POST_PROVIDER_FALLBACK_CONTRACT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #536 / merge d1ff678eb3ccce2ae5a519cc6c9a9fcae92a93b1 / proof 5608700527
+POST_PROVIDER_FALLBACK_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
 P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
@@ -79,11 +83,11 @@ Historical P7 R1-R30 records, earlier P8 authorization/reconciliation records, a
 
 ---
 
-## Active milestone unit — post-bounded static fallback current-view reconciliation candidate
+## Active milestone unit — post-provider fallback contract current-view reconciliation candidate
 
-Canonical authority exists only through PR #532 / post-merge proof `5608141441`.
+Canonical authority exists only through PR #536 / post-merge proof `5608700527`.
 
-The exact authorized candidate paths are:
+This candidate may modify exactly:
 
 ```text
 docs/roadmap/NEXT.md
@@ -93,17 +97,15 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized.
+No sixth path is authorized. The product contract is outside this candidate and must remain byte-identical to canonical `main`.
 
-This reconciliation may bind only already-proven truth through PR #532 and must preserve the adverse PR #520 lineage, the separate PR #522/#523 remediation lineage, and the exact #529/#530/#531/#532 closure sequence.
+The reconciliation may bind only already-proven truth through PR #536. It must preserve PR #520 as adverse merged-but-not-closed evidence, PR #522/#523 as separately authorized and proven fix-forward remediation, PR #533 as the closed post-bounded-static-fallback current-view reconciliation, PR #534 as the provider/fallback contract reconciliation authorization, PR #535 as the closed provider/fallback contract reconciliation, and PR #536 as this current-view reconciliation authorization.
 
 ```text
-POST_BOUNDED_STATIC_FALLBACK_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_PROVIDER_FALLBACK_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
-Qualification requires one unchanged exact head, exactly five authorized paths, no sixth path, frozen blobs, proven lineage binding, applicable required CI, a clean substantive exact-head semantic/security/governance review, zero actionable defects, zero unresolved actionable review threads, active no-bypass ruleset `20707483`, exact expected-head guarded normal merge, mandatory external post-merge proof, and `WAIVER = NO`.
-
-This candidate cannot certify its own closure.
+Mandatory external post-merge proof is required before this reconciliation may become `CLOSED_CANONICAL`. This candidate cannot certify its own closure.
 
 ---
 
@@ -187,9 +189,10 @@ GITHUB_CI_CONSUMER_CONTRACT = DOCUMENTATION_ONLY / INTERPRETATION_ONLY
 GITHUB_CI_CONSUMER_CONTRACT_PATH = docs/product/GITHUB_CI_INTEGRATION_CONTRACT.md
 PRIVACY_EGRESS_CONTRACT = DOCUMENTATION_ONLY / EVIDENCE_SCOPED / FAIL_CLOSED
 PRIVACY_EGRESS_CONTRACT_PATH = docs/product/PRIVACY_EGRESS_CONTRACT.md
-PROVIDER_AVAILABILITY_FALLBACK_CONTRACT = CANONICAL_PREDECESSOR_DOCUMENT / NOW_INCOMPLETE_FOR_BOUNDED_PR_531_RUNTIME_BEHAVIOR
+PROVIDER_AVAILABILITY_FALLBACK_CONTRACT = RECONCILED_CANONICAL_CURRENT_BEHAVIOR_DOCUMENT
 PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_PATH = docs/product/PROVIDER_AVAILABILITY_FALLBACK_CONTRACT.md
-PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_RECONCILIATION = SEPARATE_FUTURE_EVIDENCE_DRIVEN_DECISION
+P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #534 / proof 5608443224
+P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_RECONCILIATION = CLOSED_CANONICAL / PR #535 / merge 9e131a12205ff728933204517c59e92750d34bf1 / proof 5608581202
 DOCUMENTATION != RUNTIME_ENFORCEMENT
 ```
 
