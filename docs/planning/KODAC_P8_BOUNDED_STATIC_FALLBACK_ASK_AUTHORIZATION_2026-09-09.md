@@ -16,7 +16,7 @@ WAIVER = NO
 
 This record is a one-path authorization candidate. While this record is unmerged or post-merge-unproven, it creates no runtime, source, test, CLI, provider, network, credential, persistence, release, publication, deployment, or project-completion authority.
 
-Only after this exact authorization candidate independently qualifies, merges normally through protected `main` with an exact expected-head guard, and receives mandatory external post-merge proof may the bounded two-path implementation candidate defined below become eligible.
+Only after this exact authorization candidate independently qualifies, merges normally through protected `main` with an exact expected-head guard, and receives mandatory external post-merge proof may the bounded three-path implementation candidate defined below become eligible.
 
 The descriptive P8 label does not create numbered `P8-R5+` authority. Authority comes only from this exact record after canonical closure.
 
@@ -70,9 +70,10 @@ Only after this authorization becomes `CLOSED_CANONICAL` and externally post-mer
 ```text
 packages/kodac-runtime/src/cli.ts
 packages/kodac-runtime/test/p8-bounded-static-fallback-ask.test.ts
+packages/kodac-runtime/test/p8-r4-local-cli-help.test.ts
 ```
 
-No third path is authorized.
+No fourth path is authorized.
 
 The implementation must not modify:
 
@@ -99,6 +100,8 @@ uv.lock
 or any K2/K3/KRI/K4/K5/K6/P2-P7 source, test, schema, authorization, evidence, workflow, provider configuration, persistence/telemetry/learning surface, release configuration, roadmap/current-view path, ruleset, or repository-protection path.
 
 No new dependency is authorized.
+
+The existing `packages/kodac-runtime/test/p8-r4-local-cli-help.test.ts` path is admitted only because it freezes the exact deterministic help text. Its permitted change is limited to updating the expected `ask` usage/help representation for `--static-fallback` and asserting that the option remains human-output-only. It must not weaken the existing side-effect-free help, command-family, unauthorized-alias, or usage-failure assertions.
 
 ---
 
@@ -293,7 +296,8 @@ The new test file must prove at least:
 15. no fixture provider is invoked as fallback.
 16. fallback evidence preserves any existing `model.failed` event and terminates via existing session machinery without adding a new event type.
 17. `packages/kodac-runtime/src/product/p8-cli-result-envelope.ts` remains byte-identical to canonical base.
-18. existing P8 help, result-envelope, ask, solve, runtime-spine, provider, agent-loop, governance, and K2 tests remain green on the exact implementation head.
+18. the existing P8-R4 help test changes only as necessary to freeze the newly authorized `ask` help text and the human-output-only boundary, while preserving all prior deterministic/side-effect-free/alias/usage assertions.
+19. existing P8 result-envelope, ask, solve, runtime-spine, provider, agent-loop, governance, and K2 tests remain green on the exact implementation head.
 
 Tests must use injected/local deterministic providers only. Qualification must not invoke a real provider/model, read a real credential, perform external network access, or incur provider spend.
 
@@ -386,11 +390,12 @@ Only complete external post-merge proof may classify:
 P8_BOUNDED_STATIC_FALLBACK_ASK_AUTHORIZATION = CLOSED_CANONICAL
 ```
 
-Even after canonical closure, the only new eligibility created is one exact two-path implementation candidate:
+Even after canonical closure, the only new eligibility created is one exact three-path implementation candidate:
 
 ```text
 packages/kodac-runtime/src/cli.ts
 packages/kodac-runtime/test/p8-bounded-static-fallback-ask.test.ts
+packages/kodac-runtime/test/p8-r4-local-cli-help.test.ts
 ```
 
 That future implementation must independently qualify, receive substantive exact-head review, normal-merge with the exact expected-head guard, and receive mandatory external post-merge proof before the bounded behavior can become closed canonical.
