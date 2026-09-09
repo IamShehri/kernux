@@ -81,7 +81,9 @@ POST_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CAN
 P8_RELEASE_VERSION_SEPARATION_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #547 / merge bad24dabb910a2fcc859d86589eaf62e3c192cb5 / proof 5610072225
 P8_RELEASE_VERSION_SEPARATION_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #548 / merge 8eee2ac1e03aca94c92869b922835a25ff347f9a / proof 5610161609
 P8_POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #549 / merge 69d743c2d8863957dde59c29f103b7955a29506d / proof 5610215828
-POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #550 / merge 42effb11a2de4f82df3ec25c7aebafbb9ba8a659 / proof 5610264958
+P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_AUTHORIZATION = CLOSED_CANONICAL / PR #551 / merge 8db8248f8e88938acdef1a88cd27d0f7ec0725f1 / proof 5610364077
+P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CURRENT_CLOSEOUT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
 P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
@@ -118,13 +120,14 @@ All intervening exact authorization, reconciliation, and analysis records remain
 
 ---
 
-## Current active roadmap unit — post-release/version separation contract current-view reconciliation candidate
+## Current active roadmap unit — bounded P8 product/distribution hardening closeout candidate
 
-Canonical authority exists through PR #549 / external post-merge proof `5610215828` only for this bounded reconciliation.
+Canonical authority exists through PR #551 / external post-merge proof `5610364077` only for this exact bounded closeout candidate.
 
-This candidate may modify exactly:
+This candidate may modify exactly six paths:
 
 ```text
+docs/planning/KODAC_P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CANONICAL_CLOSEOUT_EVIDENCE_2026-09-10.md
 docs/roadmap/NEXT.md
 docs/roadmap/ROADMAP.md
 docs/roadmap/MILESTONES.md
@@ -132,44 +135,40 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. `docs/product/RELEASE_VERSION_SEPARATION_CONTRACT.md` is outside this candidate and must remain byte-identical to canonical `main` at blob `e90ce9060ec5dbbe9b0cf678f036cdc78ef8898e`.
+No seventh path is authorized. All product contracts, README, source/runtime/test/schema/package/bin/workflow/dependency/lockfile surfaces, tags, GitHub Releases, release artifacts, provider/model configuration, rulesets, and repository protection remain outside this candidate.
 
-The reconciliation binds only already-proven truth through PR #549. It preserves PR #520 adverse evidence, PR #522/#523 fix-forward remediation, bounded PR #531 `ask --static-fallback` semantics, the unsupported Node 22 P8-R4 historical failure, privacy/egress boundaries, installation/update boundaries, operational-docs/examples boundaries, and K2/K5/Done Gate authority without expansion.
+The closeout evidence independently revalidated the bounded canonical P8 concern lineage for machine-readable CLI evidence, local-first CLI help, agent integration, GitHub/CI integration, privacy/egress including the preserved PR #520 adverse incident and #523 fix-forward remediation, provider/fallback including bounded PR #531 semantics, installation/update integrity, operational docs/examples, and release/version separation through PR #550.
 
 ```text
-POST_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #546 / merge 9fbd2707f8d90f11fa0fbbd086c428f5c7a1afdb / proof 5609860097
-P8_RELEASE_VERSION_SEPARATION_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #547 / merge bad24dabb910a2fcc859d86589eaf62e3c192cb5 / proof 5610072225
-P8_RELEASE_VERSION_SEPARATION_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #548 / merge 8eee2ac1e03aca94c92869b922835a25ff347f9a / proof 5610161609
-P8_POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #549 / merge 69d743c2d8863957dde59c29f103b7955a29506d / proof 5610215828
-POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #550 / merge 42effb11a2de4f82df3ec25c7aebafbb9ba8a659 / proof 5610264958
+P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_AUTHORIZATION = CLOSED_CANONICAL / PR #551 / merge 8db8248f8e88938acdef1a88cd27d0f7ec0725f1 / proof 5610364077
+P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CURRENT_CLOSEOUT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
-Release/version separation remains interpretation-only and fail-closed:
+This candidate cannot certify its own closeout. Only complete external post-merge proof may later establish `P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CLOSED_CANONICAL`.
+
+The maximum meaning remains bounded:
 
 ```text
+P8_OVERALL = NOT_CLOSED
+P8_R5_PLUS = NOT_AUTHORIZED_BY_NUMBERING
+P2_OVERALL = OPEN
+P3_OVERALL = OPEN
+P4_OVERALL = OPEN
+P5_OVERALL = NOT_CLOSED
+P6_OVERALL = NOT_CLOSED
+P7_OVERALL = NOT_CLOSED
+GENERAL_PUBLIC_KODACBENCH = NOT_CLOSED
 KODAC_RELEASE_VERSION = NOT_SELECTED
-ENGINEERING_MILESTONE_IDENTITY != RELEASE_VERSION
-PROTOCOL_VERSION != RELEASE_VERSION
-PRIVATE_PACKAGE_VERSION != PUBLIC_PACKAGE_VERSION_AUTHORITY
-RUNTIME_PACKAGE_NAME = @kodac/runtime-internal
-RUNTIME_PACKAGE_VERSION = 0.0.0-k2
-RUNTIME_PACKAGE_PRIVATE_UNPUBLISHED = YES
-KODAC_CLI_--version = NOT_ADMITTED
-KODAC_CLI_version_COMMAND = NOT_ADMITTED
-PACKAGE_VERSION_MUTATION = NOT_AUTHORIZED
-TAG_OR_GITHUB_RELEASE_CREATION = NOT_AUTHORIZED
-PACKAGE_PUBLICATION = NOT_AUTHORIZED
-PUBLIC_RELEASE_OR_DEPLOYMENT = NOT_AUTHORIZED
+PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
 PRODUCTION_READINESS_CLAIM = NOT_AUTHORIZED
 BRAND_OR_LEGAL_CLAIM = NOT_AUTHORIZED
-P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
-P8_CLOSEOUT = REQUIRES_FRESH_SUCCESSOR_AUTHORITY_ANALYSIS_AFTER_RECONCILIATION_CLOSURE
 P9 = NOT_AUTHORIZED_BY_IMPLICATION
 PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-Mandatory external post-merge proof is required before this reconciliation may become `CLOSED_CANONICAL`. This candidate cannot certify its own closure.
+Bounded P8 closeout is not P8-overall closure, public-release readiness, package-publication authority, P9 authority, or project completion. After external closeout proof, only a separately authorized post-closeout current-view reconciliation may follow before fresh successor analysis.
 
 ---
 
