@@ -1,0 +1,190 @@
+# Kodac P8 Post-Release/Version Separation Contract Current-View Reconciliation Authorization — 2026-09-10
+
+## Classification
+
+```text
+CLASS = AUTHORIZATION / DOCUMENTATION_ONLY
+STATUS = AUTHORIZATION_CANDIDATE / NOT_CANONICAL
+CANONICAL_BASE_MAIN = 8eee2ac1e03aca94c92869b922835a25ff347f9a
+PREDECESSOR = PR #548 / P8_RELEASE_VERSION_SEPARATION_CONTRACT_DOCUMENTATION / CLOSED_CANONICAL
+PREDECESSOR_MERGE = 8eee2ac1e03aca94c92869b922835a25ff347f9a
+PREDECESSOR_POST_MERGE_PROOF = 5610161609
+SUCCESSOR_ANALYSIS = PR #548 / comment 5610168324 / ANALYSIS_ONLY
+FOUNDER_CONTINUATION_AUTHORITY = EXPLICIT_KODAC_CONTINUATION_WITH_ORDINARY_AUTHORIZED_APPROVALS_2026-09-10
+WAIVER = NO
+```
+
+This one-path authorization candidate creates no current-view mutation authority until it independently qualifies, normally merges through protected `main`, and receives complete external post-merge proof.
+
+It creates no source, runtime, test, schema, package, bin, workflow, dependency, lockfile, contract, package-version, CLI-version, tag, GitHub Release, artifact, publication, deployment, provider/model, network, credential, persistence, telemetry, P9, or project-completion authority.
+## Exact authorization-candidate path
+
+This candidate may add exactly one path and no second path:
+
+```text
+docs/planning/KODAC_P8_POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION_2026-09-10.md
+```
+
+No current-view file or product contract may change in this authorization candidate.
+
+## Conditionally authorized future reconciliation
+
+Only after this authorization becomes externally proven `CLOSED_CANONICAL` may one later candidate modify exactly:
+
+```text
+docs/roadmap/NEXT.md
+docs/roadmap/ROADMAP.md
+docs/roadmap/MILESTONES.md
+docs/roadmap/VERSION_PLAN.md
+docs/product/STATUS.md
+```
+
+No sixth path is authorized. The reconciliation must remain documentation-only.
+The release/version separation product contract must remain byte-identical during the later reconciliation:
+
+```text
+RELEASE_VERSION_SEPARATION_CONTRACT_PATH = docs/product/RELEASE_VERSION_SEPARATION_CONTRACT.md
+RELEASE_VERSION_SEPARATION_CONTRACT_BLOB = e90ce9060ec5dbbe9b0cf678f036cdc78ef8898e
+PRODUCT_CONTRACT_MUTATION = NOT_AUTHORIZED
+```
+
+## Required lineage binding
+
+The later current views must bind already-proven truth:
+
+```text
+POST_OPERATIONAL_DOCS_EXAMPLES_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #546 / proof 5609860097
+P8_RELEASE_VERSION_SEPARATION_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #547 / merge bad24dabb910a2fcc859d86589eaf62e3c192cb5 / proof 5610072225
+P8_RELEASE_VERSION_SEPARATION_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #548 / merge 8eee2ac1e03aca94c92869b922835a25ff347f9a / proof 5610161609
+POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+```
+
+The later candidate cannot certify its own closure. External post-merge proof remains mandatory.
+## Required release/version current truth
+
+The later current views must preserve these bounded facts:
+
+```text
+KODAC_RELEASE_VERSION = NOT_SELECTED
+RUNTIME_PACKAGE_NAME = @kodac/runtime-internal
+RUNTIME_PACKAGE_VERSION = 0.0.0-k2
+RUNTIME_PACKAGE_PRIVATE = true
+RUNTIME_PACKAGE_PUBLICATION = NOT_ESTABLISHED
+PUBLIC_PACKAGE_INSTALLABILITY = NOT_ESTABLISHED
+GLOBAL_INSTALLABILITY = NOT_ESTABLISHED
+KODAC_CLI_--version = NOT_ADMITTED
+KODAC_CLI_version_COMMAND = NOT_ADMITTED
+PACKAGE_VERSION_MUTATION = NOT_AUTHORIZED
+TAG_OR_GITHUB_RELEASE_CREATION = NOT_AUTHORIZED
+PACKAGE_PUBLICATION = NOT_AUTHORIZED
+PUBLIC_RELEASE_OR_DEPLOYMENT = NOT_AUTHORIZED
+PRODUCTION_READINESS_CLAIM = NOT_AUTHORIZED
+BRAND_OR_LEGAL_CLAIM = NOT_AUTHORIZED
+```
+
+The absence of GitHub Releases or Git tags observed during PR #547/#548 qualification is bounded historical evidence only; the later reconciliation must not promote that observation into a permanent invariant.
+## Preserved historical and trust boundaries
+
+The later reconciliation must preserve without rewriting:
+
+```text
+PR_520_ADVERSE_EVIDENCE = PRESERVE
+PR_522_PR_523_FIX_FORWARD_REMEDIATION = PRESERVE
+PR_531_BOUNDED_ASK_STATIC_FALLBACK = PRESERVE_WITHOUT_GENERALIZATION
+NODE_22_P8_R4_FIRST_ATTEMPT_FAILURE = PRESERVE_AS_UNSUPPORTED_HISTORICAL_EVIDENCE
+PRIVACY_EGRESS_BOUNDARIES = PRESERVE
+INSTALLATION_UPDATE_INTEGRITY_BOUNDARIES = PRESERVE
+OPERATIONAL_DOCS_EXAMPLES_BOUNDARIES = PRESERVE
+RELEASE_VERSION_SEPARATION_BOUNDARIES = PRESERVE
+K2_TRUSTED_SIDE_EFFECT_BOUNDARY = UNCHANGED
+K5_PROOF_BOUNDARY = UNCHANGED
+DONE_GATE_AUTHORITY = UNCHANGED
+```
+
+## Next-unit boundary
+
+The later reconciliation may state that fresh successor-authority analysis becomes allowed only after its own external closure. It must not authorize P8 closeout, P9, public release, package publication, deployment, or project completion.
+
+```text
+P8_CLOSEOUT = REQUIRES_FRESH_SUCCESSOR_AUTHORITY_ANALYSIS_AFTER_RECONCILIATION_CLOSURE
+P9 = NOT_AUTHORIZED_BY_IMPLICATION
+PROJECT_COMPLETION = NOT_ESTABLISHED
+```
+## Explicit non-grants
+
+```text
+SOURCE_RUNTIME_TEST_SCHEMA_MUTATION = NOT_AUTHORIZED
+PACKAGE_BIN_METADATA_MUTATION = NOT_AUTHORIZED
+WORKFLOW_DEPENDENCY_LOCKFILE_MUTATION = NOT_AUTHORIZED
+CLI_BEHAVIOR_OR_VERSION_SURFACE_MUTATION = NOT_AUTHORIZED
+README_MUTATION = NOT_AUTHORIZED
+PRODUCT_CONTRACT_MUTATION = NOT_AUTHORIZED
+TAG_OR_GITHUB_RELEASE_CREATION = NOT_AUTHORIZED
+RELEASE_ARTIFACT_CREATION_OR_SIGNING = NOT_AUTHORIZED
+PACKAGE_REGISTRY_ACCESS_OR_PUBLICATION = NOT_AUTHORIZED
+INSTALLER_UPDATER_OR_CHANNEL_IMPLEMENTATION = NOT_AUTHORIZED
+PUBLIC_RELEASE_OR_DEPLOYMENT = NOT_AUTHORIZED
+PRODUCTION_READINESS_CLAIM = NOT_AUTHORIZED
+BRAND_OR_LEGAL_CLAIM = NOT_AUTHORIZED
+PROVIDER_MODEL_INVOCATION = NOT_AUTHORIZED
+NETWORK_OR_SECRET_CREDENTIAL_ACCESS = NOT_AUTHORIZED
+PERSISTENCE_OR_TELEMETRY_MUTATION = NOT_AUTHORIZED
+K2_K5_DONE_GATE_AUTHORITY_CHANGE = NOT_AUTHORIZED
+P8_CLOSEOUT = NOT_AUTHORIZED_BY_THIS_RECORD
+P9 = NOT_AUTHORIZED_BY_IMPLICATION
+PROJECT_COMPLETION = NOT_ESTABLISHED
+REBASE = NOT_AUTHORIZED
+FORCE_PUSH = NOT_AUTHORIZED
+HISTORY_REWRITE = NOT_AUTHORIZED
+WAIVER = NO
+```
+## Qualification gate
+
+Before guarded merge, one unchanged exact authorization head must prove:
+
+```text
+BASE == CURRENT_CANONICAL_MAIN
+BEHIND_BY = 0
+CHANGED_PATHS = EXACTLY_1_AUTHORIZATION_PATH
+NO_SECOND_PATH = PASS
+AUTHORIZATION_BLOB = FROZEN
+PREDECESSOR_POST_MERGE_PROOF_BOUND = PASS
+SUCCESSOR_ANALYSIS_BOUND = PASS
+REQUIRED_CI = TERMINAL_SUCCESS_OR_CANONICALLY_PROVEN_NONAPPLICABILITY
+SUBSTANTIVE_SEMANTIC_SECURITY_PRIVACY_SUPPLY_CHAIN_GOVERNANCE_REVIEW = CLEAN
+KNOWN_ACTIONABLE_DEFECTS = 0
+UNRESOLVED_ACTIONABLE_REVIEW_THREADS = 0
+RULESET_20707483 = ACTIVE / NO_BYPASS
+EXPECTED_HEAD_GUARDED_NORMAL_MERGE = REQUIRED
+POST_MERGE_EXTERNAL_PROOF = REQUIRED
+WAIVER = NO
+```
+
+Any head/base movement, material finding, unresolved actionable thread, check regression, changed-path expansion, or ruleset change invalidates earlier qualification evidence.
+## Later reconciliation qualification gate
+
+This authorization does not pre-qualify the later five-path candidate. That candidate must independently prove:
+
+```text
+BASE == THEN_CURRENT_CANONICAL_MAIN
+BEHIND_BY = 0
+CHANGED_PATHS = EXACTLY_5_AUTHORIZED_CURRENT_VIEW_PATHS
+NO_SIXTH_PATH = PASS
+AUTHORIZATION_POST_MERGE_PROOF_BOUND = PASS
+RELEASE_VERSION_SEPARATION_CONTRACT_BLOB_UNCHANGED = PASS
+PR_546_PR_547_PR_548_LINEAGE_BOUND = PASS
+RELEASE_VERSION_NON_GRANTS_PRESERVED = PASS
+HISTORICAL_ADVERSE_AND_REMEDIATION_LINEAGE_PRESERVED = PASS
+REQUIRED_CI = TERMINAL_SUCCESS_OR_CANONICALLY_PROVEN_NONAPPLICABILITY
+SUBSTANTIVE_SEMANTIC_SECURITY_PRIVACY_SUPPLY_CHAIN_GOVERNANCE_REVIEW = CLEAN
+KNOWN_ACTIONABLE_DEFECTS = 0
+UNRESOLVED_ACTIONABLE_REVIEW_THREADS = 0
+RULESET_20707483 = ACTIVE / NO_BYPASS
+EXPECTED_HEAD_GUARDED_NORMAL_MERGE = REQUIRED
+POST_MERGE_EXTERNAL_PROOF = REQUIRED
+WAIVER = NO
+```
+
+## Closure semantics
+
+This record cannot certify itself. Only complete external post-merge proof may classify it `CLOSED_CANONICAL`. Even then, only the exact five-path current-view reconciliation becomes eligible; P8 closeout and every later concern remain subject to fresh analysis and separate authorization.
