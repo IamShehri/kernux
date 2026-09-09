@@ -1,0 +1,203 @@
+# Kodac P8 Post-Provider Availability / Fallback Current-View Reconciliation Authorization — 2026-09-09
+
+## Classification
+
+```text
+CLASS = AUTHORIZATION / DOCUMENTATION_ONLY
+STATUS = AUTHORIZATION_CANDIDATE / NOT_CANONICAL
+CANONICAL_BASE_MAIN = de91dc968086e88bb7452dc20dc32ae4338c26b0
+PREDECESSOR = PR #527 / P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_DOCUMENTATION / CLOSED_CANONICAL
+PREDECESSOR_POST_MERGE_PROOF = 5606599167
+SUCCESSOR_ANALYSIS = PR #527 / comment 5606611282 / ANALYSIS_ONLY
+FOUNDER_CONTINUATION_AUTHORITY = EXPLICIT_KODAC_CONTINUATION_WITH_ORDINARY_AUTHORIZED_APPROVALS_2026-09-09
+WAIVER = NO
+```
+
+This record is a one-path documentation-only authorization candidate. It creates no current-view mutation authority while unmerged or post-merge-unproven and creates no source, runtime, provider/model, network, credential, persistence, workflow, dependency, installation/update, release, publication, deployment, numbered successor, P9, or project-completion authority.
+
+Only complete external post-merge proof for this exact authorization may make the later five-path reconciliation eligible.
+
+## Exact authorization-candidate path
+
+This authorization candidate may add exactly one path:
+
+```text
+docs/planning/KODAC_P8_POST_PROVIDER_AVAILABILITY_FALLBACK_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION_2026-09-09.md
+```
+
+No second path is authorized in this candidate.
+
+## Conditionally authorized reconciliation paths
+
+Only after this authorization becomes `CLOSED_CANONICAL` may one later reconciliation candidate modify exactly these five paths and no sixth path:
+
+```text
+docs/roadmap/NEXT.md
+docs/roadmap/ROADMAP.md
+docs/roadmap/MILESTONES.md
+docs/roadmap/VERSION_PLAN.md
+docs/product/STATUS.md
+```
+
+No historical authorization/evidence document, product contract, source file, test, schema, package, bin, workflow, dependency, lockfile, or other path is authorized by this record.
+
+## Required reconciliation truth
+
+The later five-path reconciliation must bind already-proven canonical truth through PR #527 without retroactive rewriting or authority expansion.
+
+At minimum it must preserve this lineage:
+
+```text
+POST_GITHUB_CI_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #517 / proof 5605372989
+P8_PRIVACY_EGRESS_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #518 / proof 5605476348
+P8_PRIVACY_EGRESS_CONTRACT_DOCUMENTATION_PR_520 = MERGED_WITH_STALE_QUALIFICATION / NOT_CLOSED_CANONICAL
+PR_520_MATERIAL_REVIEW = 5157366894 / MANDATORY_CONTRACT_COVERAGE_OMISSION
+PR_520_INCIDENT_RECORD = 5605587262
+PR_520_RETROACTIVE_VALIDATION = NO
+P8_PRIVACY_EGRESS_CONTRACT_REMEDIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #522 / proof 5605901830
+P8_PRIVACY_EGRESS_CONTRACT_DOCUMENTATION_REMEDIATION = CLOSED_CANONICAL / PR #523 / proof 5605992600
+P8_POST_PRIVACY_EGRESS_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #524 / proof 5606089890
+POST_PRIVACY_EGRESS_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #525 / merge cd072f489a6b1d89330e85f5a85772cb8c0d8a8b / proof 5606374984
+P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_DOCUMENTATION_AUTHORIZATION = CLOSED_CANONICAL / PR #526 / merge 65f0c20a8e41071e0d833b8915d82e39e4d8168c / proof 5606510695
+P8_PROVIDER_AVAILABILITY_FALLBACK_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #527 / merge de91dc968086e88bb7452dc20dc32ae4338c26b0 / proof 5606599167
+POST_PROVIDER_AVAILABILITY_FALLBACK_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+```
+
+PR #520 remains adverse historical evidence. PR #522/#523 remain the separately authorized and proven fix-forward remediation. Nothing in the reconciliation may retroactively validate PR #520.
+
+## Required bounded P8 semantics
+
+The reconciliation must preserve exact P8 scope markers:
+
+```text
+P8_R1_SCOPE = PURE_DATA_ONLY_MACHINE_READABLE_CLI_RESULT_ENVELOPE_FOUNDATION
+P8_R2_SCOPE = NON_AGENT_LOOP_CLI_RESULT_ENVELOPE_WIRING_ONLY
+P8_R3_SCOPE = SOLVE_JSON_ENVELOPE_WIRING_AND_CONTROLLED_LIVE_SOLVE_CONSUMER_ADAPTATION_ONLY
+P8_R4_SCOPE = EXACT_LOCAL_CLI_HELP_ONLY
+```
+
+The real P8-R4 local evidence distinction must remain visible and must not be rewritten:
+
+```text
+LOCAL_FULL_SUITE_FIRST_ATTEMPT = FAIL
+NODE = 22.22.3 / UNSUPPORTED_BY_PACKAGE_ENGINE
+TOTAL = 1973
+PASS = 1870
+SKIPPED = 102
+FAIL = 1
+FAILURE = K3-R2 repeated capture without mutation preserves RepositoryContentIdentity
+ERROR = ENOTEMPTY during temporary .git/ai/working_logs cleanup
+CANONICAL_NODE_24_PR_EVIDENCE = SUCCESS
+```
+
+## Required product interpretation boundaries
+
+The reconciliation must preserve and may add current-view references for the provider availability/fallback contract without turning documentation into runtime authority.
+
+Required distinctions include:
+
+```text
+RUNTIME_PACKAGE_PRIVATE_UNPUBLISHED = YES
+README_HELP_DOCUMENTATION = REPOSITORY_LOCAL_ONLY
+AGENT_CONSUMER_CONTRACT = DOCUMENTATION_ONLY / INTERPRETATION_ONLY
+GITHUB_CI_CONSUMER_CONTRACT = DOCUMENTATION_ONLY / INTERPRETATION_ONLY
+PRIVACY_EGRESS_CONTRACT = DOCUMENTATION_ONLY / EVIDENCE_SCOPED / FAIL_CLOSED
+PROVIDER_AVAILABILITY_FALLBACK_CONTRACT = DOCUMENTATION_ONLY / INTERPRETATION_ONLY
+DOCUMENTATION != RUNTIME_ENFORCEMENT
+BOUNDED_NO_EGRESS_EVIDENCE != GLOBAL_ALL_COMMANDS_OFFLINE_CLAIM
+LOCAL_EVIDENCE_STORAGE_BEHAVIOR != TELEMETRY_OR_UPLOAD_AUTHORITY
+DEFAULT_FIXTURE_PROVIDER != PROOF_THAT_ALL_PROVIDER_CAPABLE_PATHS_ARE_OFFLINE
+DEFAULT_FIXTURE_PROVIDER != AUTOMATIC_FALLBACK_FROM_ANY_PROVIDER_FAILURE
+FIXTURE_DETERMINISM != GLOBAL_OFFLINE_PRODUCT_GUARANTEE
+SAME_PROVIDER_BOUNDED_RETRY != CROSS_PROVIDER_FALLBACK
+UNKNOWN_PROVIDER_FAILURE != FALLBACK_TO_FIXTURE
+PROVIDER_GENERATION_FAILURE != FALLBACK_TO_FIXTURE
+PLANNED_STATIC_FALLBACK != IMPLEMENTED_STATIC_FALLBACK
+UNKNOWN_OR_UNPROVEN_PRIVACY_EGRESS_BEHAVIOR = DO_NOT_CLAIM
+```
+
+## Explicit non-grants
+
+The authorization candidate and later reconciliation must preserve at least:
+
+```text
+SOURCE_RUNTIME_MUTATION = NOT_AUTHORIZED
+SCHEMA_TEST_PACKAGE_BIN_MUTATION = NOT_AUTHORIZED
+WORKFLOW_DEPENDENCY_LOCKFILE_MUTATION = NOT_AUTHORIZED
+CLI_BEHAVIOR_CHANGE = NOT_AUTHORIZED
+PROVIDER_SELECTION_BEHAVIOR_CHANGE = NOT_AUTHORIZED
+AUTOMATIC_PROVIDER_FALLBACK_IMPLEMENTATION = NOT_AUTHORIZED
+DETERMINISTIC_STATIC_FALLBACK_IMPLEMENTATION = NOT_AUTHORIZED
+NEW_PROVIDER_MODEL_ADMISSION = NOT_AUTHORIZED
+PROVIDER_MODEL_INVOCATION = NOT_AUTHORIZED
+NEW_PROVIDER_RETRY_REPLAY_RESUME = NOT_AUTHORIZED
+PROVIDER_SPEND = NOT_AUTHORIZED
+NETWORK_ACCESS = NOT_AUTHORIZED
+SECRET_CREDENTIAL_ACCESS = NOT_AUTHORIZED
+PERSISTENCE_DATABASE_MUTATION = NOT_AUTHORIZED
+TELEMETRY_UPLOAD_ANALYTICS_LEARNING = NOT_AUTHORIZED
+GITHUB_CI_PRODUCT_INTEGRATION = NOT_AUTHORIZED
+MCP_EDITOR_DAEMON_SDK_INTEGRATION = NOT_AUTHORIZED
+INSTALLATION_UPDATE_INTEGRITY_IMPLEMENTATION = NOT_AUTHORIZED
+PACKAGE_ROOT_EXPORT = NOT_AUTHORIZED
+PACKAGE_VERSION_MUTATION = NOT_AUTHORIZED
+PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
+K2_K5_DONE_GATE_AUTHORITY_CHANGE = NOT_AUTHORIZED
+P8_R5_PLUS = NOT_AUTHORIZED_BY_NUMBERING
+P9 = NOT_AUTHORIZED_BY_IMPLICATION
+PROJECT_COMPLETION = NOT_ESTABLISHED
+REVERT_PR_520 = NOT_AUTHORIZED
+REBASE = NOT_AUTHORIZED
+FORCE_PUSH = NOT_AUTHORIZED
+HISTORY_REWRITE = NOT_AUTHORIZED
+WAIVER = NO
+```
+
+Omission from a condensed current view is not authorization, proof, waiver, supersession, narrowing, retroactive validation, or project completion.
+
+## Candidate-safe reconciliation classification
+
+The future five-path candidate must describe itself only as:
+
+```text
+POST_PROVIDER_AVAILABILITY_FALLBACK_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+```
+
+It cannot certify its own closure. Only external post-merge proof may later classify it `CLOSED_CANONICAL`.
+
+## Qualification gate for this authorization candidate
+
+Before guarded merge, one unchanged exact candidate head must prove:
+
+```text
+BASE == CURRENT_CANONICAL_MAIN
+BEHIND_BY = 0
+CHANGED_PATHS = EXACTLY_1_AUTHORIZATION_PATH
+NO_SECOND_PATH = PASS
+AUTHORIZATION_BLOB = FROZEN
+PREDECESSOR_POST_MERGE_PROOF_BOUND = PASS
+SUCCESSOR_ANALYSIS_BOUND = PASS
+FOUNDER_CONTINUATION_AUTHORITY_BOUND = PASS
+REQUIRED_CI = TERMINAL_SUCCESS_OR_CANONICALLY_PROVEN_NONAPPLICABILITY
+SUBSTANTIVE_SEMANTIC_SECURITY_GOVERNANCE_REVIEW = CLEAN
+KNOWN_ACTIONABLE_DEFECTS = 0
+UNRESOLVED_ACTIONABLE_REVIEW_THREADS = 0
+RULESET_20707483 = ACTIVE
+RULESET_BYPASS_ACTORS = []
+CURRENT_USER_CAN_BYPASS = never
+EXPECTED_HEAD_GUARDED_NORMAL_MERGE = REQUIRED
+POST_MERGE_PROOF = REQUIRED
+WAIVER = NO
+```
+
+Any head/base movement or later material finding invalidates earlier qualification evidence.
+
+## Closure semantics
+
+This record cannot certify itself. Only complete external post-merge proof may classify:
+
+```text
+P8_POST_PROVIDER_AVAILABILITY_FALLBACK_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL
+```
+
+Even after closure, the only new eligibility is the exact five-path documentation reconciliation above. No runtime implementation, installation/update work, release/version mutation, publication/deployment, numbered P8 successor, P9 authority, or project-completion claim follows by implication.
