@@ -14,7 +14,7 @@ import {
 } from "./evidence/store.ts"
 import { ExecutionGateway } from "./execution/gateway.ts"
 import { FixtureModelProvider } from "./model/fixture.ts"
-import { ProviderRegistry, type ModelProvider } from "./model/provider.ts"
+import { ModelProviderError, ProviderRegistry, type ModelProvider } from "./model/provider.ts"
 import { AgentTurnRunner } from "./model/turn.ts"
 import { JsonlEventSink } from "./protocol/event.ts"
 import { buildP8CliResultEnvelope, P8_CLI_RESULT_LIMITS } from "./product/p8-cli-result-envelope.ts"
@@ -56,6 +56,7 @@ interface AskArgs extends CommonArgs {
   prompt: string
   provider: string
   model: string
+  staticFallback: boolean
 }
 
 interface SolveArgs extends CommonArgs {
@@ -79,14 +80,16 @@ const CLI_HELP = [
   "",
   "Usage:",
   "  kodac apply-patch <patch-file> [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
-  "  kodac ask <prompt> [--provider fixture] [--model <id>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
+  "  kodac ask <prompt> [--provider fixture] [--model <id>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--static-fallback] [--json]",
   "  kodac solve <task> [--provider fixture] [--model <id>] [--approve-writes] [--approve-verification] [--verify-command <json>] [--max-turns <n>] [--max-tool-calls <n>] [--max-elapsed-ms <n>] [--max-failures <n>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
   "",
   "Commands:",
   "  apply-patch  Apply an explicit patch through the existing guarded patch path.",
-  "  ask          Run the existing read-oriented model request path.",
+  "  ask          Run the existing read-oriented model request path; --static-fallback is human-output-only.",
   "  solve        Run the existing bounded agent-loop solve path.",
 ].join("\n")
+
+const STATIC_FALLBACK_TEXT = "Kodac static fallback: requested model provider is unavailable because required credentials are not configured."
 
 function workspaceKey(workspace: string): string {
   return createHash("sha256").update(resolve(workspace), "utf8").digest("hex").slice(0, 16)
@@ -107,6 +110,10 @@ function parseCommonOptions(argv: string[], startIndex: number, cwd: string, tar
     const token = argv[index]
     if (token === "--json") {
       target.json = true
+      continue
+    }
+    if (token === "--static-fallback") {
+      target.staticFallback = true
       continue
     }
     if (token === "--approve-writes") {
@@ -166,6 +173,7 @@ function parseCliArgs(argv: string[], cwd: string): CliArgs {
       json: false,
     }
     parseCommonOptions(argv, 2, cwd, result as ApplyPatchArgs & Record<string, unknown>)
+    if ("staticFallback" in result) throw new Error("--static-fallback is only valid with kodac ask")
     if ("provider" in result || "model" in result || hasSolveOnlyOptions(result)) {
       throw new Error("Model, write, verification, and agent-loop options are not valid with kodac apply-patch")
     }
@@ -181,9 +189,13 @@ function parseCliArgs(argv: string[], cwd: string): CliArgs {
       provider: "fixture",
       model: "fixture/deterministic-v1",
       json: false,
+      staticFallback: false,
     }
     parseCommonOptions(argv, 2, cwd, result as AskArgs & Record<string, unknown>)
     if (hasSolveOnlyOptions(result)) throw new Error("Write, verification, and agent-loop options are only valid with kodac solve")
+    if (result.staticFallback && result.json) {
+      throw new Error("--static-fallback is human-output-only and cannot be combined with --json")
+    }
     return result
   }
 
@@ -218,6 +230,7 @@ function parseCliArgs(argv: string[], cwd: string): CliArgs {
       maxFailures: DEFAULT_AGENT_LOOP_LIMITS.maxFailures,
     }
     parseCommonOptions(argv, 2, cwd, mutable)
+    if ("staticFallback" in mutable) throw new Error("--static-fallback is only valid with kodac ask")
     const ids = new Set<string>()
     for (const command of mutable.verificationCommands) {
       if (ids.has(command.id)) throw new Error(`Duplicate verification command id: ${command.id}`)
@@ -247,7 +260,7 @@ function parseCliArgs(argv: string[], cwd: string): CliArgs {
 
   throw new Error(
     "Usage: kodac apply-patch <patch-file> [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]\n" +
-      "   or: kodac ask <prompt> [--provider fixture] [--model <id>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]\n" +
+      "   or: kodac ask <prompt> [--provider fixture] [--model <id>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--static-fallback] [--json]\n" +
       "   or: kodac solve <task> [--provider fixture] [--model <id>] [--approve-writes] [--approve-verification] " +
       "[--verify-command <json>] [--max-turns <n>] [--max-tool-calls <n>] [--max-elapsed-ms <n>] [--max-failures <n>] " +
       "[--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
@@ -425,6 +438,12 @@ async function runApplyPatch(args: ApplyPatchArgs, io: CliIO, activateSession: A
   return 0
 }
 
+function isEligibleStaticFallback(provider: string, error: unknown): boolean {
+  if (!(error instanceof ModelProviderError)) return false
+  return (provider === "openai" && error.code === "credential_missing") ||
+    (provider === "openai-compatible" && error.code === "credentials_missing")
+}
+
 async function runAsk(
   args: AskArgs,
   io: CliIO,
@@ -445,11 +464,20 @@ async function runAsk(
   })
 
   await session.start({ workspace: args.workspace, command: "ask", runtimeSlice: "k2-s3" })
-  const result = await runner.run({
-    provider: args.provider,
-    model: args.model,
-    messages: [{ role: "user", content: args.prompt }],
-  })
+  let result: Awaited<ReturnType<AgentTurnRunner["run"]>>
+  try {
+    result = await runner.run({
+      provider: args.provider,
+      model: args.model,
+      messages: [{ role: "user", content: args.prompt }],
+    })
+  } catch (error) {
+    if (!args.staticFallback || !isEligibleStaticFallback(args.provider, error)) throw error
+    await session.emit("session.completed", { status: "complete", mode: "static_fallback" })
+    io.stdout(STATIC_FALLBACK_TEXT)
+    io.stdout(`Evidence: ${eventPath}`)
+    return 0
+  }
   await session.complete({ mode: "model_turn", provider: args.provider, model: args.model })
 
   if (args.json) {

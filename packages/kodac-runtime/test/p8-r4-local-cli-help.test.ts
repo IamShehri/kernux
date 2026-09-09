@@ -16,12 +16,12 @@ const EXPECTED_HELP = [
   "",
   "Usage:",
   "  kodac apply-patch <patch-file> [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
-  "  kodac ask <prompt> [--provider fixture] [--model <id>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
+  "  kodac ask <prompt> [--provider fixture] [--model <id>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--static-fallback] [--json]",
   "  kodac solve <task> [--provider fixture] [--model <id>] [--approve-writes] [--approve-verification] [--verify-command <json>] [--max-turns <n>] [--max-tool-calls <n>] [--max-elapsed-ms <n>] [--max-failures <n>] [--workspace <dir>] [--evidence-dir <dir>] [--evidence-retention-days <n>] [--json]",
   "",
   "Commands:",
   "  apply-patch  Apply an explicit patch through the existing guarded patch path.",
-  "  ask          Run the existing read-oriented model request path.",
+  "  ask          Run the existing read-oriented model request path; --static-fallback is human-output-only.",
   "  solve        Run the existing bounded agent-loop solve path.",
 ].join("\n")
 
@@ -43,6 +43,8 @@ test("P8-R4 exact --help is deterministic, side-effect-free local discoverabilit
 
     const help = captured.out[0]
     for (const command of ["apply-patch", "ask", "solve"]) assert.match(help, new RegExp(`\\b${command}\\b`))
+    assert.match(help, /--static-fallback/)
+    assert.match(help, /--static-fallback is human-output-only/)
     for (const unauthorized of ["--version", "GitHub", "MCP", "daemon", "SDK", "publication", "release"]) {
       assert.doesNotMatch(help, new RegExp(unauthorized, "i"))
     }
