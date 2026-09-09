@@ -134,6 +134,10 @@ The `--static-fallback` and `--json` options are intentionally incompatible in t
 
 All behavior when `--static-fallback` is absent must remain unchanged.
 
+The option is recovery-only. When `--static-fallback` is present but the requested provider completes successfully, the command must preserve the ordinary canonical `ask` result and terminal path exactly; the static fallback text and `static_fallback` terminal mode must not appear. When an error is not exactly eligible below, the current failure propagation and `session.failed` behavior must remain unchanged.
+
+The invalid combinations `ask --static-fallback --json`, `solve --static-fallback`, and `apply-patch --static-fallback` must be rejected during CLI argument parsing before a runtime session, evidence lease, provider resolution, or model request is created.
+
 ---
 
 ## Eligible fallback condition
@@ -316,17 +320,19 @@ The new test file must prove at least:
 7. a non-credential `ModelProviderError` remains exit `1` and does not fall back regardless of `retryable` metadata.
 8. HTTP/network/stream/abort-shaped provider failures remain fail-closed.
 9. without `--static-fallback`, the exact eligible missing-credential failure retains existing exit `1` behavior.
-10. `ask --static-fallback --json` is rejected with exit `1` before any fallback result envelope is emitted.
-11. existing `ask --json` without `--static-fallback` remains byte-shape compatible with the canonical P8 ask envelope contract.
-12. `solve --static-fallback` is rejected without changing solve execution.
-13. `apply-patch --static-fallback` is rejected.
-14. fallback static output does not contain prompt content, credential material, provider/model identifiers, or claims of model generation.
-15. no fixture provider is invoked as fallback.
-16. fallback evidence preserves any existing `model.failed` event when canonical execution emitted it, does not fabricate one when failure arose earlier, and terminates with exactly one existing `session.completed` event whose payload is exactly bounded to `status=complete` and `mode=static_fallback` with no provider/model fields.
-17. `packages/kodac-runtime/src/session/session.ts` and `packages/kodac-runtime/src/protocol/event.ts` remain byte-identical to canonical authorization base.
-18. `packages/kodac-runtime/src/product/p8-cli-result-envelope.ts` remains byte-identical to canonical authorization base.
-19. the existing P8-R4 help test changes only as necessary to freeze the newly authorized `ask` help text and the human-output-only boundary, while preserving all prior deterministic/side-effect-free/alias/usage assertions.
-20. existing P8 result-envelope, ask, solve, runtime-spine, provider, agent-loop, governance, and K2 tests remain green on the exact implementation head.
+10. a successful provider request with `--static-fallback` present remains the ordinary successful `ask` path and does not emit static fallback text or `mode=static_fallback`.
+11. an ineligible failure with `--static-fallback` present preserves the existing failure propagation and terminal `session.failed` behavior.
+12. `ask --static-fallback --json` is rejected with exit `1` during argument parsing before session/evidence/provider/model activity and before any result envelope is emitted.
+13. existing `ask --json` without `--static-fallback` remains byte-shape compatible with the canonical P8 ask envelope contract.
+14. `solve --static-fallback` is rejected during argument parsing without creating a solve session or changing solve execution.
+15. `apply-patch --static-fallback` is rejected during argument parsing without creating an apply-patch session.
+16. fallback static output does not contain prompt content, credential material, provider/model identifiers, or claims of model generation.
+17. no fixture provider is invoked as fallback.
+18. fallback evidence preserves any existing `model.failed` event when canonical execution emitted it, does not fabricate one when failure arose earlier, and terminates with exactly one existing `session.completed` event whose payload is exactly bounded to `status=complete` and `mode=static_fallback` with no provider/model fields.
+19. `packages/kodac-runtime/src/session/session.ts` and `packages/kodac-runtime/src/protocol/event.ts` remain byte-identical to canonical authorization base.
+20. `packages/kodac-runtime/src/product/p8-cli-result-envelope.ts` remains byte-identical to canonical authorization base.
+21. the existing P8-R4 help test changes only as necessary to freeze the newly authorized `ask` help text and the human-output-only boundary, while preserving all prior deterministic/side-effect-free/alias/usage assertions.
+22. existing P8 result-envelope, ask, solve, runtime-spine, provider, agent-loop, governance, and K2 tests remain green on the exact implementation head.
 
 Tests must use injected/local deterministic providers only. Qualification must not invoke a real provider/model, read a real credential, perform external network access, or incur provider spend.
 
