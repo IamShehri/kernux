@@ -149,11 +149,28 @@ payloadSha256
 
 `observedHeadSha` and `expectedHeadSha` are caller-materialized PR-snapshot bindings that were validated by O1; O4-A must preserve `headBindingSource=CALLER_MATERIALIZED_PR_SNAPSHOT` and must not relabel those head fields as webhook-signed data.
 
-The mention command is a separate O4-A caller classification derived from the authenticated comment text lineage. Its grammar must be deterministic, bounded, NUL-free Unicode-scalar text. At minimum the classification must bind a closed command kind and a deterministic `mentionCommandIdentity` to `commentIdentity` and `commentBodySha256`.
+O4-A must receive the exact caller-materialized trigger comment text as validation input and independently bind it to the authenticated O1 evidence before deriving any mention classification:
 
-Repository content or comment text is untrusted data and cannot create authority merely by containing instructions. O4-A must not parse arbitrary comment instructions into side-effect authority. A positive mention classification may only select this inert review-lineage evidence path; it cannot grant network, provider, publication, merge, approval, repository mutation, or K2 authority.
+```text
+sha256(UTF8(triggerCommentText)) = trigger.commentBodySha256
+UTF8_BYTE_LENGTH(triggerCommentText) = trigger.commentBodyByteLength
+```
 
-The O1 source input may contain caller-materialized raw body and HMAC secret solely because canonical O1 validation requires them. Those bytes must never appear in final O4-A serialized evidence or any O4-A-derived publication intent.
+`triggerCommentText` must be NUL-free Unicode-scalar text and must satisfy the explicit O4-A trigger-comment byte bound. If either digest or byte-length parity fails, O4-A must reject the lineage rather than trusting a caller label.
+
+The mention command must then be **derived by O4-A from that exact bound text**, not accepted as a positive caller classification. The only v1 positive grammar is:
+
+```text
+@<mentionTargetLogin> review
+```
+
+with exactly one ASCII space, no leading/trailing text or whitespace, case-sensitive literal `review`, and `mentionTargetLogin` supplied only inside a bounded caller-materialized mention policy record. That record must also contain a SHA-256 `mentionPolicyIdentity`. O4-A must bind `mentionTargetLogin`, `mentionPolicyIdentity`, `commentIdentity`, and `commentBodySha256` into the deterministic `mentionCommandIdentity`.
+
+The caller-materialized mention target/policy are configuration evidence only. They do not prove GitHub App ownership, installation, webhook routing, listener registration, or authority to act as that login. Any later live product integration must establish those facts separately.
+
+Repository content or comment text is untrusted data and cannot create authority merely by containing instructions. O4-A must not parse arbitrary comment instructions into side-effect authority. The exact v1 grammar above may only select this inert review-lineage evidence path; it cannot grant network, provider, publication, merge, approval, repository mutation, or K2 authority.
+
+The O1 source input may contain caller-materialized raw webhook body and HMAC secret solely because canonical O1 validation requires them. Those bytes and the caller-materialized `triggerCommentText` must never appear in final O4-A serialized evidence or any O4-A-derived publication intent.
 
 ## 6. Repository and PR snapshot evidence
 
@@ -416,6 +433,9 @@ deliveryIdentity
 payloadSha256
 commentIdentity
 commentBodySha256
+mentionTargetLogin
+mentionPolicyIdentity
+mentionCommandKind
 mentionCommandIdentity
 snapshotEvidenceIdentity
 changedPathSetIdentity
@@ -439,7 +459,7 @@ productLineageEvidenceIdentity
 
 The exact implementation may add stricter bounded identity/count fields only if they are necessary for deterministic validation, are included in the closed Draft 2020-12 schema, and do not imply a new authority surface.
 
-Raw O1 secret bytes, raw webhook bytes, raw repository file contents, provider/model prompts beyond already-canonical predecessor identities, and raw publication bodies must not appear in final serialized O4-A evidence.
+Raw O1 secret bytes, raw webhook bytes, raw `triggerCommentText`, raw repository file contents, provider/model prompts beyond already-canonical predecessor identities, and raw publication bodies must not appear in final serialized O4-A evidence.
 
 ## 15. Deterministic identities
 
@@ -457,6 +477,8 @@ productLineageEvidenceIdentity
 ```
 
 The validator must independently rederive every derived identity and reject forged derived fields.
+
+`mentionCommandIdentity` must bind the independently verified trigger comment digest plus the exact `mentionTargetLogin`, `mentionPolicyIdentity`, and closed `mentionCommandKind=REVIEW`. Changing the target login or policy identity must change the derived command and top-level product-lineage identities.
 
 `canonicalBase` and `reviewedHead` remain lowercase 40-hex Git SHA-1 identities because the existing repository contracts use SHA-1 Git object identifiers. O4-A must not silently reinterpret them as SHA-256.
 
@@ -493,6 +515,7 @@ MAX_READ_EVIDENCE_ITEMS = 512
 MAX_FINDINGS = 64
 MAX_PUBLICATION_INTENTS = 65
 MAX_PUBLICATION_BODY_UTF8_BYTES = 16384
+MAX_TRIGGER_COMMENT_UTF8_BYTES = 16384
 MAX_PATH_UTF8_BYTES = 1024
 MAX_GENERAL_TEXT_UTF8_BYTES = 4096
 MAX_GRAPH_DEPTH = 32
@@ -572,7 +595,10 @@ The implementation test file must contain at least these cases:
 46. schema parses as Draft 2020-12 and has exact source surface parity;
 47. source imports contain no side-effect/provider-specific/network surface;
 48. no dependency/package/lockfile/workflow diff exists;
-49. exact implementation changed-path set remains three paths.
+49. exact implementation changed-path set remains three paths;
+50. caller-materialized `triggerCommentText` SHA-256 and UTF-8 byte length must exactly equal O1 `commentBodySha256` and `commentBodyByteLength`;
+51. mention classification is derived from exact bound text and wrong target, wrong policy binding, absent mention, extra arguments, or unsupported grammar cannot produce positive continuation;
+52. raw `triggerCommentText` is absent from final evidence and changing `mentionTargetLogin` or `mentionPolicyIdentity` changes downstream identities.
 
 Additional tests are encouraged within the same test path.
 
