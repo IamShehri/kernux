@@ -440,7 +440,7 @@ Rules:
 - bodies are caller-materialized bounded text for hashing only;
 - bodies must be NUL-free Unicode-scalar text;
 - maximum 16 KiB per body;
-- raw publication body text must never appear in any derived publication-intent evidence record or the final product-lineage evidence; derived intent evidence uses only the validated domain-separated `bodyIdentity` and UTF-8 byte length;
+- raw publication body text must never appear in the final product-lineage evidence; `bodyIdentity` and `bodyByteLength` are derived internal publication-intent evidence used only in the deterministic `publicationIntentIdentity` preimage and are not additional top-level final serialized fields;
 - no intent contains a credential, HTTP request, URL with token, shell command authority, merge instruction, approval instruction, or repository mutation authority.
 
 ## 13. Continuation classification
@@ -470,6 +470,8 @@ The continuation decision must use this deterministic precedence whenever more t
 `READY_FOR_SEPARATE_PUBLICATION_AUTHORITY` means only that the pure-data product lineage is internally complete enough for a later separately authorized publication stage.
 
 It does not authorize network access, GitHub comment/review writes, provider execution, merge, approval, K2 execution, or any other side effect.
+
+The distinction above is normative: canonical JSON serialization used internally for a deterministic identity preimage is not an expansion of the final serialized evidence surface. No per-intent body digest/length record is added to the final O4-A object in v1.
 
 ## 14. Final serialized evidence surface
 
@@ -690,7 +692,7 @@ The implementation test file must contain at least these cases:
 59. `sourceKind` and `truncationState` accept only their exact v1 enum values;
 60. snapshot timestamp/ref identities are strictly validated and forged `snapshotEvidenceIdentity` is rejected by deterministic rederivation;
 61. findings are validated specifically through `ReviewerIntelligenceRuntime.validateFindingRecord` using validation-only adjudicator id `o4a-read-only-validation`, with no adjudication/mutation method use;
-62. raw publication bodies never appear in final serialized evidence; only body identity and UTF-8 byte length are serialized;
+62. raw publication bodies never appear in final serialized evidence; `bodyIdentity` and `bodyByteLength` are rederived from `bodyText`, bound into `publicationIntentIdentity`, and remain absent as standalone fields from the exact 52-field final surface; changing body text must change the publication-intent and top-level product-lineage identities;
 63. the final serialized field set is exact, rejects unknown fields, exposes completeness arrays/counts and publication-intent count, and matches the Draft 2020-12 schema exactly;
 64. every O4-A-derived identity class uses the v1 domain-separated canonical-JSON rule and forged snapshot/path/read/completeness/body/publication/product identities fail closed;
 65. publication `bodyText` is exact caller-materialized validation input, domain-separated body identity/UTF-8 length are rederived, caller-supplied positive digest/length authority is rejected, and raw body text is not serialized;
