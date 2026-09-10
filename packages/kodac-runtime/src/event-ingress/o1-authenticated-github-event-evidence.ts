@@ -521,3 +521,414 @@ export function validateO1AuthenticatedGithubEventEvidence(value: unknown, sourc
   if (canonical(actual) !== canonical(expected)) fail("serialized evidence does not match independently rederived source evidence")
   return expected
 }
+
+export const O1_AUTHENTICATED_GITHUB_ISSUE_COMMENT_EVIDENCE_VERSION = "kodac-o1-authenticated-github-issue-comment-evidence-v1" as const
+export const O1_ISSUE_COMMENT_HEAD_BINDING_SOURCE = "CALLER_MATERIALIZED_PR_SNAPSHOT" as const
+export const O1_ISSUE_COMMENT_MAX_BODY_BYTES = 256 * 1024
+
+export interface O1IssueCommentPullRequestBindingInput {
+  readonly policyIdentity: string
+  readonly pullRequestId: string
+  readonly baseRepositoryId: string
+  readonly headRepositoryId: string
+  readonly headRepositoryFullName: string
+  readonly observedHeadSha: string
+  readonly evidenceRefs: readonly string[]
+}
+
+export interface O1AuthenticatedGithubIssueCommentInput {
+  readonly rawBody: Uint8Array
+  readonly signatureHeader: string
+  readonly deliveryId: string
+  readonly eventName: "issue_comment"
+  readonly keyIdentity: string
+  readonly secret: Uint8Array
+  readonly expectedRepositoryId: string
+  readonly expectedRepositoryFullName: string
+  readonly expectedHeadSha: string
+  readonly actorEligibility: O1ActorEligibilityInput
+  readonly previousDeliveryIdentities: readonly string[]
+  readonly pullRequestBinding: O1IssueCommentPullRequestBindingInput
+}
+
+export interface O1AuthenticatedGithubIssueCommentEvidence {
+  readonly version: typeof O1_AUTHENTICATED_GITHUB_ISSUE_COMMENT_EVIDENCE_VERSION
+  readonly eventSource: typeof O1_EVENT_SOURCE
+  readonly signatureAlgorithm: typeof O1_SIGNATURE_ALGORITHM
+  readonly keyIdentity: string
+  readonly deliveryId: string
+  readonly deliveryIdentity: string
+  readonly payloadSha256: string
+  readonly eventName: "issue_comment"
+  readonly action: "created"
+  readonly repositoryId: string
+  readonly repositoryFullName: string
+  readonly pullRequestNumber: number
+  readonly pullRequestId: string
+  readonly issueId: string
+  readonly baseRepositoryId: string
+  readonly headRepositoryId: string
+  readonly headRepositoryFullName: string
+  readonly forkClassification: O1ForkClassification
+  readonly observedHeadSha: string
+  readonly expectedHeadSha: string
+  readonly headMatch: "MATCH"
+  readonly headBindingSource: typeof O1_ISSUE_COMMENT_HEAD_BINDING_SOURCE
+  readonly headBindingPolicyIdentity: string
+  readonly headBindingEvidenceRefs: readonly string[]
+  readonly commentId: string
+  readonly commentNodeId: string
+  readonly commentBodySha256: string
+  readonly commentBodyByteLength: number
+  readonly commentIdentity: string
+  readonly actorId: string
+  readonly actorLogin: string
+  readonly actorType: O1ActorType
+  readonly actorEligibilityPolicyIdentity: string
+  readonly actorEligibilityEvidenceRefs: readonly string[]
+  readonly actorEligibilityDecision: "ELIGIBLE"
+  readonly replayDecision: "UNSEEN"
+  readonly authenticationDecision: "AUTHENTICATED"
+  readonly ingressDecision: "ACCEPT"
+  readonly eventEvidenceIdentity: string
+}
+
+type NormalizedIssueCommentInput = {
+  rawBody: Uint8Array
+  signatureHeader: string
+  deliveryId: string
+  eventName: "issue_comment"
+  keyIdentity: string
+  secret: Uint8Array
+  expectedRepositoryId: string
+  expectedRepositoryFullName: string
+  expectedHeadSha: string
+  actorEligibility: O1ActorEligibilityInput
+  previousDeliveryIdentities: string[]
+  pullRequestBinding: O1IssueCommentPullRequestBindingInput
+}
+
+const ISSUE_COMMENT_INPUT_KEYS = [
+  "rawBody",
+  "signatureHeader",
+  "deliveryId",
+  "eventName",
+  "keyIdentity",
+  "secret",
+  "expectedRepositoryId",
+  "expectedRepositoryFullName",
+  "expectedHeadSha",
+  "actorEligibility",
+  "previousDeliveryIdentities",
+  "pullRequestBinding",
+] as const
+
+const ISSUE_COMMENT_BINDING_KEYS = [
+  "policyIdentity",
+  "pullRequestId",
+  "baseRepositoryId",
+  "headRepositoryId",
+  "headRepositoryFullName",
+  "observedHeadSha",
+  "evidenceRefs",
+] as const
+
+const ISSUE_COMMENT_EVIDENCE_KEYS = [
+  "version",
+  "eventSource",
+  "signatureAlgorithm",
+  "keyIdentity",
+  "deliveryId",
+  "deliveryIdentity",
+  "payloadSha256",
+  "eventName",
+  "action",
+  "repositoryId",
+  "repositoryFullName",
+  "pullRequestNumber",
+  "pullRequestId",
+  "issueId",
+  "baseRepositoryId",
+  "headRepositoryId",
+  "headRepositoryFullName",
+  "forkClassification",
+  "observedHeadSha",
+  "expectedHeadSha",
+  "headMatch",
+  "headBindingSource",
+  "headBindingPolicyIdentity",
+  "headBindingEvidenceRefs",
+  "commentId",
+  "commentNodeId",
+  "commentBodySha256",
+  "commentBodyByteLength",
+  "commentIdentity",
+  "actorId",
+  "actorLogin",
+  "actorType",
+  "actorEligibilityPolicyIdentity",
+  "actorEligibilityEvidenceRefs",
+  "actorEligibilityDecision",
+  "replayDecision",
+  "authenticationDecision",
+  "ingressDecision",
+  "eventEvidenceIdentity",
+] as const
+
+function issueCommentPositiveInteger(value: unknown, label: string): number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value <= 0) fail(`${label} must be a positive safe integer`)
+  return value
+}
+
+function normalizeIssueCommentInput(value: unknown): NormalizedIssueCommentInput {
+  const record = ownDataRecord(value, "issue-comment input")
+  exactKeys(record, ISSUE_COMMENT_INPUT_KEYS, "issue-comment input")
+  const rawBody = copyBytes(record.rawBody, "issue-comment rawBody", MAX_RAW_BODY_BYTES)
+  const secret = copyBytes(record.secret, "issue-comment secret", MAX_SECRET_BYTES)
+  const signatureHeader = boundedText(record.signatureHeader, "issue-comment signatureHeader", 71)
+  if (!/^sha256=[0-9a-f]{64}$/.test(signatureHeader)) fail("issue-comment signatureHeader must use exact sha256=<64 lowercase hex> form")
+  const deliveryId = boundedText(record.deliveryId, "issue-comment deliveryId", 128)
+  if (!DELIVERY_RE.test(deliveryId)) fail("issue-comment deliveryId has unsupported syntax")
+  if (record.eventName !== "issue_comment") fail("issue-comment eventName must equal issue_comment")
+  const keyIdentity = sha256(record.keyIdentity, "issue-comment keyIdentity")
+  const expectedRepositoryId = decimalId(record.expectedRepositoryId, "issue-comment expectedRepositoryId")
+  const expectedRepositoryFullName = repositoryName(record.expectedRepositoryFullName, "issue-comment expectedRepositoryFullName")
+  const expectedHeadSha = sha1(record.expectedHeadSha, "issue-comment expectedHeadSha")
+
+  const actor = ownDataRecord(record.actorEligibility, "issue-comment actorEligibility")
+  exactKeys(actor, ["policyIdentity", "actorId", "actorLogin", "decision", "evidenceRefs"], "issue-comment actorEligibility")
+  const actorDecision = boundedText(actor.decision, "issue-comment actorEligibility.decision", 16)
+  if (!ACTOR_DECISIONS.has(actorDecision as O1ActorEligibilityDecision)) fail("issue-comment actorEligibility.decision is unsupported")
+  const actorEvidenceRefs = safeStringArray(actor.evidenceRefs, "issue-comment actorEligibility.evidenceRefs", MAX_EVIDENCE_REFS, MAX_EVIDENCE_REF_BYTES)
+  const actorEligibility: O1ActorEligibilityInput = {
+    policyIdentity: sha256(actor.policyIdentity, "issue-comment actorEligibility.policyIdentity"),
+    actorId: decimalId(actor.actorId, "issue-comment actorEligibility.actorId"),
+    actorLogin: githubLogin(actor.actorLogin, "issue-comment actorEligibility.actorLogin"),
+    decision: actorDecision as O1ActorEligibilityDecision,
+    evidenceRefs: actorEvidenceRefs,
+  }
+
+  const binding = ownDataRecord(record.pullRequestBinding, "issue-comment pullRequestBinding")
+  exactKeys(binding, ISSUE_COMMENT_BINDING_KEYS, "issue-comment pullRequestBinding")
+  const bindingEvidenceRefs = safeStringArray(binding.evidenceRefs, "issue-comment pullRequestBinding.evidenceRefs", MAX_EVIDENCE_REFS, MAX_EVIDENCE_REF_BYTES)
+  if (bindingEvidenceRefs.length === 0) fail("issue-comment pullRequestBinding.evidenceRefs must not be empty")
+  const pullRequestBinding: O1IssueCommentPullRequestBindingInput = {
+    policyIdentity: sha256(binding.policyIdentity, "issue-comment pullRequestBinding.policyIdentity"),
+    pullRequestId: decimalId(binding.pullRequestId, "issue-comment pullRequestBinding.pullRequestId"),
+    baseRepositoryId: decimalId(binding.baseRepositoryId, "issue-comment pullRequestBinding.baseRepositoryId"),
+    headRepositoryId: decimalId(binding.headRepositoryId, "issue-comment pullRequestBinding.headRepositoryId"),
+    headRepositoryFullName: repositoryName(binding.headRepositoryFullName, "issue-comment pullRequestBinding.headRepositoryFullName"),
+    observedHeadSha: sha1(binding.observedHeadSha, "issue-comment pullRequestBinding.observedHeadSha"),
+    evidenceRefs: bindingEvidenceRefs,
+  }
+  if (pullRequestBinding.baseRepositoryId !== expectedRepositoryId) fail("issue-comment pullRequestBinding base repository does not match expected repository")
+  if (pullRequestBinding.observedHeadSha !== expectedHeadSha) fail("issue-comment caller-materialized pull request head does not match expected head")
+  if (pullRequestBinding.headRepositoryId === pullRequestBinding.baseRepositoryId && pullRequestBinding.headRepositoryFullName !== expectedRepositoryFullName) {
+    fail("issue-comment same-repository head name does not match expected repository")
+  }
+
+  const previousDeliveryIdentities = safeStringArray(record.previousDeliveryIdentities, "issue-comment previousDeliveryIdentities", MAX_PREVIOUS_DELIVERIES, 64, sha256)
+  return {
+    rawBody,
+    signatureHeader,
+    deliveryId,
+    eventName: "issue_comment",
+    keyIdentity,
+    secret,
+    expectedRepositoryId,
+    expectedRepositoryFullName,
+    expectedHeadSha,
+    actorEligibility,
+    previousDeliveryIdentities,
+    pullRequestBinding,
+  }
+}
+
+function issueCommentEvidenceValue(value: unknown): O1AuthenticatedGithubIssueCommentEvidence {
+  const record = ownDataRecord(value, "issue-comment evidence")
+  exactKeys(record, ISSUE_COMMENT_EVIDENCE_KEYS, "issue-comment evidence")
+  if (record.version !== O1_AUTHENTICATED_GITHUB_ISSUE_COMMENT_EVIDENCE_VERSION) fail("issue-comment evidence version mismatch")
+  if (record.eventSource !== O1_EVENT_SOURCE || record.signatureAlgorithm !== O1_SIGNATURE_ALGORITHM) fail("issue-comment evidence authentication constants mismatch")
+  if (record.eventName !== "issue_comment" || record.action !== "created") fail("issue-comment evidence event/action mismatch")
+  if (record.headBindingSource !== O1_ISSUE_COMMENT_HEAD_BINDING_SOURCE || record.headMatch !== "MATCH") fail("issue-comment evidence head-binding constants mismatch")
+  if (record.actorEligibilityDecision !== "ELIGIBLE" || record.replayDecision !== "UNSEEN" || record.authenticationDecision !== "AUTHENTICATED" || record.ingressDecision !== "ACCEPT") fail("issue-comment evidence positive decision constants mismatch")
+  if (record.forkClassification !== "SAME_REPOSITORY" && record.forkClassification !== "FORK_REPOSITORY") fail("issue-comment evidence fork classification mismatch")
+  if (!ACTOR_TYPES.has(record.actorType as O1ActorType)) fail("issue-comment evidence actor type unsupported")
+  const pullRequestNumber = issueCommentPositiveInteger(record.pullRequestNumber, "issue-comment evidence.pullRequestNumber")
+  const commentBodyByteLength = issueCommentPositiveInteger(record.commentBodyByteLength, "issue-comment evidence.commentBodyByteLength")
+  if (commentBodyByteLength > O1_ISSUE_COMMENT_MAX_BODY_BYTES) fail("issue-comment evidence.commentBodyByteLength exceeds bound")
+  const actorEligibilityEvidenceRefs = safeStringArray(record.actorEligibilityEvidenceRefs, "issue-comment evidence.actorEligibilityEvidenceRefs", MAX_EVIDENCE_REFS, MAX_EVIDENCE_REF_BYTES)
+  const headBindingEvidenceRefs = safeStringArray(record.headBindingEvidenceRefs, "issue-comment evidence.headBindingEvidenceRefs", MAX_EVIDENCE_REFS, MAX_EVIDENCE_REF_BYTES)
+  if (headBindingEvidenceRefs.length === 0) fail("issue-comment evidence.headBindingEvidenceRefs must not be empty")
+  return {
+    version: O1_AUTHENTICATED_GITHUB_ISSUE_COMMENT_EVIDENCE_VERSION,
+    eventSource: O1_EVENT_SOURCE,
+    signatureAlgorithm: O1_SIGNATURE_ALGORITHM,
+    keyIdentity: sha256(record.keyIdentity, "issue-comment evidence.keyIdentity"),
+    deliveryId: boundedText(record.deliveryId, "issue-comment evidence.deliveryId", 128),
+    deliveryIdentity: sha256(record.deliveryIdentity, "issue-comment evidence.deliveryIdentity"),
+    payloadSha256: sha256(record.payloadSha256, "issue-comment evidence.payloadSha256"),
+    eventName: "issue_comment",
+    action: "created",
+    repositoryId: decimalId(record.repositoryId, "issue-comment evidence.repositoryId"),
+    repositoryFullName: repositoryName(record.repositoryFullName, "issue-comment evidence.repositoryFullName"),
+    pullRequestNumber,
+    pullRequestId: decimalId(record.pullRequestId, "issue-comment evidence.pullRequestId"),
+    issueId: decimalId(record.issueId, "issue-comment evidence.issueId"),
+    baseRepositoryId: decimalId(record.baseRepositoryId, "issue-comment evidence.baseRepositoryId"),
+    headRepositoryId: decimalId(record.headRepositoryId, "issue-comment evidence.headRepositoryId"),
+    headRepositoryFullName: repositoryName(record.headRepositoryFullName, "issue-comment evidence.headRepositoryFullName"),
+    forkClassification: record.forkClassification as O1ForkClassification,
+    observedHeadSha: sha1(record.observedHeadSha, "issue-comment evidence.observedHeadSha"),
+    expectedHeadSha: sha1(record.expectedHeadSha, "issue-comment evidence.expectedHeadSha"),
+    headMatch: "MATCH",
+    headBindingSource: O1_ISSUE_COMMENT_HEAD_BINDING_SOURCE,
+    headBindingPolicyIdentity: sha256(record.headBindingPolicyIdentity, "issue-comment evidence.headBindingPolicyIdentity"),
+    headBindingEvidenceRefs,
+    commentId: decimalId(record.commentId, "issue-comment evidence.commentId"),
+    commentNodeId: boundedText(record.commentNodeId, "issue-comment evidence.commentNodeId", 256),
+    commentBodySha256: sha256(record.commentBodySha256, "issue-comment evidence.commentBodySha256"),
+    commentBodyByteLength,
+    commentIdentity: sha256(record.commentIdentity, "issue-comment evidence.commentIdentity"),
+    actorId: decimalId(record.actorId, "issue-comment evidence.actorId"),
+    actorLogin: githubLogin(record.actorLogin, "issue-comment evidence.actorLogin"),
+    actorType: record.actorType as O1ActorType,
+    actorEligibilityPolicyIdentity: sha256(record.actorEligibilityPolicyIdentity, "issue-comment evidence.actorEligibilityPolicyIdentity"),
+    actorEligibilityEvidenceRefs,
+    actorEligibilityDecision: "ELIGIBLE",
+    replayDecision: "UNSEEN",
+    authenticationDecision: "AUTHENTICATED",
+    ingressDecision: "ACCEPT",
+    eventEvidenceIdentity: sha256(record.eventEvidenceIdentity, "issue-comment evidence.eventEvidenceIdentity"),
+  }
+}
+
+export function createO1AuthenticatedGithubIssueCommentEvidence(inputValue: O1AuthenticatedGithubIssueCommentInput): O1AuthenticatedGithubIssueCommentEvidence {
+  const input = normalizeIssueCommentInput(inputValue)
+  verifySignature(input.rawBody, input.secret, input.signatureHeader)
+
+  let text: string
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(input.rawBody)
+  } catch {
+    fail("issue-comment signed payload is not valid UTF-8")
+  }
+  const root = jsonObject(new StrictJsonParser(text).parse(), "issue-comment payload")
+  const action = jsonString(root.action, "issue-comment payload.action", 32)
+  if (action !== "created") fail("issue-comment payload action is unsupported")
+
+  const repository = jsonObject(root.repository, "issue-comment payload.repository")
+  const repositoryId = jsonId(repository.id, "issue-comment payload.repository.id")
+  const repositoryFullName = repositoryName(jsonString(repository.full_name, "issue-comment payload.repository.full_name", 201), "issue-comment payload.repository.full_name")
+  if (repositoryId !== input.expectedRepositoryId || repositoryFullName !== input.expectedRepositoryFullName) fail("issue-comment signed repository does not match expected repository")
+  if (input.pullRequestBinding.baseRepositoryId !== repositoryId) fail("issue-comment pull request base repository does not match signed repository")
+
+  const issue = jsonObject(root.issue, "issue-comment payload.issue")
+  const pullRequestNumber = issueCommentPositiveInteger(issue.number, "issue-comment payload.issue.number")
+  const issueId = jsonId(issue.id, "issue-comment payload.issue.id")
+  jsonObject(issue.pull_request, "issue-comment payload.issue.pull_request")
+
+  const comment = jsonObject(root.comment, "issue-comment payload.comment")
+  const commentId = jsonId(comment.id, "issue-comment payload.comment.id")
+  const commentNodeId = boundedText(jsonString(comment.node_id, "issue-comment payload.comment.node_id", 256), "issue-comment payload.comment.node_id", 256)
+  const commentBody = boundedText(jsonString(comment.body, "issue-comment payload.comment.body", O1_ISSUE_COMMENT_MAX_BODY_BYTES), "issue-comment payload.comment.body", O1_ISSUE_COMMENT_MAX_BODY_BYTES)
+  const commentBodySha256 = createHash("sha256").update(commentBody, "utf8").digest("hex")
+  const commentBodyByteLength = Buffer.byteLength(commentBody, "utf8")
+  const commentUser = jsonObject(comment.user, "issue-comment payload.comment.user")
+  const commentActorId = jsonId(commentUser.id, "issue-comment payload.comment.user.id")
+  const commentActorLogin = githubLogin(jsonString(commentUser.login, "issue-comment payload.comment.user.login", 100), "issue-comment payload.comment.user.login")
+  const commentActorType = jsonString(commentUser.type, "issue-comment payload.comment.user.type", 32)
+  if (!ACTOR_TYPES.has(commentActorType as O1ActorType)) fail("issue-comment payload comment user type is unsupported")
+
+  const sender = jsonObject(root.sender, "issue-comment payload.sender")
+  const actorId = jsonId(sender.id, "issue-comment payload.sender.id")
+  const actorLogin = githubLogin(jsonString(sender.login, "issue-comment payload.sender.login", 100), "issue-comment payload.sender.login")
+  const actorType = jsonString(sender.type, "issue-comment payload.sender.type", 32)
+  if (!ACTOR_TYPES.has(actorType as O1ActorType)) fail("issue-comment payload sender type is unsupported")
+  if (commentActorId !== actorId || commentActorLogin !== actorLogin || commentActorType !== actorType) fail("issue-comment signed comment user does not match signed sender")
+  if (actorId !== input.actorEligibility.actorId || actorLogin !== input.actorEligibility.actorLogin) fail("issue-comment actor eligibility input does not match the signed actor")
+  if (input.actorEligibility.decision !== "ELIGIBLE") fail("issue-comment actor is not positively eligible")
+
+  const payloadSha256 = createHash("sha256").update(input.rawBody).digest("hex")
+  const deliveryIdentity = digest({
+    domain: "KODAC-O1-DELIVERY-IDENTITY-V1",
+    eventSource: O1_EVENT_SOURCE,
+    eventName: input.eventName,
+    deliveryId: input.deliveryId,
+  })
+  if (input.previousDeliveryIdentities.includes(deliveryIdentity)) fail("issue-comment delivery was already observed")
+
+  const forkClassification: O1ForkClassification = input.pullRequestBinding.headRepositoryId === input.pullRequestBinding.baseRepositoryId
+    ? "SAME_REPOSITORY"
+    : "FORK_REPOSITORY"
+  const commentIdentity = digest({
+    domain: "KODAC-O1-ISSUE-COMMENT-IDENTITY-V1",
+    repositoryId,
+    repositoryFullName,
+    pullRequestNumber,
+    issueId,
+    commentId,
+    commentNodeId,
+    commentBodySha256,
+    commentBodyByteLength,
+    actorId,
+    actorLogin,
+    actorType,
+  })
+
+  const baseEvidence = {
+    version: O1_AUTHENTICATED_GITHUB_ISSUE_COMMENT_EVIDENCE_VERSION,
+    eventSource: O1_EVENT_SOURCE,
+    signatureAlgorithm: O1_SIGNATURE_ALGORITHM,
+    keyIdentity: input.keyIdentity,
+    deliveryId: input.deliveryId,
+    deliveryIdentity,
+    payloadSha256,
+    eventName: "issue_comment" as const,
+    action: "created" as const,
+    repositoryId,
+    repositoryFullName,
+    pullRequestNumber,
+    pullRequestId: input.pullRequestBinding.pullRequestId,
+    issueId,
+    baseRepositoryId: input.pullRequestBinding.baseRepositoryId,
+    headRepositoryId: input.pullRequestBinding.headRepositoryId,
+    headRepositoryFullName: input.pullRequestBinding.headRepositoryFullName,
+    forkClassification,
+    observedHeadSha: input.pullRequestBinding.observedHeadSha,
+    expectedHeadSha: input.expectedHeadSha,
+    headMatch: "MATCH" as const,
+    headBindingSource: O1_ISSUE_COMMENT_HEAD_BINDING_SOURCE,
+    headBindingPolicyIdentity: input.pullRequestBinding.policyIdentity,
+    headBindingEvidenceRefs: [...input.pullRequestBinding.evidenceRefs],
+    commentId,
+    commentNodeId,
+    commentBodySha256,
+    commentBodyByteLength,
+    commentIdentity,
+    actorId,
+    actorLogin,
+    actorType: actorType as O1ActorType,
+    actorEligibilityPolicyIdentity: input.actorEligibility.policyIdentity,
+    actorEligibilityEvidenceRefs: [...input.actorEligibility.evidenceRefs],
+    actorEligibilityDecision: "ELIGIBLE" as const,
+    replayDecision: "UNSEEN" as const,
+    authenticationDecision: "AUTHENTICATED" as const,
+    ingressDecision: "ACCEPT" as const,
+  }
+  const eventEvidenceIdentity = digest({
+    domain: "KODAC-O1-AUTHENTICATED-GITHUB-ISSUE-COMMENT-EVIDENCE-V1",
+    evidence: baseEvidence,
+  })
+  return deepFreeze({ ...baseEvidence, eventEvidenceIdentity })
+}
+
+export function validateO1AuthenticatedGithubIssueCommentEvidence(
+  value: unknown,
+  sourceInput: O1AuthenticatedGithubIssueCommentInput,
+): O1AuthenticatedGithubIssueCommentEvidence {
+  const actual = issueCommentEvidenceValue(value)
+  const expected = createO1AuthenticatedGithubIssueCommentEvidence(sourceInput)
+  if (canonical(actual) !== canonical(expected)) fail("issue-comment serialized evidence does not match independently rederived source evidence")
+  return expected
+}
