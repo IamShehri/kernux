@@ -3,14 +3,19 @@
 ## Status
 
 ```text
-RECORD_CLASS = PROJECT_WIDE_COMPLETION_GAP_AUDIT_CANDIDATE
+RECORD_CLASS = PROJECT_WIDE_COMPLETION_GAP_AUDIT_RECONCILIATION_CANDIDATE
+BASELINE_AUDIT = CLOSED_CANONICAL / PR #572 / merge 22c96748cfe362ad1ee40050232a824c9af3f76a / proof 5622021535
+O1_AUTHORIZATION = CLOSED_CANONICAL / PR #573 / merge 2602518e35a2be78b5ce32f46933b7d17824d111 / proof 5622164254
+O1_IMPLEMENTATION = CLOSED_CANONICAL / PR #574 / merge cbe38daa3d63467ded1058152c7d020c73b21bba / proof 5622532026
+POST_O1_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #575 / merge 73fc51670d8218283aaff75edce324d2c45b5550 / proof 5622718038
+POST_O1_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 PROJECT_COMPLETION = NOT_ESTABLISHED
 PHASE_OVERALL_STATUS_MUTATION = NONE
 IMPLEMENTATION_AUTHORITY = NONE
 WAIVER = NO
 ```
 
-This record is an evidence-only audit. It does not certify its own canonical status, does not close any phase overall, and does not create implementation or release authority. Only complete exact-head qualification, guarded normal merge, and external post-merge proof may make this audit record canonical. Even then, the audit result remains a diagnosis of remaining work rather than project completion.
+This file is now a post-O1 reconciliation candidate for the already-canonical project-wide audit. The baseline audit remains closed canonical at PR #572 / proof `5622021535`; this modified reconciliation cannot certify its own closure. It does not close any phase overall and creates no O2 implementation, persistence, release, or project-completion authority.
 
 ## Canonical authority and live snapshot
 
@@ -20,8 +25,12 @@ AUDIT_AUTHORIZATION_MERGE = 439bfecd6d89838609df5d5fa71833d167ccfdbc
 AUDIT_AUTHORIZATION_PROOF = 5621717534
 AUDIT_AUTHORIZATION_STATE = CLOSED_CANONICAL
 PREDECESSOR_CURRENT_VIEW_RECONCILIATION = PR #570 / merge 7bf84810c1325d97e2b4108d3675e13c36c5e34f / proof 5621457650
-SUCCESSOR_ANALYSIS = PR #570 / comment 5621536681 / ANALYSIS_ONLY
-CANONICAL_MAIN_AT_AUDIT_CONSTRUCTION = 439bfecd6d89838609df5d5fa71833d167ccfdbc
+AUDIT_CLOSURE = PR #572 / merge 22c96748cfe362ad1ee40050232a824c9af3f76a / proof 5622021535
+O1_AUTHORIZATION = PR #573 / merge 2602518e35a2be78b5ce32f46933b7d17824d111 / proof 5622164254
+O1_IMPLEMENTATION = PR #574 / merge cbe38daa3d63467ded1058152c7d020c73b21bba / proof 5622532026
+POST_O1_SUCCESSOR_ANALYSIS = PR #574 / comment 5622562475 / ANALYSIS_ONLY
+POST_O1_RECONCILIATION_AUTHORIZATION = PR #575 / merge 73fc51670d8218283aaff75edce324d2c45b5550 / proof 5622718038
+CANONICAL_MAIN_AT_RECONCILIATION_CONSTRUCTION = 73fc51670d8218283aaff75edce324d2c45b5550
 RULESET_20707483 = ACTIVE / NO_BYPASS
 OPEN_UNRELATED_PR = #163 / OUTSIDE_COMPLETION_AUDIT_LINEAGE
 GIT_TAGS = 0
@@ -76,10 +85,11 @@ The audit used both positive canonical evidence and negative implementation-surf
 Material negative scans established:
 
 ```text
-AUTHENTICATED_GITHUB_WEBHOOK_INGESTION_SOURCE = NOT_FOUND
-X_GITHUB_SIGNATURE_OR_HMAC_VALIDATOR = NOT_FOUND
-DELIVERY_ID_REPLAY_OR_DEDUPE_CONTRACT = NOT_FOUND
-ACTOR_ELIGIBILITY_EVENT_INGESTION_CONTRACT = NOT_FOUND
+AUTHENTICATED_GITHUB_EVENT_EVIDENCE_SOURCE = CLOSED_CANONICAL / PR #574 / proof 5622532026
+RAW_BODY_HMAC_SHA256_VALIDATION = CLOSED_CANONICAL_BOUNDED / PR #574 / proof 5622532026
+CALLER_MATERIALIZED_DELIVERY_DUPLICATE_REJECTION = CLOSED_CANONICAL_BOUNDED / PR #574 / proof 5622532026
+PERSISTENCE_BACKED_REPLAY_OR_ATOMIC_DEDUPE = NOT_FOUND
+ACTOR_ELIGIBILITY_EVENT_EVIDENCE_BINDING = CLOSED_CANONICAL_BOUNDED / PR #574 / proof 5622532026
 GENERIC_DURABLE_WORKFLOW_RUN_STATE_MACHINE = NOT_FOUND
 GENERIC_WORKFLOW_MIGRATION_CONTRACT = NOT_FOUND
 PERSISTENT_P9_DEPENDENCY_INDEX = NOT_FOUND
@@ -99,7 +109,7 @@ Each criterion below uses exactly one authorized classification.
 
 | Criterion | Classification | Canonical evidence and remaining boundary |
 | --- | --- | --- |
-| AUTHENTICATED_REPLAY_SAFE_EVENT_INGESTION | MISSING | No runtime/schema/test surface implements GitHub webhook signature verification, delivery replay/dedupe, fork/event classification, actor eligibility, and exact-head binding as one ingestion contract. `protocol/event.ts` is internal event emission only. OpenReview O1 remains planning direction, not implementation. |
+| AUTHENTICATED_REPLAY_SAFE_EVENT_INGESTION | PARTIAL_CANONICAL | PR #574 / proof `5622532026` canonically proves bounded pure/data-first raw-byte HMAC-SHA256 authentication, strict duplicate-key-safe signed-payload parsing, repository/PR/head/fork/actor binding, caller-materialized positive actor-eligibility binding, and deterministic duplicate-delivery rejection against caller-materialized prior delivery identities. Persistence-backed replay protection, atomic cross-process delivery claim/dedupe, retention/crash recovery, webhook listener/GitHub App registration, and end-to-end product event ingestion remain unproven. |
 | DURABLE_WORKFLOW_RETRY_RESUME_LEASE_CANCELLATION_MIGRATION | PARTIAL_CANONICAL | Evidence-store active-session leases and H4 gVisor TTL durable registry/replay/cancellation are implemented; ACP `session/resume`/cancel is catalog evidence. No generic durable workflow run/step identity, retry/resume lease state machine, definition drift, crash recovery, and migration contract exists as O2. |
 | TRUST_GATED_SKILLS | PARTIAL_CANONICAL | K4 R4/R5 canonically prove caller-materialized Agent Skill package/governance evidence; P7-R26 binds skill-coverage evidence. K4 closeout explicitly preserves discovery/read/install/activation/routing/instruction execution as non-grants. Progressive trust-gated skill loading is not implemented. |
 | PROVIDER_NEUTRAL_READ_ONLY_REVIEW | PARTIAL_CANONICAL | Reviewer-intelligence provider contracts/executor and provider-neutral review policy exist; K6 includes provider-neutral review-quorum architecture. K6 closeout explicitly grants no provider/model/reviewer invocation, and no authenticated GitHub mention/event -> bounded read -> review -> comment/inline product path is canonical. |
@@ -172,7 +182,7 @@ The OpenReview-derived architecture supplies a dependency order. Existing canoni
 
 ```text
 O0 DONOR QUALIFICATION / PROVENANCE = PARTIAL_CANONICAL_PROJECT_WIDE / CANONICAL_FOR_ADMITTED_IMPORTS
-O1 AUTHENTICATED GITHUB EVENT EVIDENCE = MISSING
+O1 AUTHENTICATED GITHUB EVENT EVIDENCE = PARTIAL_CANONICAL_BY_PR_574
 O2 DURABLE WORKFLOW EVIDENCE KERNEL = PARTIAL_CANONICAL
 O3 TRUST-GATED PROGRESSIVE SKILL LOADER = PARTIAL_CANONICAL
 O4 READ-ONLY GITHUB REVIEW PRODUCT PATH = PARTIAL_CANONICAL
@@ -185,47 +195,44 @@ O10 CONTINUOUS ASSURANCE = PARTIAL_CANONICAL_BY_P9_R1_R3
 O11 MULTI-PROVIDER / MULTI-BACKEND PORTABILITY = NOT_APPLICABLE_BY_CURRENT_PRODUCT_POSTURE
 ```
 
-The first dependency-ordered concrete missing capability is O1. Implementing O2/O3/O4 before O1 would still leave the end-to-end GitHub product path unable to establish authenticated, replay-safe trigger evidence.
+No program criterion remains classified `MISSING` after bounded O1 closure. The earliest dependency-ordered partial frontier is now O2: Kodac has authenticated bounded GitHub event evidence, but it still lacks a generic durable workflow/run/step evidence kernel with retry, resume, idempotency, subject-lease, cancellation, definition-drift, crash-recovery, and migration semantics. O1 persistence-backed replay and product listener integration also remain partial boundaries and are not silently promoted to O2 proof.
 
 ## Required output summary
 
 ```text
 PROVEN_CRITERIA = 10
-PARTIAL_CRITERIA = 12
-MISSING_CRITERIA = 1
+PARTIAL_CRITERIA = 13
+MISSING_CRITERIA = 0
 NOT_APPLICABLE_CRITERIA = 2
 SEPARATE_AUTHORITY_REQUIRED_CRITERIA = 0
-MINIMUM_NEXT_BLOCKER = AUTHENTICATED_REPLAY_SAFE_EVENT_INGESTION
-NEXT_ELIGIBLE_UNIT_CANDIDATE = O1_AUTHENTICATED_GITHUB_EVENT_EVIDENCE_AUTHORIZATION
+MINIMUM_NEXT_PARTIAL_BLOCKER = DURABLE_WORKFLOW_RETRY_RESUME_LEASE_CANCELLATION_MIGRATION
+NEXT_ELIGIBLE_UNIT_CANDIDATE = O2_DURABLE_WORKFLOW_EVIDENCE_KERNEL_AUTHORIZATION
 PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
 The counts cover the fifteen OpenReview-derived program criteria plus the ten master-plan definition-of-success criteria. Classification is intentionally conservative: a data contract is not promoted to product execution, a bounded subsystem theorem is not promoted to an end-to-end path, and absence of public-release authority is not treated as a defect that this audit may repair.
 
-## Minimum next blocker contract boundary
+## Minimum next partial blocker contract boundary
 
-A future separately authorized O1 design should be the smallest pure/data-first authenticated GitHub event evidence slice. It should not begin with webhook server deployment or GitHub write authority. The minimum safe contract should bind caller-materialized HTTP/event inputs to deterministic evidence for at least:
+The next dependency-ordered candidate is O2 durable workflow evidence kernel. This audit reconciliation grants no O2 implementation authority. A future separately authorized O2 design should remain pure/data-first and establish a generic durable workflow evidence model without privileged side effects. At minimum, a later authorization should decide exact bounded contracts for:
 
 ```text
-EVENT_SOURCE = GITHUB
-SIGNATURE_ALGORITHM_AND_KEY_IDENTITY
-DELIVERY_IDENTITY
-EVENT_NAME_AND_ACTION
-REPOSITORY_IDENTITY
-SUBJECT_PR_OR_REF_IDENTITY
-OBSERVED_HEAD_IDENTITY
-FORK_CLASSIFICATION
-ACTOR_IDENTITY
-ACTOR_ELIGIBILITY_INPUT
-REPLAY_OR_DUPLICATE_DECISION
-AUTHENTICATION_DECISION
-EVENT_EVIDENCE_IDENTITY
+WORKFLOW_DEFINITION_IDENTITY
+WORKFLOW_RUN_IDENTITY
+WORKFLOW_STEP_IDENTITY
+STATE_MACHINE
+IDEMPOTENT_TRANSITION_IDENTITY
+RETRY_ATTEMPT_LINEAGE
+SUBJECT_LEASE_IDENTITY_AND_EXPIRY_EVIDENCE
+CANCELLATION_EVIDENCE
+RESUME_FRESHNESS
+DEFINITION_DRIFT
+CRASH_RECOVERY_OR_MIGRATION_EVIDENCE_BOUNDARY
+PRIVILEGED_SIDE_EFFECTS = NONE
 ```
 
-The implementation should fail closed on invalid/missing signatures, duplicate/replayed delivery identity, malformed event shape, actor-eligibility uncertainty, ambiguous subject/head identity, hostile JavaScript structures, and unbounded input. Whether signature verification accepts a secret key directly, a preverified caller assertion, or another trusted key-provider boundary must be decided by its own authorization; this audit does not choose or grant secret access.
-
-The first implementation slice should remain pure/data-only if possible. Network listener deployment, GitHub App installation, webhook registration, secret-store access, persistence-backed dedupe, GitHub API reads/writes, comments/reviews, durable workflow execution, and provider/model invocation remain separate later authorities.
+Existing evidence-store leases, gVisor lifecycle durability/recovery, approval cancellation, ACP `session/resume` catalog evidence, and O1 caller-materialized duplicate rejection are real but domain-scoped. They must not be relabeled as a generic O2 workflow kernel by composition. Persistence, queue/database ownership, network listeners, GitHub App/API access, provider/model execution, sandbox execution, and repository mutation require separate authority.
 
 ## Historical and non-grant preservation
 
@@ -263,9 +270,9 @@ Only after that proof may the audit itself be called `CLOSED_CANONICAL`. Even th
 
 ```text
 AUDIT_CLOSED_CANONICAL != PROJECT_COMPLETION
-AUDIT_CLOSED_CANONICAL != O1_IMPLEMENTATION_AUTHORITY
+AUDIT_RECONCILIATION_CLOSED_CANONICAL != O2_IMPLEMENTATION_AUTHORITY
 AUDIT_CLOSED_CANONICAL != PHASE_OVERALL_CLOSURE
 AUDIT_CLOSED_CANONICAL != RELEASE_AUTHORITY
 ```
 
-Fresh successor analysis after audit closure may propose only the minimum next candidate identified above. A separate canonical authorization is required before any O1 repository mutation.
+Only after this six-file reconciliation itself is externally post-merge proven may fresh successor analysis treat the reconciled audit/current views as canonical navigation. A separate canonical authorization is required before any O2 repository mutation.
