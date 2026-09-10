@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/o1-authenticated-github-event-evidence.schema.json",
+  "title": "Kodac O1 Authenticated GitHub Event Evidence",
+  "description": "Structural schema for positive bounded O1 authenticated GitHub pull-request event evidence. Schema acceptance is not signature verification, replay protection, transport authentication, GitHub authority, or project completion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "eventSource",
+    "signatureAlgorithm",
+    "keyIdentity",
+    "deliveryId",
+    "deliveryIdentity",
+    "payloadSha256",
+    "eventName",
+    "action",
+    "repositoryId",
+    "repositoryFullName",
+    "pullRequestNumber",
+    "pullRequestId",
+    "baseRepositoryId",
+    "headRepositoryId",
+    "forkClassification",
+    "observedHeadSha",
+    "expectedHeadSha",
+    "headMatch",
+    "actorId",
+    "actorLogin",
+    "actorType",
+    "actorEligibilityPolicyIdentity",
+    "actorEligibilityEvidenceRefs",
+    "actorEligibilityDecision",
+    "replayDecision",
+    "authenticationDecision",
+    "ingressDecision",
+    "eventEvidenceIdentity"
+  ],
+  "properties": {
+    "version": {
+      "const": "kodac-o1-authenticated-github-event-evidence-v1"
+    },
+    "eventSource": {
+      "const": "GITHUB"
+    },
+    "signatureAlgorithm": {
+      "const": "HMAC_SHA256"
+    },
+    "keyIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "deliveryId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "deliveryIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "payloadSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "eventName": {
+      "const": "pull_request"
+    },
+    "action": {
+      "enum": [
+        "opened",
+        "reopened",
+        "synchronize",
+        "ready_for_review"
+      ]
+    },
+    "repositoryId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "repositoryFullName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 201,
+      "pattern": "^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$"
+    },
+    "pullRequestNumber": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "pullRequestId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "baseRepositoryId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "headRepositoryId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "forkClassification": {
+      "enum": [
+        "SAME_REPOSITORY",
+        "FORK_REPOSITORY"
+      ]
+    },
+    "observedHeadSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "expectedHeadSha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "headMatch": {
+      "const": "MATCH"
+    },
+    "actorId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "actorLogin": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "pattern": "^[A-Za-z0-9_.\\-\\[\\]]+$"
+    },
+    "actorType": {
+      "enum": [
+        "User",
+        "Bot",
+        "Organization"
+      ]
+    },
+    "actorEligibilityPolicyIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "actorEligibilityEvidenceRefs": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      }
+    },
+    "actorEligibilityDecision": {
+      "const": "ELIGIBLE"
+    },
+    "replayDecision": {
+      "const": "UNSEEN"
+    },
+    "authenticationDecision": {
+      "const": "AUTHENTICATED"
+    },
+    "ingressDecision": {
+      "const": "ACCEPT"
+    },
+    "eventEvidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
