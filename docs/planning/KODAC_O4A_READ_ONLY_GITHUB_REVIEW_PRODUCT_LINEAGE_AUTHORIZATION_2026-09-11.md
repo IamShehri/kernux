@@ -77,7 +77,18 @@ PHASE_CLOSURE = NO
 PROJECT_COMPLETION = NO
 ```
 
-The source may import deterministic validation/data contracts from already-canonical O1 and reviewer-intelligence modules, plus Node built-ins required for hashing and Proxy inspection. It must not import side-effect or provider-specific network modules.
+The production source import surface is closed to the exact validation-only dependencies required by this slice:
+
+```text
+node:crypto
+node:util
+validateO1AuthenticatedGithubIssueCommentEvidence and O1 data types
+validateReviewRunRecord and review-run data types
+validateReviewTemporalEvidence and temporal-evidence data types
+ReviewerIntelligenceRuntime only for validateFindingRecord
+```
+
+No other O1/KRI runtime method, provider implementation, filesystem/process/network module, K2 surface, or side-effect module is authorized. `ReviewerIntelligenceRuntime` may be instantiated only as `new ReviewerIntelligenceRuntime({ adjudicatorId: "o4a-read-only-validation" })` for `validateFindingRecord`; O4-A must not call adjudication or mutation methods on that instance.
 
 For O1 cryptographic revalidation only, the API may receive a caller-materialized `O1AuthenticatedGithubIssueCommentInput` and pass it directly to `validateO1AuthenticatedGithubIssueCommentEvidence`. The caller-materialized secret and raw webhook bytes are validation inputs only: O4-A may not retrieve them from environment/filesystem/network, persist them, log them, copy them into publication intents, or serialize them in final O4-A evidence.
 
@@ -116,7 +127,7 @@ headMatch = MATCH
 headBindingSource = CALLER_MATERIALIZED_PR_SNAPSHOT
 ```
 
-O4-A must bind the exact validated O1 fields relevant to product lineage:
+O4-A must bind the exact validated O1 fields relevant to product lineage. In the O4-A final surface, `triggerEvidenceIdentity` is an alias binding and must equal the canonical validated O1 `eventEvidenceIdentity` byte-for-byte; O4-A must not derive a replacement trigger identity.
 
 ```text
 eventEvidenceIdentity
@@ -164,7 +175,7 @@ The mention command must then be **derived by O4-A from that exact bound text**,
 @<mentionTargetLogin> review
 ```
 
-with exactly one ASCII space, no leading/trailing text or whitespace, case-sensitive literal `review`, and `mentionTargetLogin` supplied only inside a bounded caller-materialized mention policy record. That record must also contain a SHA-256 `mentionPolicyIdentity`. O4-A must bind `mentionTargetLogin`, `mentionPolicyIdentity`, `commentIdentity`, and `commentBodySha256` into the deterministic `mentionCommandIdentity`.
+with exactly one ASCII space, no leading/trailing text or whitespace, case-sensitive literal `review`, and `mentionTargetLogin` supplied only inside a bounded caller-materialized mention policy record. `mentionTargetLogin` must satisfy the same bounded GitHub-login grammar already used by O1 (`^[A-Za-z0-9_.\-\[\]]{1,100}$`). That record must also contain a lowercase SHA-256 `mentionPolicyIdentity`. O4-A must bind `mentionTargetLogin`, `mentionPolicyIdentity`, `commentIdentity`, and `commentBodySha256` into the deterministic `mentionCommandIdentity`.
 
 The caller-materialized mention target/policy are configuration evidence only. They do not prove GitHub App ownership, installation, webhook routing, listener registration, or authority to act as that login. Any later live product integration must establish those facts separately.
 
@@ -176,7 +187,7 @@ The O1 source input may contain caller-materialized raw webhook body and HMAC se
 
 O4-A accepts caller-materialized bounded repository/PR snapshot evidence only. It performs no GitHub read itself.
 
-The O4-A snapshot must bind at minimum:
+The O4-A snapshot input uses this exact field set:
 
 ```text
 repositoryId
@@ -194,6 +205,10 @@ headRefIdentity
 snapshotObservedAt
 snapshotEvidenceIdentity
 ```
+
+`baseRefIdentity` and `headRefIdentity` are lowercase SHA-256 identities. `snapshotObservedAt` must use the same canonical UTC millisecond form enforced by KRI temporal evidence: `YYYY-MM-DDTHH:mm:ss.sssZ`, with round-trip `Date.toISOString()` equality. `forkClassification` is exactly `SAME_REPOSITORY` or `FORK_REPOSITORY` and must remain equal to canonical O1 evidence.
+
+O4-A must independently rederive `snapshotEvidenceIdentity` using the v1 domain-separated canonical-JSON rule over every snapshot field above except `snapshotEvidenceIdentity`. A caller-provided snapshot digest is a claim only until this rederivation succeeds.
 
 Positive continuation requires exact equality across validated predecessors:
 
@@ -224,38 +239,52 @@ Requirements:
 - no absolute paths, drive prefixes, backslashes, empty segments, `.` or `..` segments;
 - bounded UTF-8 length;
 - no duplicate paths;
-- canonical deterministic ordering;
+- canonical deterministic ordering by exact path bytes;
 - maximum 512 changed paths;
-- each path binds an exact SHA-256 path evidence identity or equivalent deterministic path-set identity;
-- the changed-path set identity must change if any path is added, removed, renamed, or reordered before normalization.
+- every v1 changed path is reviewable; no v1 non-reviewable-path policy exists;
+- each path evidence identity must bind `repositoryId`, `pullRequestNumber`, `reviewedHead`, and the exact normalized path;
+- `changedPathSetIdentity` must bind `repositoryId`, `pullRequestNumber`, `reviewedHead`, and the canonical sorted changed-path membership;
+- caller input permutations that normalize to the same sorted membership must produce the same `changedPathSetIdentity`;
+- adding, removing, or renaming a changed path must change `changedPathSetIdentity`.
 
-An empty changed-path universe may be represented but cannot produce a false claim of complete code review unless the review classification explicitly states that there were no reviewable changed paths.
+An empty changed-path universe is the only v1 case eligible for `COMPLETE_NO_REVIEWABLE_PATHS`. Any future rule that exempts a non-empty changed path from review requires separate authorization and protocol versioning.
 
 ## 8. Bounded read evidence
 
-Each caller-materialized read evidence item must bind at minimum:
+Each caller-materialized read evidence input uses exactly this field set and no additional fields:
 
 ```text
 path
+readRole
 contentIdentity
 byteLength
-readEvidenceIdentity
 sourceKind
 truncationState
+snapshotEvidenceIdentity
+reviewedHead
+readEvidenceIdentity
 ```
 
 Rules:
 
+- `readRole` is exactly `CHANGED_PATH` or `SUPPORTING_CONTEXT`;
+- `sourceKind` is exactly `CALLER_MATERIALIZED_READ_EVIDENCE`;
+- `truncationState` is exactly `FULL` or `TRUNCATED`;
 - `contentIdentity` and `readEvidenceIdentity` are lowercase SHA-256 identities;
-- `byteLength` is bounded and finite;
+- `byteLength` is an integer from `0` through `MAX_READ_CONTENT_BYTES`;
 - maximum 512 read evidence items;
-- duplicate path/read identity combinations are rejected;
-- every read path must belong to the changed-path universe or be explicitly classified as bounded supporting context;
-- supporting-context paths must be separately classified and cannot count as changed-path coverage;
-- `truncationState` is a closed vocabulary and must remain visible in completeness decisions;
+- each normalized path may appear at most once across the full read-evidence set;
+- every `CHANGED_PATH` read path must belong to the changed-path universe;
+- every `SUPPORTING_CONTEXT` path must not count as changed-path coverage;
+- every item must bind the exact `snapshotEvidenceIdentity` and `reviewedHead`;
+- `readEvidenceIdentity` must be independently derived from `repositoryId`, `pullRequestNumber`, `snapshotEvidenceIdentity`, `reviewedHead`, `path`, `readRole`, `contentIdentity`, `byteLength`, `sourceKind`, and `truncationState`;
+- `readEvidenceSetIdentity` must bind `repositoryId`, `pullRequestNumber`, `snapshotEvidenceIdentity`, `reviewedHead`, and the canonical sorted read-evidence identities;
+- caller input permutations that normalize to the same read set must produce the same `readEvidenceSetIdentity`;
+- changing the snapshot, reviewed head, path, role, content identity, byte length, source kind, or truncation state must change the relevant read identity;
+- `truncationState` must remain visible in completeness decisions; no additional v1 value is permitted;
 - raw file content is not required in serialized O4-A final evidence.
 
-O4-A must never claim that a digest proves content was fetched from GitHub. The digest binds caller-materialized evidence only.
+O4-A must never claim that a digest proves content was fetched from GitHub. The digest binds caller-materialized evidence only to an explicit repository/PR/snapshot/head context.
 
 ## 9. Reviewer evidence binding
 
@@ -292,26 +321,39 @@ Provider/model execution is not performed by O4-A. Existing reviewer evidence is
 
 O4-A must accept a bounded normalized finding set whose identities equal the reviewer run's exact finding identities.
 
-Each publication-eligible finding must bind at minimum:
+The finding input is an exact canonical KRI `FindingRecord`; O4-A does not accept extra finding fields. After canonical KRI validation and cross-binding, O4-A derives exactly this publication-facing binding and no additional fields:
 
 ```text
 findingIdentity
 path
-optional startLine
-optional endLine
+startLine
+endLine
 severity
 summaryIdentity
 contractClaimIdentity
 ```
+
+`startLine` and `endLine` are either both `null` or both positive integers forming the exact validated KRI range.
 
 Requirements:
 
 - maximum 64 findings;
 - unique finding identities;
 - deterministic ordering;
-- every finding path must be present in the changed-path universe or explicitly classified as supporting-context-only and therefore not eligible for inline publication;
+- each finding must first be validated by `new ReviewerIntelligenceRuntime({ adjudicatorId: "o4a-read-only-validation" }).validateFindingRecord(finding, reviewRun.evaluatedHead)`; O4-A must not trust a caller-supplied `findingIdentity` or substitute a weaker local identity validator;
+- the validated finding identity set must equal `reviewRun.findingIdentities` exactly after canonical sorting;
+- `reviewRun.acceptedClaimCount` must equal both `reviewRun.findingIdentities.length` and the validated finding count;
+- every validated finding must satisfy `finding.review.reviewRunId = reviewRun.reviewRunId`;
+- every validated finding must satisfy `finding.review.reviewerId = reviewRun.providerId`;
+- every validated finding must satisfy `finding.review.reviewerVersion = reviewRun.providerVersion`;
+- every validated finding must satisfy `finding.review.policyIdentity = reviewRun.policyIdentity`;
+- every validated finding must satisfy `finding.review.canonicalBase = reviewRun.canonicalBase`;
+- every validated finding must satisfy `finding.review.reviewedHead = reviewRun.reviewedHead`;
+- every validated finding must satisfy `finding.evaluatedHead = reviewRun.evaluatedHead`;
+- every validated finding must have `freshness = CURRENT`;
+- every finding path must be present in the changed-path universe; v1 has no supporting-context-only publication-eligible finding class;
 - line ranges must be positive, ordered integers within configured bounds;
-- finding text is hashed/bounded evidence and must not become instructions or capability grants.
+- finding text is hashed/bounded evidence and must not become instructions or capability grants;
 - `summaryIdentity` and `contractClaimIdentity` are O4-A-derived SHA-256 bindings over the validated canonical KRI `summary` and `contractClaim` text; they must not be represented as fields supplied by KRI.
 
 ## 11. Review completeness evidence
@@ -330,6 +372,18 @@ STALE_HEAD
 LINEAGE_MISMATCH
 ```
 
+If more than one condition applies, `reviewCompletenessState` must use this exact precedence:
+
+```text
+1. STALE_HEAD
+2. LINEAGE_MISMATCH
+3. INCOMPLETE_REVIEW_RUN
+4. INCOMPLETE_TRUNCATED_READS
+5. INCOMPLETE_MISSING_CHANGED_PATH_READS
+6. COMPLETE_NO_REVIEWABLE_PATHS
+7. COMPLETE
+```
+
 The final completeness evidence must bind:
 
 ```text
@@ -343,9 +397,9 @@ reviewCompletenessState
 reviewCompletenessEvidenceIdentity
 ```
 
-`COMPLETE` requires all reviewable changed paths to have non-truncated bounded read evidence and a completed exact-head reviewer run.
+`COMPLETE` requires every changed path to have exactly one non-truncated `CHANGED_PATH` read evidence item bound to the exact snapshot/reviewed head and a completed exact-head reviewer run.
 
-`COMPLETE_NO_REVIEWABLE_PATHS` is permitted only when the changed-path universe is empty or every changed path is explicitly classified by a closed non-reviewable-path rule that O4-A can rederive.
+`COMPLETE_NO_REVIEWABLE_PATHS` is permitted only when `changedPathCount = 0`. In v1, all non-empty changed-path entries are reviewable and no implementation-defined exemption is authorized.
 
 No incomplete or stale state may be converted into positive continuation by publication intent presence.
 
@@ -360,7 +414,7 @@ TOP_LEVEL_REVIEW_SUMMARY
 INLINE_FINDING_COMMENT
 ```
 
-Every intent must bind:
+Every publication-intent input uses exactly this field set:
 
 ```text
 publicationIntentClass
@@ -368,24 +422,25 @@ repositoryId
 pullRequestNumber
 reviewedHead
 reviewRunIdentity
-bodyIdentity
-bodyByteLength
-optional findingIdentity
-optional path
-optional line anchor
-publicationIntentIdentity
+bodyText
+findingIdentity
+path
+lineAnchor
 ```
+
+For `TOP_LEVEL_REVIEW_SUMMARY`, `findingIdentity`, `path`, and `lineAnchor` must all be `null`. For `INLINE_FINDING_COMMENT`, all three must be non-null and bind one exact validated finding/range. `lineAnchor` must be a positive integer not greater than `MAX_LINE_NUMBER` and must fall within the validated finding range; a finding with a null range is not eligible for inline publication. `bodyText` is caller-materialized validation input only. O4-A must derive `bodyIdentity` using the v1 domain-separated canonical-JSON identity rule over the exact body text, derive `bodyByteLength = UTF8_BYTE_LENGTH(bodyText)`, and derive `publicationIntentIdentity`; caller-supplied positive body digests or lengths are not accepted as authority.
 
 Rules:
 
 - maximum 65 intents total;
-- at most one top-level summary intent;
-- at most one inline intent per finding identity unless a stricter deterministic grouping rule is used;
+- positive continuation requires exactly one `TOP_LEVEL_REVIEW_SUMMARY` intent;
+- zero or one `INLINE_FINDING_COMMENT` intent may exist per validated publication-eligible finding identity;
+- every publication intent must validate successfully before positive continuation;
 - inline intents require a validated finding, exact changed path, and valid line anchor;
 - bodies are caller-materialized bounded text for hashing only;
 - bodies must be NUL-free Unicode-scalar text;
 - maximum 16 KiB per body;
-- raw publication body text must not appear in final serialized evidence unless the implementation proves that doing so is necessary for deterministic product evidence and remains within this authorization; the preferred final surface stores body digest/length only;
+- raw publication body text must never appear in any derived publication-intent evidence record or the final product-lineage evidence; derived intent evidence uses only the validated domain-separated `bodyIdentity` and UTF-8 byte length;
 - no intent contains a credential, HTTP request, URL with token, shell command authority, merge instruction, approval instruction, or repository mutation authority.
 
 ## 13. Continuation classification
@@ -400,13 +455,25 @@ BLOCK_INCOMPLETE_REVIEW
 BLOCK_INVALID_PUBLICATION_INTENT
 ```
 
+The continuation decision must use this deterministic precedence whenever more than one defect is present:
+
+```text
+1. BLOCK_STALE_HEAD
+2. BLOCK_LINEAGE_MISMATCH
+3. BLOCK_INCOMPLETE_REVIEW
+4. BLOCK_INVALID_PUBLICATION_INTENT
+5. READY_FOR_SEPARATE_PUBLICATION_AUTHORITY
+```
+
+`READY_FOR_SEPARATE_PUBLICATION_AUTHORITY` is allowed only when head lineage is current, all predecessor lineage matches, review completeness is `COMPLETE` or `COMPLETE_NO_REVIEWABLE_PATHS`, exactly one valid top-level summary intent exists, every other intent is valid, and no earlier blocker applies.
+
 `READY_FOR_SEPARATE_PUBLICATION_AUTHORITY` means only that the pure-data product lineage is internally complete enough for a later separately authorized publication stage.
 
 It does not authorize network access, GitHub comment/review writes, provider execution, merge, approval, K2 execution, or any other side effect.
 
 ## 14. Final serialized evidence surface
 
-The final evidence must use one exact closed field set. At minimum it must bind:
+The final serialized evidence uses exactly this closed field set and no implementation-defined additional fields:
 
 ```text
 version
@@ -433,6 +500,7 @@ deliveryIdentity
 payloadSha256
 commentIdentity
 commentBodySha256
+commentBodyByteLength
 mentionTargetLogin
 mentionPolicyIdentity
 mentionCommandKind
@@ -450,31 +518,44 @@ policyIdentity
 contextBundleIdentity
 instructionsIdentity
 findingIdentities
+reviewedChangedPathCount
+missingChangedPathIdentities
+truncatedChangedPathIdentities
+supportingContextPathCount
 reviewCompletenessState
 reviewCompletenessEvidenceIdentity
 publicationIntentIdentities
+publicationIntentCount
 continuationDecision
 productLineageEvidenceIdentity
 ```
 
-The exact implementation may add stricter bounded identity/count fields only if they are necessary for deterministic validation, are included in the closed Draft 2020-12 schema, and do not imply a new authority surface.
+Schema/source surface parity must be exact. No additional serialized field may be introduced by the implementation without separate authorization and protocol versioning. The predecessor identity mappings are exact: `triggerEvidenceIdentity = validatedTrigger.eventEvidenceIdentity`, `reviewRunIdentity = validatedReviewRun.reviewRunIdentity`, `temporalEvidenceIdentity = validatedReviewTemporal.temporalEvidenceIdentity`, and `findingIdentities = validatedReviewRun.findingIdentities`.
 
 Raw O1 secret bytes, raw webhook bytes, raw `triggerCommentText`, raw repository file contents, provider/model prompts beyond already-canonical predecessor identities, and raw publication bodies must not appear in final serialized O4-A evidence.
 
 ## 15. Deterministic identities
 
-All O4-A-derived identities must use domain-separated SHA-256 over canonical deterministic JSON or an equally explicit canonical byte preimage.
+All O4-A-derived identities must use domain-separated SHA-256 over canonical deterministic JSON. No alternative preimage encoding is authorized in v1. The domain separator must include the exact protocol version plus a stable identity-kind label.
 
-At minimum derive separate identities for:
+The implementation must independently derive and validate exactly these O4-A identity classes where they occur:
 
 ```text
 mentionCommandIdentity
+snapshotEvidenceIdentity
+changedPathEvidenceIdentity
 changedPathSetIdentity
+readEvidenceIdentity
 readEvidenceSetIdentity
+summaryIdentity
+contractClaimIdentity
 reviewCompletenessEvidenceIdentity
+bodyIdentity
 publicationIntentIdentity
 productLineageEvidenceIdentity
 ```
+
+`productLineageEvidenceIdentity` must be derived from the exact final serialized field set excluding only `productLineageEvidenceIdentity` itself. `reviewCompletenessEvidenceIdentity` must bind repository/PR/snapshot/head, changed/read set identities, all completeness counts and missing/truncated identity arrays, review-run identity, temporal-evidence identity, and the derived completeness state. Each `publicationIntentIdentity` must bind its exact class, repository/PR/head, review-run identity, body identity/byte length, and its nullable finding/path/line anchor fields.
 
 The validator must independently rederive every derived identity and reject forged derived fields.
 
@@ -516,6 +597,7 @@ MAX_FINDINGS = 64
 MAX_PUBLICATION_INTENTS = 65
 MAX_PUBLICATION_BODY_UTF8_BYTES = 16384
 MAX_TRIGGER_COMMENT_UTF8_BYTES = 16384
+MAX_READ_CONTENT_BYTES = 1048576
 MAX_PATH_UTF8_BYTES = 1024
 MAX_GENERAL_TEXT_UTF8_BYTES = 4096
 MAX_GRAPH_DEPTH = 32
@@ -598,7 +680,26 @@ The implementation test file must contain at least these cases:
 49. exact implementation changed-path set remains three paths;
 50. caller-materialized `triggerCommentText` SHA-256 and UTF-8 byte length must exactly equal O1 `commentBodySha256` and `commentBodyByteLength`;
 51. mention classification is derived from exact bound text and wrong target, wrong policy binding, absent mention, extra arguments, or unsupported grammar cannot produce positive continuation;
-52. raw `triggerCommentText` is absent from final evidence and changing `mentionTargetLogin` or `mentionPolicyIdentity` changes downstream identities.
+52. raw `triggerCommentText` is absent from final evidence and changing `mentionTargetLogin` or `mentionPolicyIdentity` changes downstream identities;
+53. changed-path input permutations normalize to the same set identity while membership changes alter it, and the set identity binds repository/PR/reviewed head;
+54. every read identity and read-set identity binds the exact snapshot/reviewed head, duplicate read paths are rejected, and supporting-context reads never satisfy changed-path coverage;
+55. each finding is canonically validated and cross-bound to review run id/provider/version/policy/base/head/evaluated-head/current freshness, with exact accepted-count parity;
+56. non-empty changed-path universes cannot use `COMPLETE_NO_REVIEWABLE_PATHS`;
+57. READY requires exactly one valid top-level summary intent and all publication intents valid;
+58. multi-defect inputs follow the fixed blocker precedence `STALE_HEAD > LINEAGE_MISMATCH > INCOMPLETE_REVIEW > INVALID_PUBLICATION_INTENT > READY`;
+59. `sourceKind` and `truncationState` accept only their exact v1 enum values;
+60. snapshot timestamp/ref identities are strictly validated and forged `snapshotEvidenceIdentity` is rejected by deterministic rederivation;
+61. findings are validated specifically through `ReviewerIntelligenceRuntime.validateFindingRecord` using validation-only adjudicator id `o4a-read-only-validation`, with no adjudication/mutation method use;
+62. raw publication bodies never appear in final serialized evidence; only body identity and UTF-8 byte length are serialized;
+63. the final serialized field set is exact, rejects unknown fields, exposes completeness arrays/counts and publication-intent count, and matches the Draft 2020-12 schema exactly;
+64. every O4-A-derived identity class uses the v1 domain-separated canonical-JSON rule and forged snapshot/path/read/completeness/body/publication/product identities fail closed;
+65. publication `bodyText` is exact caller-materialized validation input, domain-separated body identity/UTF-8 length are rederived, caller-supplied positive digest/length authority is rejected, and raw body text is not serialized;
+66. multi-defect review-completeness inputs follow the fixed completeness-state precedence;
+67. read-evidence inputs reject unknown fields and enforce `MAX_READ_CONTENT_BYTES`;
+68. finding inputs are exact canonical KRI `FindingRecord` values and derived publication-facing finding bindings use the exact nullable-range field set;
+69. inline publication requires a non-null validated finding range and an in-range bounded integer `lineAnchor`;
+70. mention target login uses the exact O1-compatible bounded login grammar and changing the exact target changes downstream mention/product identities;
+71. predecessor identity aliases are exact: O4-A trigger/review-run/temporal/finding identities equal their independently validated canonical predecessor identities rather than replacement digests.
 
 Additional tests are encouraged within the same test path.
 
