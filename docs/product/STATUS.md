@@ -83,11 +83,16 @@ POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CA
 P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_AUTHORIZATION = CLOSED_CANONICAL / PR #551 / merge 8db8248f8e88938acdef1a88cd27d0f7ec0725f1 / proof 5610364077
 P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CLOSED_CANONICAL / PR #552 / merge 442c236cb9da741fae960337512b84c42c2f2e4b / proof 5610430653
 P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #553 / merge 37853e86788359f7e3aba6420aef202b460c0f5a / proof 5610463377
-P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #554 / merge e9b1fae1afbd1c2b9831d4e69e395efdef18dba8 / proof 5610494612
 
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
 P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
-P9 = NOT_AUTHORIZED_BY_IMPLICATION
+P9_R1_FRESHNESS_DEPENDENCY_INVALIDATION_AUTHORIZATION = CLOSED_CANONICAL / PR #555 / merge 6d5477116cea1ad1416c7e03908b542d76a92456 / proof 5610646762
+P9_R1_FRESHNESS_DEPENDENCY_INVALIDATION = CLOSED_CANONICAL / PR #556 / merge 31ee7dbd3a03e12f6005ecf634566053ca19ac5b / proof 5611220666
+P9_R1_POST_MERGE_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #557 / merge bb3589f41302d6b3b7473becbd2dc1a5a0eb49f3 / proof 5611291045
+P9_R1_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P9_R2_PLUS = NOT_AUTHORIZED_BY_NUMBERING
+P9_OVERALL = NOT_CLOSED
 PUBLIC RELEASE / PACKAGE PUBLICATION / DEPLOYMENT = NOT_AUTHORIZED
 PROJECT COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
@@ -97,9 +102,9 @@ Historical authorization, reconciliation, repair, anomaly, and adverse-evidence 
 
 ---
 
-## Active product-status unit — post-bounded P8 closeout current-view reconciliation candidate
+## Active product-status unit — P9-R1 post-merge current-view reconciliation candidate
 
-Canonical authority exists through PR #553 / external post-merge proof `5610463377` only for this exact five-path documentation reconciliation.
+Canonical authority exists through PR #557 / external post-merge proof `5611291045` only for this exact five-path documentation reconciliation.
 
 This candidate may modify exactly:
 
@@ -111,41 +116,58 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No sixth path is authorized. The bounded P8 closeout evidence record remains outside this candidate and frozen at blob `b9ee294a6191b7f85fe73c9b408310c1872d3378`.
+No sixth path is authorized. P9-R1 source, test, schema, authorization, and implementation evidence remain frozen. The canonical indexed implementation blobs are source `7114a87ecc465d08d524252834f414203dc96a43`, test `e2b54db06c5e550f8468d2d1f65a696facd471d6`, and schema `0c3e11a69b526e7505924a637b867f146d3158ac`; PR #556 correction `5611187213` remains authoritative for those Git blob identities.
 
-The external closeout proof now establishes:
+The externally proven lineage now establishes:
 
 ```text
-P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_AUTHORIZATION = CLOSED_CANONICAL / PR #551 / merge 8db8248f8e88938acdef1a88cd27d0f7ec0725f1 / proof 5610364077
-P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CLOSED_CANONICAL / PR #552 / merge 442c236cb9da741fae960337512b84c42c2f2e4b / proof 5610430653
-P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #553 / merge 37853e86788359f7e3aba6420aef202b460c0f5a / proof 5610463377
-P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #554 / merge e9b1fae1afbd1c2b9831d4e69e395efdef18dba8 / proof 5610494612
+P9_R1_FRESHNESS_DEPENDENCY_INVALIDATION_AUTHORIZATION = CLOSED_CANONICAL / PR #555 / merge 6d5477116cea1ad1416c7e03908b542d76a92456 / proof 5610646762
+P9_R1_FRESHNESS_DEPENDENCY_INVALIDATION = CLOSED_CANONICAL / PR #556 / merge 31ee7dbd3a03e12f6005ecf634566053ca19ac5b / proof 5611220666
+P9_R1_POST_MERGE_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #557 / merge bb3589f41302d6b3b7473becbd2dc1a5a0eb49f3 / proof 5611291045
+P9_R1_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
 This reconciliation cannot certify its own closure. Only complete external post-merge proof may establish it as `CLOSED_CANONICAL`.
 
+The bounded P9-R1 meaning is preserved:
+
+```text
+P9_R1 = PURE_CALLER_MATERIALIZED_DEPENDENCY_FRESHNESS_EVALUATOR
+KNOWN_IDENTITY_MISMATCH = STALE / BLOCK
+OTHERWISE_MISSING_OBSERVATION = UNKNOWN / BLOCK
+OTHERWISE = CURRENT / ALLOW
+STALE_PRECEDENCE_OVER_UNKNOWN = YES
+P9_R1 != EXTERNAL_STATE_OBSERVATION
+P9_R1 != AUTOMATIC_MONITORING_OR_WATCHER
+P9_R1 != IMPACTED_SUBJECT_DISCOVERY
+P9_R1 != PERSISTENCE_OR_SCHEDULING
+P9_R1 != TARGETED_REQUALIFICATION_EXECUTION
+P9_R1 != K2_MUTATION_OR_AUTOFIX
+```
+
 Broader state remains intentionally unchanged:
 
 ```text
-P8_OVERALL = NOT_CLOSED
-P8_R5_PLUS = NOT_AUTHORIZED_BY_NUMBERING
 P2_OVERALL = OPEN
 P3_OVERALL = OPEN
 P4_OVERALL = OPEN
 P5_OVERALL = NOT_CLOSED
 P6_OVERALL = NOT_CLOSED
 P7_OVERALL = NOT_CLOSED
+P8_OVERALL = NOT_CLOSED
+P9_OVERALL = NOT_CLOSED
+P9_R2_PLUS = NOT_AUTHORIZED_BY_NUMBERING
 GENERAL_PUBLIC_KODACBENCH = NOT_CLOSED
 KODAC_RELEASE_VERSION = NOT_SELECTED
 PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
 PRODUCTION_READINESS_CLAIM = NOT_AUTHORIZED
 BRAND_OR_LEGAL_CLAIM = NOT_AUTHORIZED
-P9 = NOT_AUTHORIZED_BY_IMPLICATION
 PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-The reconciliation preserves the bounded P8 lineage and all adverse/fix-forward history, including PR #520, PR #522/#523, the unsupported Node 22 P8-R4 first attempt, bounded PR #531 fallback semantics, and unchanged K2/K5/Done Gate authority. After this reconciliation itself receives external proof, only fresh evidence-driven successor-authority analysis may determine the next unit.
+The reconciliation preserves all earlier bounded P8 lineage and adverse/fix-forward history, including PR #520, PR #522/#523, the unsupported Node 22 P8-R4 historical failure, bounded PR #531 fallback semantics, privacy/egress boundaries, installation/update boundaries, operational-docs/examples boundaries, release/version separation boundaries, and unchanged K2/K5/Done Gate authority. After this reconciliation itself receives external proof, only fresh evidence-driven successor-authority analysis may determine a later P9 unit.
 
 ---
 
@@ -417,7 +439,12 @@ PUBLIC_RELEASE_PACKAGE_PUBLICATION_DEPLOYMENT = NOT_AUTHORIZED
 K2_K5_DONE_GATE_AUTHORITY_CHANGE = NOT_AUTHORIZED
 FURTHER_SOLVE_JSON_SEMANTIC_EXPANSION = NOT_AUTHORIZED
 P8_R5_PLUS = NOT_AUTHORIZED_BY_NUMBERING
-P9 = NOT_AUTHORIZED_BY_IMPLICATION
+P9_R1_FRESHNESS_DEPENDENCY_INVALIDATION_AUTHORIZATION = CLOSED_CANONICAL / PR #555 / merge 6d5477116cea1ad1416c7e03908b542d76a92456 / proof 5610646762
+P9_R1_FRESHNESS_DEPENDENCY_INVALIDATION = CLOSED_CANONICAL / PR #556 / merge 31ee7dbd3a03e12f6005ecf634566053ca19ac5b / proof 5611220666
+P9_R1_POST_MERGE_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #557 / merge bb3589f41302d6b3b7473becbd2dc1a5a0eb49f3 / proof 5611291045
+P9_R1_POST_MERGE_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P9_R2_PLUS = NOT_AUTHORIZED_BY_NUMBERING
+P9_OVERALL = NOT_CLOSED
 PROJECT_COMPLETION = NOT_ESTABLISHED
 REVERT_PR_520 = NOT_AUTHORIZED
 REBASE = NOT_AUTHORIZED
@@ -452,4 +479,4 @@ PROVEN_READY != PROJECT_COMPLETION
 EVIDENCE_BINDING != AUTHORITY_TRANSFER
 ```
 
-After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No runtime fallback, installation/update work, package/version change, P8-R5+, P9, release, publication, deployment, or project-completion authority may be inferred from this product-status view or reconciliation closure.
+After this reconciliation itself becomes externally post-merge proven, the next action is fresh evidence-driven successor-authority analysis only. No runtime fallback, installation/update work, package/version change, P8-R5+, P9-R2+, release, publication, deployment, or project-completion authority may be inferred from this product-status view or reconciliation closure.
