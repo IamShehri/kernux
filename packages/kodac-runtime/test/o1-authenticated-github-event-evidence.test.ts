@@ -711,10 +711,14 @@ test("O1 legacy pull-request fixture remains byte-for-byte compatible", () => {
   assert.equal(JSON.stringify(evidence), LEGACY_COMPATIBILITY_JSON)
 })
 
-test("O1 legacy pull-request schema remains byte-identical", () => {
-  const bytes = readFileSync(new URL("../../../schema/o1-authenticated-github-event-evidence.schema.json", import.meta.url))
-  assert.equal(createHash("sha256").update(bytes).digest("hex"), LEGACY_SCHEMA_SHA256)
-  assert.equal(LEGACY_SCHEMA_GIT_BLOB, "8d251edf0c2c872db81de95bcfbaf9d7ad69d0a1")
+test("O1 legacy pull-request schema remains canonical repository-byte identical across checkout line endings", () => {
+  const checkoutBytes = readFileSync(new URL("../../../schema/o1-authenticated-github-event-evidence.schema.json", import.meta.url))
+  const checkoutText = new TextDecoder("utf-8", { fatal: true }).decode(checkoutBytes)
+  const canonicalBytes = Buffer.from(checkoutText.replace(/\r\n/g, "\n"), "utf8")
+  assert.equal(createHash("sha256").update(canonicalBytes).digest("hex"), LEGACY_SCHEMA_SHA256)
+  const gitBlobHeader = Buffer.from(`blob ${canonicalBytes.byteLength}\0`, "utf8")
+  const derivedGitBlob = createHash("sha1").update(gitBlobHeader).update(canonicalBytes).digest("hex")
+  assert.equal(derivedGitBlob, LEGACY_SCHEMA_GIT_BLOB)
 })
 
 test("O1 source extension exposes no listener filesystem process network provider or K2 surface", () => {
