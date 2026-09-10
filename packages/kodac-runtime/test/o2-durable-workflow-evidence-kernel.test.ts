@@ -10,6 +10,7 @@ import {
   deriveO2LeaseIdentity,
   deriveO2WorkflowDefinitionIdentity,
   deriveO2WorkflowRunIdentity,
+  validateO2DurableWorkflowSuccessorTransitionEvidence,
   validateO2DurableWorkflowTransitionEvidence,
   type O2AuthorityBindings,
   type O2DurableWorkflowTransitionInput,
@@ -89,12 +90,13 @@ function input(overrides: Partial<O2DurableWorkflowTransitionInput> = {}): O2Dur
 }
 
 function activeInput(overrides: Partial<O2DurableWorkflowTransitionInput> = {}): O2DurableWorkflowTransitionInput {
+  const priorAttemptIdentity = createO2DurableWorkflowTransitionEvidence(input()).attemptIdentity
   return input({
     previousState: "ACTIVE",
     requestedNextState: "ACTIVE",
     transitionKind: "RETRY",
     priorTransitionIdentity: H("a"),
-    attempt: { stepKey: "collect", attemptNumber: 2, retryClass: "SAFE_REPLAY", priorAttemptIdentity: H("b") },
+    attempt: { stepKey: "collect", attemptNumber: 2, retryClass: "SAFE_REPLAY", priorAttemptIdentity },
     ...overrides,
   })
 }
@@ -132,11 +134,39 @@ test("O2 retry preserves logical step/idempotency identity and binds prior attem
   assert.equal(first.workflowStepIdentity, retry.workflowStepIdentity)
   assert.equal(first.idempotencyIdentity, retry.idempotencyIdentity)
   assert.notEqual(first.attemptIdentity, retry.attemptIdentity)
-  assert.equal(retry.priorAttemptIdentity, H("b"))
+  assert.equal(retry.priorAttemptIdentity, first.attemptIdentity)
+})
+
+test("O2 retry binds the immediately preceding deterministic attempt identity", () => {
+  const first = createO2DurableWorkflowTransitionEvidence(input())
+  const second = createO2DurableWorkflowTransitionEvidence(activeInput())
+  const thirdSource = activeInput({
+    attempt: { stepKey: "collect", attemptNumber: 3, retryClass: "SAFE_REPLAY", priorAttemptIdentity: second.attemptIdentity },
+  })
+  const third = createO2DurableWorkflowTransitionEvidence(thirdSource)
+  assert.notEqual(third.attemptIdentity, second.attemptIdentity)
+  assert.equal(third.priorAttemptIdentity, second.attemptIdentity)
+  assert.throws(
+    () => createO2DurableWorkflowTransitionEvidence(activeInput({ attempt: { stepKey: "collect", attemptNumber: 3, retryClass: "SAFE_REPLAY", priorAttemptIdentity: first.attemptIdentity } })),
+    /immediately preceding attempt/,
+  )
+})
+
+test("O2 START and RETRY transition kinds enforce attempt-number semantics", () => {
+  const first = createO2DurableWorkflowTransitionEvidence(input())
+  assert.throws(
+    () => createO2DurableWorkflowTransitionEvidence(input({ attempt: { stepKey: "collect", attemptNumber: 2, retryClass: "SAFE_REPLAY", priorAttemptIdentity: first.attemptIdentity } })),
+    /START transition requires attemptNumber 1/,
+  )
+  assert.throws(
+    () => createO2DurableWorkflowTransitionEvidence(activeInput({ attempt: { stepKey: "collect", attemptNumber: 1, retryClass: "INITIAL", priorAttemptIdentity: null } })),
+    /RETRY transition requires attemptNumber greater than 1/,
+  )
 })
 
 test("O2 SIDE_EFFECT_RETRY never grants continuation authority", () => {
-  const evidence = createO2DurableWorkflowTransitionEvidence(activeInput({ attempt: { stepKey: "collect", attemptNumber: 2, retryClass: "SIDE_EFFECT_RETRY", priorAttemptIdentity: H("b") } }))
+  const priorAttemptIdentity = createO2DurableWorkflowTransitionEvidence(input()).attemptIdentity
+  const evidence = createO2DurableWorkflowTransitionEvidence(activeInput({ attempt: { stepKey: "collect", attemptNumber: 2, retryClass: "SIDE_EFFECT_RETRY", priorAttemptIdentity } }))
   assert.equal(evidence.continuationDecision, "BLOCK")
   assert.equal(evidence.nextState, "ACTIVE")
   assert.match(evidence.errorIdentity ?? "", /^[0-9a-f]{64}$/)
@@ -263,7 +293,19 @@ test("O2 migration cannot waive independent authority drift", () => {
   const migration = { fromWorkflowDefinitionIdentity: oldDefinition, toWorkflowDefinitionIdentity: currentDefinition, subjectRepositoryIdentity: RUN.subjectRepositoryIdentity, subjectRevisionIdentity: RUN.subjectRevisionIdentity, migrationPolicyIdentity: H("e"), migrationEvidenceIdentity: H("f") }
   const evidence = createO2DurableWorkflowTransitionEvidence(activeInput({ transitionKind: "RESUME", resume: { suspended: authority(oldDefinition, { rulesetIdentity: H("0") }), current: authority(), migration } }))
   assert.equal(evidence.resumeDecision, "STALE")
+  assert.equal(evidence.definitionDriftDecision, "MIGRATED")
+  assert.match(evidence.migrationIdentity ?? "", /^[0-9a-f]{64}$/)
   assert.equal(evidence.continuationDecision, "BLOCK")
+})
+
+test("O2 rejects an inexact migration even when independent authority drift already blocks resume", () => {
+  const oldDefinition = H("0")
+  const currentDefinition = deriveO2WorkflowDefinitionIdentity(DEF)
+  const migration = { fromWorkflowDefinitionIdentity: oldDefinition, toWorkflowDefinitionIdentity: currentDefinition, subjectRepositoryIdentity: H("f"), subjectRevisionIdentity: RUN.subjectRevisionIdentity, migrationPolicyIdentity: H("e"), migrationEvidenceIdentity: H("f") }
+  assert.throws(
+    () => createO2DurableWorkflowTransitionEvidence(activeInput({ transitionKind: "RESUME", resume: { suspended: authority(oldDefinition, { rulesetIdentity: H("0") }), current: authority(), migration } })),
+    /does not exactly bind old\/new definition and subject/,
+  )
 })
 
 test("O2 successor reconstruction validates and binds the exact previous serialized transition", () => {
@@ -275,8 +317,10 @@ test("O2 successor reconstruction validates and binds the exact previous seriali
   assert.deepEqual(first, second)
   assert.equal(first.previousState, previous.nextState)
   assert.equal(first.priorTransitionIdentity, previous.transitionIdentity)
+  assert.deepEqual(validateO2DurableWorkflowSuccessorTransitionEvidence(first, nextSource, previous, previousSource), first)
   assert.throws(() => createO2DurableWorkflowSuccessorTransitionEvidence({ ...previous, transitionIdentity: H("0") }, previousSource, nextSource), /independently rederived/)
   assert.throws(() => createO2DurableWorkflowSuccessorTransitionEvidence(previous, previousSource, activeInput({ priorTransitionIdentity: H("0") })), /does not bind validated previous transition/)
+  assert.throws(() => validateO2DurableWorkflowSuccessorTransitionEvidence({ ...first, priorTransitionIdentity: H("0") }, nextSource, previous, previousSource), /independently rederived/)
 })
 
 test("O2 validator rejects derived-field and transition-identity forgery", () => {

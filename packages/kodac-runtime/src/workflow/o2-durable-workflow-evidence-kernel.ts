@@ -372,19 +372,24 @@ function deriveResume(resume: O2ResumeInput | null, definitionIdentity: string, 
   if (resume === null) return { resumeDecision: "NOT_APPLICABLE", resumeBindingIdentity: null, definitionDriftDecision: "UNCHANGED", migrationIdentity: null }
   if (resume.current.canonicalBase !== run.canonicalBase || resume.current.subjectRevisionIdentity !== run.subjectRevisionIdentity || resume.current.workflowDefinitionIdentity !== definitionIdentity) fail("resume.current must bind the current run and definition")
   const resumeBindingIdentity = digest("KODAC-O2-WORKFLOW-RESUME-BINDING-V1", resume)
+  const definitionChanged = resume.suspended.workflowDefinitionIdentity !== resume.current.workflowDefinitionIdentity
+  let admittedMigrationIdentity: string | null = null
+  if (resume.migration !== null) {
+    if (!definitionChanged) fail("resume.migration must be null when workflow definition is unchanged")
+    const migration = resume.migration
+    if (migration.fromWorkflowDefinitionIdentity !== resume.suspended.workflowDefinitionIdentity || migration.toWorkflowDefinitionIdentity !== resume.current.workflowDefinitionIdentity || migration.subjectRepositoryIdentity !== run.subjectRepositoryIdentity || migration.subjectRevisionIdentity !== run.subjectRevisionIdentity) fail("resume.migration does not exactly bind old/new definition and subject")
+    admittedMigrationIdentity = migrationIdentity(migration)
+  }
   const changed = AUTHORITY_KEYS.filter((key) => resume.suspended[key] !== resume.current[key])
   const nonDefinitionChanges = changed.filter((key) => key !== "workflowDefinitionIdentity")
-  if (nonDefinitionChanges.length > 0) return { resumeDecision: "STALE", resumeBindingIdentity, definitionDriftDecision: resume.suspended.workflowDefinitionIdentity === resume.current.workflowDefinitionIdentity ? "UNCHANGED" : "MIGRATION_REQUIRED", migrationIdentity: null }
-  if (resume.suspended.workflowDefinitionIdentity === resume.current.workflowDefinitionIdentity) {
-    if (resume.migration !== null) fail("resume.migration must be null when workflow definition is unchanged")
-    return { resumeDecision: "ELIGIBLE", resumeBindingIdentity, definitionDriftDecision: "UNCHANGED", migrationIdentity: null }
-  }
-  if (resume.migration === null) return { resumeDecision: "MIGRATION_REQUIRED", resumeBindingIdentity, definitionDriftDecision: "MIGRATION_REQUIRED", migrationIdentity: null }
-  const migration = resume.migration
-  if (migration.fromWorkflowDefinitionIdentity !== resume.suspended.workflowDefinitionIdentity || migration.toWorkflowDefinitionIdentity !== resume.current.workflowDefinitionIdentity || migration.subjectRepositoryIdentity !== run.subjectRepositoryIdentity || migration.subjectRevisionIdentity !== run.subjectRevisionIdentity) fail("resume.migration does not exactly bind old/new definition and subject")
-  return { resumeDecision: "ELIGIBLE", resumeBindingIdentity, definitionDriftDecision: "MIGRATED", migrationIdentity: migrationIdentity(migration) }
+  const definitionDriftDecision: O2DefinitionDriftDecision = definitionChanged
+    ? admittedMigrationIdentity === null ? "MIGRATION_REQUIRED" : "MIGRATED"
+    : "UNCHANGED"
+  if (nonDefinitionChanges.length > 0) return { resumeDecision: "STALE", resumeBindingIdentity, definitionDriftDecision, migrationIdentity: admittedMigrationIdentity }
+  if (!definitionChanged) return { resumeDecision: "ELIGIBLE", resumeBindingIdentity, definitionDriftDecision: "UNCHANGED", migrationIdentity: null }
+  if (admittedMigrationIdentity === null) return { resumeDecision: "MIGRATION_REQUIRED", resumeBindingIdentity, definitionDriftDecision: "MIGRATION_REQUIRED", migrationIdentity: null }
+  return { resumeDecision: "ELIGIBLE", resumeBindingIdentity, definitionDriftDecision: "MIGRATED", migrationIdentity: admittedMigrationIdentity }
 }
-
 function deriveLease(value: unknown, workflowRunIdentity: string, run: O2WorkflowRunInput): { leaseIdentity: string; leaseObservationIdentity: string; leaseEpoch: number } {
   const input = record(value, ["workflowRunIdentity", "subjectRepositoryIdentity", "subjectRevisionIdentity", "ownerIdentity", "expectedOwnerIdentity", "leaseEpoch", "expectedLeaseEpoch", "leaseObservedAt", "leaseExpiresAt", "continuationObservedAt", "claimedLeaseIdentity"], "lease")
   const normalized = {
@@ -454,11 +459,17 @@ function buildEvidence(inputValue: unknown): O2DurableWorkflowTransitionEvidence
   const workflowStepIdentity = digest("KODAC-O2-WORKFLOW-STEP-V1", { workflowRunIdentity, stepKey: step.stepKey })
   const idempotencyIdentity = digest("KODAC-O2-WORKFLOW-IDEMPOTENCY-V1", { workflowStepIdentity })
   const attemptIdentity = digest("KODAC-O2-WORKFLOW-ATTEMPT-V1", { workflowStepIdentity, attemptNumber: attempt.attemptNumber })
+  if (attempt.attemptNumber > 1) {
+    const expectedPriorAttemptIdentity = digest("KODAC-O2-WORKFLOW-ATTEMPT-V1", { workflowStepIdentity, attemptNumber: attempt.attemptNumber - 1 })
+    if (attempt.priorAttemptIdentity !== expectedPriorAttemptIdentity) fail("retry priorAttemptIdentity does not bind the immediately preceding attempt")
+  }
   const lease = deriveLease(input.lease, workflowRunIdentity, run)
   const previousState = enumValue<O2RunState>(input.previousState, RUN_STATES, "previousState")
   const requestedNextState = enumValue<O2RunState>(input.requestedNextState, RUN_STATES, "requestedNextState")
   const transitionKind = enumValue<O2TransitionKind>(input.transitionKind, TRANSITION_KINDS, "transitionKind")
   validateRequestedTransition(previousState, requestedNextState, transitionKind)
+  if (transitionKind === "START" && attempt.attemptNumber !== 1) fail("START transition requires attemptNumber 1")
+  if (transitionKind === "RETRY" && attempt.attemptNumber === 1) fail("RETRY transition requires attemptNumber greater than 1")
   const priorTransitionIdentity = input.priorTransitionIdentity === null ? null : sha256(input.priorTransitionIdentity, "priorTransitionIdentity")
   if (previousState === "PENDING" && priorTransitionIdentity !== null) fail("PENDING transition must not claim priorTransitionIdentity")
   if (previousState !== "PENDING" && priorTransitionIdentity === null) fail("non-PENDING transition requires priorTransitionIdentity")
@@ -573,6 +584,14 @@ export function validateO2DurableWorkflowTransitionEvidence(value: unknown, sour
 }
 
 
+function requireSuccessorLinkage(
+  previous: O2DurableWorkflowTransitionEvidence,
+  next: O2DurableWorkflowTransitionEvidence,
+): void {
+  if (next.priorTransitionIdentity !== previous.transitionIdentity) fail("successor priorTransitionIdentity does not bind validated previous transition")
+  if (next.previousState !== previous.nextState) fail("successor previousState does not match validated previous nextState")
+}
+
 export function createO2DurableWorkflowSuccessorTransitionEvidence(
   previousValue: unknown,
   previousSourceInput: O2DurableWorkflowTransitionInput,
@@ -580,7 +599,18 @@ export function createO2DurableWorkflowSuccessorTransitionEvidence(
 ): O2DurableWorkflowTransitionEvidence {
   const previous = validateO2DurableWorkflowTransitionEvidence(previousValue, previousSourceInput)
   const next = buildEvidence(nextSourceInput)
-  if (next.priorTransitionIdentity !== previous.transitionIdentity) fail("successor priorTransitionIdentity does not bind validated previous transition")
-  if (next.previousState !== previous.nextState) fail("successor previousState does not match validated previous nextState")
+  requireSuccessorLinkage(previous, next)
   return next
+}
+
+export function validateO2DurableWorkflowSuccessorTransitionEvidence(
+  value: unknown,
+  sourceInput: O2DurableWorkflowTransitionInput,
+  previousValue: unknown,
+  previousSourceInput: O2DurableWorkflowTransitionInput,
+): O2DurableWorkflowTransitionEvidence {
+  const previous = validateO2DurableWorkflowTransitionEvidence(previousValue, previousSourceInput)
+  const current = validateO2DurableWorkflowTransitionEvidence(value, sourceInput)
+  requireSuccessorLinkage(previous, current)
+  return current
 }
