@@ -83,7 +83,9 @@ P8_RELEASE_VERSION_SEPARATION_CONTRACT_DOCUMENTATION = CLOSED_CANONICAL / PR #54
 P8_POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #549 / merge 69d743c2d8863957dde59c29f103b7955a29506d / proof 5610215828
 POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #550 / merge 42effb11a2de4f82df3ec25c7aebafbb9ba8a659 / proof 5610264958
 P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_AUTHORIZATION = CLOSED_CANONICAL / PR #551 / merge 8db8248f8e88938acdef1a88cd27d0f7ec0725f1 / proof 5610364077
-P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CURRENT_CLOSEOUT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CLOSED_CANONICAL / PR #552 / merge 442c236cb9da741fae960337512b84c42c2f2e4b / proof 5610430653
+P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #553 / merge 37853e86788359f7e3aba6420aef202b460c0f5a / proof 5610463377
+P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 
 P8 PRODUCT & DISTRIBUTION HARDENING = NOT_CLOSED
 P8-R5+ = NOT_AUTHORIZED_BY_NUMBERING
@@ -97,14 +99,13 @@ Historical P7 R1-R30 records, earlier P8 authorization/reconciliation records, a
 
 ---
 
-## Active milestone unit — bounded P8 product/distribution hardening closeout candidate
+## Active milestone unit — post-bounded P8 closeout current-view reconciliation candidate
 
-Canonical authority exists through PR #551 / external post-merge proof `5610364077` only for this exact bounded closeout candidate.
+Canonical authority exists through PR #553 / external post-merge proof `5610463377` only for this exact five-path documentation reconciliation.
 
-This candidate may modify exactly six paths:
+This candidate may modify exactly:
 
 ```text
-docs/planning/KODAC_P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CANONICAL_CLOSEOUT_EVIDENCE_2026-09-10.md
 docs/roadmap/NEXT.md
 docs/roadmap/ROADMAP.md
 docs/roadmap/MILESTONES.md
@@ -112,19 +113,20 @@ docs/roadmap/VERSION_PLAN.md
 docs/product/STATUS.md
 ```
 
-No seventh path is authorized. All product contracts, README, source/runtime/test/schema/package/bin/workflow/dependency/lockfile surfaces, tags, GitHub Releases, release artifacts, provider/model configuration, rulesets, and repository protection remain outside this candidate.
+No sixth path is authorized. The bounded P8 closeout evidence record remains outside this candidate and frozen at blob `b9ee294a6191b7f85fe73c9b408310c1872d3378`.
 
-The closeout evidence independently revalidated the bounded canonical P8 concern lineage for machine-readable CLI evidence, local-first CLI help, agent integration, GitHub/CI integration, privacy/egress including the preserved PR #520 adverse incident and #523 fix-forward remediation, provider/fallback including bounded PR #531 semantics, installation/update integrity, operational docs/examples, and release/version separation through PR #550.
+The external closeout proof now establishes:
 
 ```text
-POST_RELEASE_VERSION_SEPARATION_CONTRACT_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #550 / merge 42effb11a2de4f82df3ec25c7aebafbb9ba8a659 / proof 5610264958
 P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_AUTHORIZATION = CLOSED_CANONICAL / PR #551 / merge 8db8248f8e88938acdef1a88cd27d0f7ec0725f1 / proof 5610364077
-P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CURRENT_CLOSEOUT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CLOSED_CANONICAL / PR #552 / merge 442c236cb9da741fae960337512b84c42c2f2e4b / proof 5610430653
+P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #553 / merge 37853e86788359f7e3aba6420aef202b460c0f5a / proof 5610463377
+P8_POST_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_CLOSEOUT_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
-This candidate cannot certify its own closeout. Only complete external post-merge proof may later establish `P8_BOUNDED_PRODUCT_DISTRIBUTION_HARDENING_SCOPE = CLOSED_CANONICAL`.
+This reconciliation cannot certify its own closure. Only complete external post-merge proof may establish it as `CLOSED_CANONICAL`.
 
-The maximum meaning remains bounded:
+Broader state remains intentionally unchanged:
 
 ```text
 P8_OVERALL = NOT_CLOSED
@@ -145,7 +147,7 @@ PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-Bounded P8 closeout is not P8-overall closure, public-release readiness, package-publication authority, P9 authority, or project completion. After external closeout proof, only a separately authorized post-closeout current-view reconciliation may follow before fresh successor analysis.
+The reconciliation preserves the bounded P8 lineage and all adverse/fix-forward history, including PR #520, PR #522/#523, the unsupported Node 22 P8-R4 first attempt, bounded PR #531 fallback semantics, and unchanged K2/K5/Done Gate authority. After this reconciliation itself receives external proof, only fresh evidence-driven successor-authority analysis may determine the next unit.
 
 ---
 
