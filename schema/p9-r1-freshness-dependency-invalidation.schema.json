@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p9-r1-freshness-dependency-invalidation.schema.json",
+  "title": "Kodac P9-R1 Freshness Dependency Invalidation Decision",
+  "description": "Pure caller-materialized dependency freshness decision. Runtime validation additionally enforces canonical dependency ordering, unique dependency keys, deterministic state/continuation, exact changed/unknown key membership, and decisionIdentity recomputation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "subjectIdentity",
+    "revision",
+    "dependencies",
+    "state",
+    "continuation",
+    "changedDependencyKeys",
+    "unknownDependencyKeys",
+    "decisionIdentity"
+  ],
+  "properties": {
+    "version": {
+      "const": "p9-r1-freshness-dependency-invalidation-v1"
+    },
+    "subjectIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "revision": {
+      "$ref": "#/$defs/revision"
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/dependency"
+      }
+    },
+    "state": {
+      "enum": ["CURRENT", "STALE", "UNKNOWN"]
+    },
+    "continuation": {
+      "enum": ["ALLOW", "BLOCK"]
+    },
+    "changedDependencyKeys": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/dependencyKey"
+      }
+    },
+    "unknownDependencyKeys": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/dependencyKey"
+      }
+    },
+    "decisionIdentity": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "state": { "const": "CURRENT" } },
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "continuation": { "const": "ALLOW" },
+          "changedDependencyKeys": { "maxItems": 0 },
+          "unknownDependencyKeys": { "maxItems": 0 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "state": { "const": "UNKNOWN" } },
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "continuation": { "const": "BLOCK" },
+          "changedDependencyKeys": { "maxItems": 0 },
+          "unknownDependencyKeys": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "state": { "const": "STALE" } },
+        "required": ["state"]
+      },
+      "then": {
+        "properties": {
+          "continuation": { "const": "BLOCK" },
+          "changedDependencyKeys": { "minItems": 1 }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "repositoryId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?:[^\\u0000\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])+$"
+    },
+    "dependencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[a-z0-9][a-z0-9._:/-]*$"
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositoryId", "canonicalBase", "candidateHead"],
+      "properties": {
+        "repositoryId": { "$ref": "#/$defs/repositoryId" },
+        "canonicalBase": { "$ref": "#/$defs/gitCommit" },
+        "candidateHead": { "$ref": "#/$defs/gitCommit" }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dependencyClass", "dependencyKey", "expectedIdentity", "observedIdentity"],
+      "properties": {
+        "dependencyClass": {
+          "enum": [
+            "PR_HEAD",
+            "RULESET",
+            "AUTHORIZATION",
+            "SKILL",
+            "WORKFLOW_DEFINITION",
+            "PROVIDER_MODEL_CONFIG",
+            "SANDBOX_IMAGE",
+            "DEPENDENCY_LOCKFILE",
+            "SECURITY_INTELLIGENCE"
+          ]
+        },
+        "dependencyKey": { "$ref": "#/$defs/dependencyKey" },
+        "expectedIdentity": { "$ref": "#/$defs/sha256" },
+        "observedIdentity": {
+          "oneOf": [
+            { "$ref": "#/$defs/sha256" },
+            { "type": "null" }
+          ]
+        }
+      }
+    }
+  }
+}
