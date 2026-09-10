@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/p9-r2-impacted-subject-resolution.schema.json",
+  "title": "Kodac P9-R2 Impacted Subject Resolution Result",
+  "description": "Pure bounded impact projection over caller-supplied, runtime-validated P9-R1 decisions. Runtime validation additionally binds the result to the original source input and recomputes all semantic projections and result identity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "revision",
+    "changedDependencyKeys",
+    "subjectDecisionIdentities",
+    "impactedSubjects",
+    "unmatchedChangedDependencyKeys",
+    "resultIdentity"
+  ],
+  "properties": {
+    "version": { "const": "p9-r2-impacted-subject-resolution-v1" },
+    "revision": { "$ref": "#/$defs/revision" },
+    "changedDependencyKeys": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/dependencyKey" }
+    },
+    "subjectDecisionIdentities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/sha256" }
+    },
+    "impactedSubjects": {
+      "type": "array",
+      "maxItems": 256,
+      "items": { "$ref": "#/$defs/impactedSubject" }
+    },
+    "unmatchedChangedDependencyKeys": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/dependencyKey" }
+    },
+    "resultIdentity": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "repositoryId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?:[^\\u0000\\uD800-\\uDFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF])+$"
+    },
+    "dependencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[a-z0-9][a-z0-9._:/-]*$"
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositoryId", "canonicalBase", "candidateHead"],
+      "properties": {
+        "repositoryId": { "$ref": "#/$defs/repositoryId" },
+        "canonicalBase": { "$ref": "#/$defs/gitCommit" },
+        "candidateHead": { "$ref": "#/$defs/gitCommit" }
+      }
+    },
+    "impactedSubject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subjectIdentity", "decisionIdentity", "matchedChangedDependencyKeys"],
+      "properties": {
+        "subjectIdentity": { "$ref": "#/$defs/sha256" },
+        "decisionIdentity": { "$ref": "#/$defs/sha256" },
+        "matchedChangedDependencyKeys": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/dependencyKey" }
+        }
+      }
+    }
+  }
+}
