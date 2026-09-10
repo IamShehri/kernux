@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/o3-progressive-skill-trust-gate.schema.json",
+  "title": "Kodac O3 Trust-Gated Progressive Loaded Skill Evidence",
+  "description": "Structural schema for positive bounded O3 pure-data skill selection/admission/load evidence. Schema acceptance does not grant filesystem access, installation, instruction execution, process/network/secret access, provider or sandbox execution, K2 mutation, capability authority, persistence, release authority, production readiness, or project completion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "skillIdentity",
+    "packageEvidenceIdentity",
+    "governanceEvidenceIdentity",
+    "packageManifestIdentity",
+    "sourceProvenanceIdentity",
+    "packageBindingState",
+    "governanceTrustStatus",
+    "governanceAuthorityState",
+    "sourceClass",
+    "sourceClassificationEvidenceIdentities",
+    "name",
+    "descriptionIdentity",
+    "descriptionByteLength",
+    "metadataDisclosureIdentity",
+    "selectionDecision",
+    "selectionEvidenceIdentities",
+    "selectionIdentity",
+    "admissionDecision",
+    "admissionPolicyIdentity",
+    "admissionAuthorityIdentity",
+    "admissionEvidenceIdentities",
+    "admissionIdentity",
+    "loadDecision",
+    "loadDecisionIdentity",
+    "skillFileIdentity",
+    "skillFileByteLength",
+    "loadEvidenceIdentities",
+    "workflowRunIdentity",
+    "subjectRepositoryIdentity",
+    "canonicalBase",
+    "subjectRevisionIdentity",
+    "loadedSkillEvidenceIdentity"
+  ],
+  "properties": {
+    "version": {
+      "const": "kodac-o3-progressive-skill-trust-gate-v1"
+    },
+    "skillIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "packageEvidenceIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "governanceEvidenceIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "packageManifestIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "sourceProvenanceIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "packageBindingState": {
+      "const": "CURRENT"
+    },
+    "governanceTrustStatus": {
+      "const": "UNASSESSED"
+    },
+    "governanceAuthorityState": {
+      "const": "NONE"
+    },
+    "sourceClass": {
+      "enum": [
+        "CANONICAL_KODAC_SKILL",
+        "ADMITTED_REPOSITORY_SKILL"
+      ]
+    },
+    "sourceClassificationEvidenceIdentities": {
+      "$ref": "#/$defs/evidenceIdentityArray"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "descriptionIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "descriptionByteLength": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4096
+    },
+    "metadataDisclosureIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "selectionDecision": {
+      "const": "SELECTED"
+    },
+    "selectionEvidenceIdentities": {
+      "$ref": "#/$defs/evidenceIdentityArray"
+    },
+    "selectionIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "admissionDecision": {
+      "const": "ADMITTED"
+    },
+    "admissionPolicyIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "admissionAuthorityIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "admissionEvidenceIdentities": {
+      "$ref": "#/$defs/evidenceIdentityArray"
+    },
+    "admissionIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "loadDecision": {
+      "const": "ALLOW"
+    },
+    "loadDecisionIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "skillFileIdentity": {
+      "$ref": "#/$defs/sha256"
+    },
+    "skillFileByteLength": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1048576
+    },
+    "loadEvidenceIdentities": {
+      "$ref": "#/$defs/evidenceIdentityArray"
+    },
+    "workflowRunIdentity": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "subjectRepositoryIdentity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "canonicalBase": {
+      "$ref": "#/$defs/gitSha1"
+    },
+    "subjectRevisionIdentity": {
+      "$ref": "#/$defs/gitSha1"
+    },
+    "loadedSkillEvidenceIdentity": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitSha1": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "evidenceIdentityArray": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/sha256"
+      }
+    }
+  }
+}
