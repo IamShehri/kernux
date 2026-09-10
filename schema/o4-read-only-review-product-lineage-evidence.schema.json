@@ -157,7 +157,8 @@
         "maxLength": 1024
       },
       "maxItems": 64,
-      "uniqueItems": true
+      "uniqueItems": true,
+      "minItems": 1
     },
     "deliveryIdentity": {
       "type": "string",
@@ -178,7 +179,7 @@
     "commentBodyByteLength": {
       "type": "integer",
       "minimum": 1,
-      "maximum": 262144
+      "maximum": 16384
     },
     "mentionTargetLogin": {
       "type": "string",
