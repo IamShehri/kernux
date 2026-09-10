@@ -269,6 +269,17 @@ test("O2 definition drift without migration becomes MIGRATION_REQUIRED", () => {
   assert.equal(evidence.nextState, "MIGRATION_REQUIRED")
 })
 
+test("O2 MIGRATION_REQUIRED state cannot return ACTIVE without exact migration evidence", () => {
+  assert.throws(
+    () => createO2DurableWorkflowTransitionEvidence(activeInput({
+      previousState: "MIGRATION_REQUIRED",
+      transitionKind: "RESUME",
+      resume: { suspended: authority(), current: authority(), migration: null },
+    })),
+    /MIGRATION_REQUIRED state may resume only with exact admitted migration evidence/,
+  )
+})
+
 test("O2 exact admitted migration binds old/new definition and enables only definition-drift continuation", () => {
   const oldDefinition = H("0")
   const currentDefinition = deriveO2WorkflowDefinitionIdentity(DEF)
@@ -321,6 +332,24 @@ test("O2 successor reconstruction validates and binds the exact previous seriali
   assert.throws(() => createO2DurableWorkflowSuccessorTransitionEvidence({ ...previous, transitionIdentity: H("0") }, previousSource, nextSource), /independently rederived/)
   assert.throws(() => createO2DurableWorkflowSuccessorTransitionEvidence(previous, previousSource, activeInput({ priorTransitionIdentity: H("0") })), /does not bind validated previous transition/)
   assert.throws(() => validateO2DurableWorkflowSuccessorTransitionEvidence({ ...first, priorTransitionIdentity: H("0") }, nextSource, previous, previousSource), /independently rederived/)
+})
+
+test("O2 non-resume successor cannot switch workflow run identity", () => {
+  const previousSource = input()
+  const previous = createO2DurableWorkflowTransitionEvidence(previousSource)
+  const changedRun = { ...RUN, triggerEvidenceIdentity: H("0") }
+  const nextSource = activeInput({
+    run: changedRun,
+    lease: lease(DEF, changedRun),
+    attempt: { stepKey: "collect", attemptNumber: 1, retryClass: "INITIAL", priorAttemptIdentity: null },
+    requestedNextState: "SUCCEEDED",
+    transitionKind: "SUCCEED",
+    priorTransitionIdentity: previous.transitionIdentity,
+  })
+  assert.throws(
+    () => createO2DurableWorkflowSuccessorTransitionEvidence(previous, previousSource, nextSource),
+    /non-resume successor must preserve workflowRunIdentity/,
+  )
 })
 
 test("O2 validator rejects derived-field and transition-identity forgery", () => {

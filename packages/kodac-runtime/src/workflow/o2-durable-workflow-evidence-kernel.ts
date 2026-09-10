@@ -479,6 +479,9 @@ function buildEvidence(inputValue: unknown): O2DurableWorkflowTransitionEvidence
   const resume = normalizeResume(input.resume)
   if ((transitionKind === "RESUME") !== (resume !== null)) fail("resume evidence is required only for RESUME transitions")
   const resumeState = deriveResume(resume, definitionIdentity, run)
+  if (previousState === "MIGRATION_REQUIRED" && transitionKind === "RESUME" && resumeState.definitionDriftDecision !== "MIGRATED") {
+    fail("MIGRATION_REQUIRED state may resume only with exact admitted migration evidence")
+  }
   const inputEvidenceIdentities = identityArray(input.inputEvidenceIdentities, "inputEvidenceIdentities", O2_LIMITS.maxInputEvidenceIdentities)
   const outputEvidenceIdentities = identityArray(input.outputEvidenceIdentities, "outputEvidenceIdentities", O2_LIMITS.maxOutputEvidenceIdentities)
 
@@ -590,6 +593,23 @@ function requireSuccessorLinkage(
 ): void {
   if (next.priorTransitionIdentity !== previous.transitionIdentity) fail("successor priorTransitionIdentity does not bind validated previous transition")
   if (next.previousState !== previous.nextState) fail("successor previousState does not match validated previous nextState")
+  if (next.transitionKind !== "RESUME" && next.workflowRunIdentity !== previous.workflowRunIdentity) {
+    fail("non-resume successor must preserve workflowRunIdentity")
+  }
+  if (next.transitionKind === "RESUME" && next.continuationDecision === "ALLOW") {
+    if (next.definitionDriftDecision === "MIGRATED") {
+      if (
+        next.subjectRepositoryIdentity !== previous.subjectRepositoryIdentity
+        || next.canonicalBase !== previous.canonicalBase
+        || next.subjectRevisionIdentity !== previous.subjectRevisionIdentity
+        || next.policyIdentity !== previous.policyIdentity
+        || next.triggerEvidenceIdentity !== previous.triggerEvidenceIdentity
+        || next.workflowDefinitionIdentity === previous.workflowDefinitionIdentity
+      ) fail("admitted migration successor may change only workflow definition binding")
+    } else if (next.workflowRunIdentity !== previous.workflowRunIdentity) {
+      fail("eligible non-migration resume must preserve workflowRunIdentity")
+    }
+  }
 }
 
 export function createO2DurableWorkflowSuccessorTransitionEvidence(
