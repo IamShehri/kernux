@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/o4-read-only-review-product-lineage-evidence.schema.json",
+  "title": "Kodac O4-A Read-Only GitHub Review Product Lineage Evidence",
+  "description": "Structural schema for bounded O4-A pure-data product-lineage evidence. Schema acceptance does not grant GitHub network access, webhook/listener authority, provider/model execution, publication or repository mutation, K2 execution, persistence, release authority, production readiness, phase closure, or project completion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "triggerEvidenceIdentity",
+    "repositoryId",
+    "repositoryFullName",
+    "pullRequestNumber",
+    "pullRequestId",
+    "canonicalBase",
+    "reviewedHead",
+    "baseRepositoryId",
+    "headRepositoryId",
+    "headRepositoryFullName",
+    "forkClassification",
+    "actorId",
+    "actorLogin",
+    "actorType",
+    "actorEligibilityPolicyIdentity",
+    "actorEligibilityEvidenceRefs",
+    "headBindingSource",
+    "headBindingPolicyIdentity",
+    "headBindingEvidenceRefs",
+    "deliveryIdentity",
+    "payloadSha256",
+    "commentIdentity",
+    "commentBodySha256",
+    "commentBodyByteLength",
+    "mentionTargetLogin",
+    "mentionPolicyIdentity",
+    "mentionCommandKind",
+    "mentionCommandIdentity",
+    "snapshotEvidenceIdentity",
+    "changedPathSetIdentity",
+    "changedPathCount",
+    "readEvidenceSetIdentity",
+    "readEvidenceCount",
+    "reviewRunIdentity",
+    "temporalEvidenceIdentity",
+    "providerId",
+    "providerVersion",
+    "policyIdentity",
+    "contextBundleIdentity",
+    "instructionsIdentity",
+    "findingIdentities",
+    "reviewedChangedPathCount",
+    "missingChangedPathIdentities",
+    "truncatedChangedPathIdentities",
+    "supportingContextPathCount",
+    "reviewCompletenessState",
+    "reviewCompletenessEvidenceIdentity",
+    "publicationIntentIdentities",
+    "publicationIntentCount",
+    "continuationDecision",
+    "productLineageEvidenceIdentity"
+  ],
+  "properties": {
+    "version": {
+      "const": "kodac-o4a-read-only-github-review-product-lineage-v1"
+    },
+    "triggerEvidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "repositoryId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "repositoryFullName": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$",
+      "maxLength": 201
+    },
+    "pullRequestNumber": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "pullRequestId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "canonicalBase": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "reviewedHead": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "baseRepositoryId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "headRepositoryId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "headRepositoryFullName": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$",
+      "maxLength": 201
+    },
+    "forkClassification": {
+      "enum": [
+        "SAME_REPOSITORY",
+        "FORK_REPOSITORY"
+      ]
+    },
+    "actorId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "actorLogin": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.\\-\\[\\]]{1,100}$",
+      "maxLength": 100
+    },
+    "actorType": {
+      "enum": [
+        "User",
+        "Bot",
+        "Organization"
+      ]
+    },
+    "actorEligibilityPolicyIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "actorEligibilityEvidenceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      },
+      "maxItems": 64,
+      "uniqueItems": true
+    },
+    "headBindingSource": {
+      "const": "CALLER_MATERIALIZED_PR_SNAPSHOT"
+    },
+    "headBindingPolicyIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "headBindingEvidenceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      },
+      "maxItems": 64,
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "deliveryIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "payloadSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "commentIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "commentBodySha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "commentBodyByteLength": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 16384
+    },
+    "mentionTargetLogin": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.\\-\\[\\]]{1,100}$",
+      "maxLength": 100
+    },
+    "mentionPolicyIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "mentionCommandKind": {
+      "const": "REVIEW"
+    },
+    "mentionCommandIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "snapshotEvidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "changedPathSetIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "changedPathCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 512
+    },
+    "readEvidenceSetIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "readEvidenceCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 512
+    },
+    "reviewRunIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "temporalEvidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "providerId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "providerVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "policyIdentity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "contextBundleIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "instructionsIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "findingIdentities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sha256"
+      },
+      "maxItems": 64,
+      "uniqueItems": true
+    },
+    "reviewedChangedPathCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 512
+    },
+    "missingChangedPathIdentities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sha256"
+      },
+      "maxItems": 512,
+      "uniqueItems": true
+    },
+    "truncatedChangedPathIdentities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sha256"
+      },
+      "maxItems": 512,
+      "uniqueItems": true
+    },
+    "supportingContextPathCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 512
+    },
+    "reviewCompletenessState": {
+      "enum": [
+        "COMPLETE",
+        "COMPLETE_NO_REVIEWABLE_PATHS",
+        "INCOMPLETE_MISSING_CHANGED_PATH_READS",
+        "INCOMPLETE_TRUNCATED_READS",
+        "INCOMPLETE_REVIEW_RUN",
+        "STALE_HEAD",
+        "LINEAGE_MISMATCH"
+      ]
+    },
+    "reviewCompletenessEvidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "publicationIntentIdentities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sha256"
+      },
+      "maxItems": 65,
+      "uniqueItems": true
+    },
+    "publicationIntentCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65
+    },
+    "continuationDecision": {
+      "enum": [
+        "READY_FOR_SEPARATE_PUBLICATION_AUTHORITY",
+        "BLOCK_STALE_HEAD",
+        "BLOCK_LINEAGE_MISMATCH",
+        "BLOCK_INCOMPLETE_REVIEW",
+        "BLOCK_INVALID_PUBLICATION_INTENT"
+      ]
+    },
+    "productLineageEvidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
