@@ -121,7 +121,11 @@ O4_A_READ_ONLY_REVIEW_PRODUCT_LINEAGE_AUTHORIZATION = CLOSED_CANONICAL / PR #584
 O4_A_PUBLICATION_BODY_SERIALIZATION_CLARIFICATION = CLOSED_CANONICAL / PR #585 / merge 01211eb489b2380fc013d7008c14caff25e74a3f / proof 5626553301
 O4A_READ_ONLY_REVIEW_PRODUCT_LINEAGE_IMPLEMENTATION = CLOSED_CANONICAL / PR #586 / merge 629309b3ccba68cac690ebd3795478a360965f25 / proof 5627038508
 POST_O4A_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #587 / merge e390ec4eb0af77cff766164f051ec43776896f6d / proof 5627163859
-POST_O4A_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_O4A_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #588 / merge 5d36488bed564a9bedb8fb40e0f1293dc4688239 / proof 5627933112
+O4B_BOUNDED_READ_ONLY_GITHUB_CONTEXT_CAPABILITY_AUTHORIZATION = CLOSED_CANONICAL / PR #589 / merge 91d5e45ff3f31a90622101c3f705a42180450ffd / proof 5628117671
+O4B_BOUNDED_READ_ONLY_GITHUB_CONTEXT_IMPLEMENTATION = CLOSED_CANONICAL / PR #590 / merge 175adb558f02ab9046024a7fbadad4405411c400 / proof 5628651791
+POST_O4B_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #591 / merge c5bad146b8c8140ac0480a48a6643937a1d7e796 / proof 5628827822
+POST_O4B_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 P9_R4_PLUS = NOT_AUTHORIZED_BY_NUMBERING
 P9_OVERALL = NOT_CLOSED
 PUBLIC RELEASE / PACKAGE PUBLICATION / DEPLOYMENT = NOT_AUTHORIZED
@@ -156,9 +160,9 @@ All intervening exact authorization, reconciliation, and analysis records remain
 
 ---
 
-## Current active roadmap unit — post-O4-A project-completion audit and current-view reconciliation candidate
+## Current active roadmap unit — post-O4-B project-completion audit and current-view reconciliation candidate
 
-Canonical authority exists through PR #587 / external post-merge proof `5627163859` only for this exact six-file audit/current-view reconciliation.
+Canonical authority exists through PR #591 / external post-merge proof `5628827822` only for this exact six-file post-O4-B audit/current-view reconciliation.
 
 This candidate may modify exactly:
 
@@ -187,7 +191,11 @@ O4_A_READ_ONLY_REVIEW_PRODUCT_LINEAGE_AUTHORIZATION = CLOSED_CANONICAL / PR #584
 O4_A_PUBLICATION_BODY_SERIALIZATION_CLARIFICATION = CLOSED_CANONICAL / PR #585 / merge 01211eb489b2380fc013d7008c14caff25e74a3f / proof 5626553301
 O4A_READ_ONLY_REVIEW_PRODUCT_LINEAGE_IMPLEMENTATION = CLOSED_CANONICAL / PR #586 / merge 629309b3ccba68cac690ebd3795478a360965f25 / proof 5627038508
 POST_O4A_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #587 / merge e390ec4eb0af77cff766164f051ec43776896f6d / proof 5627163859
-POST_O4A_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
+POST_O4A_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION = CLOSED_CANONICAL / PR #588 / merge 5d36488bed564a9bedb8fb40e0f1293dc4688239 / proof 5627933112
+O4B_BOUNDED_READ_ONLY_GITHUB_CONTEXT_CAPABILITY_AUTHORIZATION = CLOSED_CANONICAL / PR #589 / merge 91d5e45ff3f31a90622101c3f705a42180450ffd / proof 5628117671
+O4B_BOUNDED_READ_ONLY_GITHUB_CONTEXT_IMPLEMENTATION = CLOSED_CANONICAL / PR #590 / merge 175adb558f02ab9046024a7fbadad4405411c400 / proof 5628651791
+POST_O4B_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION_AUTHORIZATION = CLOSED_CANONICAL / PR #591 / merge c5bad146b8c8140ac0480a48a6643937a1d7e796 / proof 5628827822
+POST_O4B_PROJECT_COMPLETION_AUDIT_AND_CURRENT_VIEW_RECONCILIATION = CURRENT_CANDIDATE / NOT_YET_CLOSED_CANONICAL
 ```
 
 This reconciliation cannot certify its own closure. Only complete external post-merge proof may establish it as `CLOSED_CANONICAL`.
@@ -201,16 +209,16 @@ MISSING_CRITERIA = 0
 NOT_APPLICABLE_CRITERIA = 2
 SEPARATE_AUTHORITY_REQUIRED_CRITERIA = 0
 TOTAL_CRITERIA = 25
-MINIMUM_NEXT_PARTIAL_BLOCKER = O4_REMAINING_GITHUB_REVIEW_PRODUCT_EXECUTION
-NEXT_REQUIRED_ACTION = FRESH_O4_REMAINING_PRODUCT_PATH_SUCCESSOR_ANALYSIS
+MINIMUM_NEXT_PARTIAL_BLOCKER = O4_REMAINING_GITHUB_REVIEWER_EXECUTION_AND_PUBLICATION_PATH
+NEXT_REQUIRED_ACTION = FRESH_POST_O4B_RECONCILIATION_SUCCESSOR_ANALYSIS
 SUCCESSOR_IMPLEMENTATION = NOT_AUTHORIZED_BY_THIS_RECONCILIATION
 PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-The unchanged counts are deliberate. O2, O3, the O1 issue-comment extension, and O4-A now provide stronger bounded canonical foundations, but they do not prove the wider persistence, deployed-ingress, skill-execution, live-provider, or GitHub-publication semantics required to upgrade the corresponding project-wide criteria.
+The unchanged counts are deliberate. O2, O3, the O1 issue-comment extension, O4-A lineage, and O4-B bounded live GitHub reads now provide stronger canonical foundations, but they do not prove the wider persistence, deployed-ingress, skill-execution, O4-B-to-reviewer context bridge, live reviewer-provider execution, or GitHub-publication semantics required to upgrade the corresponding project-wide criteria.
 
-The bounded implementation-sequence frontier has nevertheless advanced: O1/O2/O3 bounded foundations and O4-A lineage are closed. The remaining O4 GitHub-review product execution path is now the minimum program blocker, but this view does not decide which internal O4 dependency comes first.
+The bounded implementation-sequence frontier has nevertheless advanced: O1/O2/O3 bounded foundations, O4-A lineage, and O4-B bounded live GitHub read context are closed. The remaining O4 reviewer-execution-and-publication path is now the minimum program blocker, but this view does not decide which internal O4 dependency comes first.
 
 Broader state remains:
 
@@ -232,7 +240,7 @@ PROJECT_COMPLETION = NOT_ESTABLISHED
 WAIVER = NO
 ```
 
-After this reconciliation receives external proof, only fresh evidence-driven successor analysis may select the earliest unmet O4 product-path dependency. No live GitHub read/write capability, provider/model execution, publication side effect, O5 sandbox work, phase-overall closure, release, or project-completion authority follows by implication.
+After this reconciliation receives external proof, only fresh evidence-driven successor analysis may select the earliest unmet O4 product-path dependency. No new GitHub capability beyond the already-canonical O4-B read-only boundary, provider/model execution, publication side effect, O5 sandbox work, phase-overall closure, release, or project-completion authority follows by implication.
 
 ---
 
@@ -562,4 +570,4 @@ EVIDENCE_BINDING != AUTHORITY_TRANSFER
 
 Only after external post-merge proof closes this exact six-file reconciliation may fresh O4 successor analysis begin.
 
-That analysis must inspect live canonical repository/GitHub truth, the OpenReview-derived program plan, the exact O4-A boundary, current runtime/package/product boundaries, and open PR state. It may identify the earliest unmet O4 product-path dependency, but roadmap ordering, numbering, stale PRs, donor material, or planning prose cannot authorize implementation.
+That analysis must inspect live canonical repository/GitHub truth, the OpenReview-derived program plan, the exact O4-A and O4-B boundaries, current runtime/package/product boundaries, and open PR state. It may identify the earliest unmet O4 product-path dependency, but roadmap ordering, numbering, stale PRs, donor material, or planning prose cannot authorize implementation.
