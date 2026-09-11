@@ -1,0 +1,434 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodac.dev/schema/o4b-bounded-read-only-github-context.schema.json",
+  "title": "Kodac O4-B Bounded Read-Only GitHub Context Evidence",
+  "description": "Structural schema for bounded O4-B read-only GitHub REST context evidence. It contains no raw credential or repository file body and grants no provider execution, GitHub publication, mutation, persistence, sandbox, release, or project-completion authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "repositoryId",
+    "repositoryFullName",
+    "pullRequestNumber",
+    "pullRequestId",
+    "canonicalBase",
+    "reviewedHead",
+    "baseRepositoryId",
+    "headRepositoryId",
+    "headRepositoryFullName",
+    "forkClassification",
+    "baseRef",
+    "headRef",
+    "credentialPolicyIdentity",
+    "snapshotEvidenceIdentity",
+    "changedPaths",
+    "changedPathSetIdentity",
+    "changedPathCount",
+    "changedFileMetadataRecords",
+    "changedFileMetadataSetIdentity",
+    "readEvidenceIdentities",
+    "readEvidenceSetIdentity",
+    "readEvidenceCount",
+    "fullReadCount",
+    "truncatedReadCount",
+    "supportingPathCount",
+    "contentRecords",
+    "contentRecordIdentities",
+    "initialSnapshotResponseIdentity",
+    "terminalSnapshotResponseIdentity",
+    "filesPageRecordIdentityGroups",
+    "filesPageResponseIdentities",
+    "requestCount",
+    "snapshotObservedAt",
+    "terminalObservedAt",
+    "continuationDecision",
+    "readContextEvidenceIdentity"
+  ],
+  "properties": {
+    "version": {
+      "const": "kodac-o4b-bounded-read-only-github-context-v1"
+    },
+    "repositoryId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "repositoryFullName": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$",
+      "maxLength": 201
+    },
+    "pullRequestNumber": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "pullRequestId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "canonicalBase": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "reviewedHead": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "baseRepositoryId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "headRepositoryId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$"
+    },
+    "headRepositoryFullName": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$",
+      "maxLength": 201
+    },
+    "forkClassification": {
+      "enum": [
+        "SAME_REPOSITORY",
+        "FORK_REPOSITORY"
+      ]
+    },
+    "baseRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "headRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "credentialPolicyIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "snapshotEvidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "changedPaths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      },
+      "maxItems": 512,
+      "uniqueItems": true
+    },
+    "changedPathSetIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "changedPathCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 512
+    },
+    "changedFileMetadataRecords": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "status",
+          "previousPath",
+          "providerBlobSha",
+          "metadataIdentity"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "status": {
+            "enum": [
+              "added",
+              "modified",
+              "removed",
+              "renamed",
+              "copied",
+              "changed",
+              "unchanged"
+            ]
+          },
+          "previousPath": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "providerBlobSha": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "metadataIdentity": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "maxItems": 512
+    },
+    "changedFileMetadataSetIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "readEvidenceIdentities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "maxItems": 640,
+      "uniqueItems": true
+    },
+    "readEvidenceSetIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "readEvidenceCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 640
+    },
+    "fullReadCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 640
+    },
+    "truncatedReadCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 640
+    },
+    "supportingPathCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 128
+    },
+    "contentRecords": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "readRole",
+          "changedFileStatus",
+          "previousPath",
+          "contentRepositoryId",
+          "contentRepositoryFullName",
+          "contentRevisionSha",
+          "contentRevisionKind",
+          "providerBlobSha",
+          "providerDeclaredSize",
+          "materializedByteLength",
+          "contentIdentity",
+          "truncationState",
+          "truncationReason",
+          "readEvidenceIdentity",
+          "contentRecordIdentity"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "readRole": {
+            "enum": [
+              "CHANGED_PATH",
+              "SUPPORTING_CONTEXT"
+            ]
+          },
+          "changedFileStatus": {
+            "anyOf": [
+              {
+                "enum": [
+                  "added",
+                  "modified",
+                  "removed",
+                  "renamed",
+                  "copied",
+                  "changed",
+                  "unchanged"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "previousPath": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "contentRepositoryId": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$"
+          },
+          "contentRepositoryFullName": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$",
+            "maxLength": 201
+          },
+          "contentRevisionSha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "contentRevisionKind": {
+            "enum": [
+              "HEAD",
+              "BASE_REMOVED"
+            ]
+          },
+          "providerBlobSha": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "providerDeclaredSize": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "materializedByteLength": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1048576
+          },
+          "contentIdentity": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "truncationState": {
+            "enum": [
+              "FULL",
+              "TRUNCATED"
+            ]
+          },
+          "truncationReason": {
+            "anyOf": [
+              {
+                "enum": [
+                  "BINARY_OR_NON_UTF8",
+                  "OVERSIZED",
+                  "MISSING_CONTENT",
+                  "UNSUPPORTED_TYPE",
+                  "UNSUPPORTED_ENCODING"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "readEvidenceIdentity": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "contentRecordIdentity": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "maxItems": 640
+    },
+    "contentRecordIdentities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "maxItems": 640,
+      "uniqueItems": true
+    },
+    "initialSnapshotResponseIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "terminalSnapshotResponseIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "filesPageRecordIdentityGroups": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "filesPageResponseIdentities": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "requestCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 650
+    },
+    "snapshotObservedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "terminalObservedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "continuationDecision": {
+      "enum": [
+        "READY_FOR_O4A_REVIEW",
+        "BLOCK_INCOMPLETE_CHANGED_PATH_CONTEXT"
+      ]
+    },
+    "readContextEvidenceIdentity": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
