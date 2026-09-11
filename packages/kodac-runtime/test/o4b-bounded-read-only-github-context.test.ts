@@ -322,7 +322,7 @@ const cases: Array<[number, string, () => void | Promise<void>]> = [
     let gets=0; const accessor:any={}; Object.defineProperty(accessor,"timeoutMs",{enumerable:true,get(){gets+=1; return 1000}}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,accessor),/data property/); assert.equal(gets,0);
     const signal=Proxy.revocable(new AbortController().signal,{}); signal.revoke(); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{signal:signal.proxy}),/non-proxy AbortSignal/);
     const proxiedFetch=new Proxy(async()=>new Response(),{}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{fetchImpl:proxiedFetch}),/non-proxy function/);
-    const proxiedNow=new Proxy(()=>NOW,{}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{now:proxiedNow}),/non-proxy function/);
+    const proxiedNow=new Proxy(()=>"2026-09-11T01:00:00.000Z",{}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{now:proxiedNow}),/non-proxy function/);
   }],
 ]
 
