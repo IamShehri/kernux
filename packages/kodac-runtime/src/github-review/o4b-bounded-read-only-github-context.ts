@@ -166,7 +166,7 @@ type PrSnapshot = Readonly<{
   baseRef: string
   headRef: string
 }>
-type ContentRead = Readonly<{ item: O4bTransientContentItem, evidence: O4aReadEvidenceInput }>
+type ContentRead = Readonly<{ item: O4bTransientContentItem, evidence: O4aReadEvidenceInput, materializedBudgetBytes: number }>
 
 type RequestState = { count: number }
 
@@ -248,6 +248,8 @@ function positiveInteger(value: unknown, label: string, maximum = Number.MAX_SAF
 function repositoryName(value: unknown, label: string): string {
   const text = boundedText(value, label, 201)
   if (!REPOSITORY.test(text)) fail(`${label} must be an owner/repository name`)
+  const [owner, repo] = text.split("/")
+  if (owner === "." || owner === ".." || repo === "." || repo === "..") fail(`${label} must not contain URL dot segments`)
   return text
 }
 function repositoryPath(value: unknown, label: string): string {
@@ -422,6 +424,30 @@ function normalizeInput(raw: unknown): NormalizedInput {
     credential: credentialValue(record.credential),
   })
 }
+function signalAborted(signal: AbortSignal): boolean {
+  const getter = Object.getOwnPropertyDescriptor(AbortSignal.prototype, "aborted")?.get
+  if (!getter) fail("AbortSignal runtime contract is unavailable")
+  try { return Boolean(getter.call(signal)) } catch { fail("options.signal must be a genuine AbortSignal") }
+}
+function normalizeSignal(value: unknown): AbortSignal | undefined {
+  if (value === undefined) return undefined
+  if (typeof value !== "object" || value === null || types.isProxy(value) || Object.getPrototypeOf(value) !== AbortSignal.prototype) {
+    fail("options.signal must be a non-proxy genuine AbortSignal")
+  }
+  signalAborted(value as AbortSignal)
+  return value as AbortSignal
+}
+async function raceWithAbort<T>(work: Promise<T>, signal: AbortSignal): Promise<T> {
+  if (signal.aborted) throw new Error("O4B_INTERNAL_ABORT")
+  let onAbort: (() => void) | undefined
+  const aborted = new Promise<never>((_resolve, reject) => {
+    onAbort = () => reject(new Error("O4B_INTERNAL_ABORT"))
+    signal.addEventListener("abort", onAbort, { once: true })
+    if (signal.aborted) onAbort()
+  })
+  try { return await Promise.race([work, aborted]) }
+  finally { if (onAbort) signal.removeEventListener("abort", onAbort) }
+}
 function normalizeOptions(raw: unknown): NormalizedOptions {
   if (raw === undefined) return { fetchImpl: fetch, now: () => new Date().toISOString(), signal: undefined, timeoutMs: O4B_LIMITS.maxNetworkTimeoutMs }
   const record = ownOptionalRecord(raw, OPTION_KEYS, "options")
@@ -429,10 +455,7 @@ function normalizeOptions(raw: unknown): NormalizedOptions {
   const now = record.now === undefined ? (() => new Date().toISOString()) : record.now
   if (typeof fetchImpl !== "function" || types.isProxy(fetchImpl)) fail("options.fetchImpl must be a non-proxy function")
   if (typeof now !== "function" || types.isProxy(now)) fail("options.now must be a non-proxy function")
-  const signal = record.signal as AbortSignal | undefined
-  if (signal !== undefined && (typeof signal !== "object" || signal === null || types.isProxy(signal) || typeof signal.addEventListener !== "function" || typeof signal.removeEventListener !== "function" || typeof signal.aborted !== "boolean")) {
-    fail("options.signal must be a non-proxy AbortSignal")
-  }
+  const signal = normalizeSignal(record.signal)
   const timeoutMs = record.timeoutMs === undefined
     ? O4B_LIMITS.maxNetworkTimeoutMs
     : positiveInteger(record.timeoutMs, "options.timeoutMs", O4B_LIMITS.maxNetworkTimeoutMs)
@@ -451,20 +474,25 @@ async function readBoundedBody(response: Response, maximumBytes: number, control
   let total = 0
   try {
     while (true) {
-      const { done, value } = await reader.read()
+      const { done, value } = await raceWithAbort(reader.read(), controller.signal)
       if (done) break
       if (!value) continue
       total += value.byteLength
       if (total > maximumBytes) {
         controller.abort()
-        try { await reader.cancel() } catch { /* ignore cancellation cleanup */ }
+        void reader.cancel().catch(() => undefined)
         fail("response body exceeds configured byte bound")
       }
       chunks.push(value)
     }
   } catch {
+    if (controller.signal.aborted) {
+      void reader.cancel().catch(() => undefined)
+      fail("response body read aborted")
+    }
     fail("response body read failed")
   }
+  if (controller.signal.aborted) fail("response body read aborted")
   const output = new Uint8Array(total)
   let offset = 0
   for (const chunk of chunks) { output.set(chunk, offset); offset += chunk.byteLength }
@@ -479,15 +507,15 @@ async function requestJson(url: URL, maximumBytes: number, input: NormalizedInpu
   if (url.protocol !== "https:" || url.hostname !== "api.github.com" || url.port !== "") fail("request URL escaped the GitHub API origin")
   state.count += 1
   if (state.count > O4B_LIMITS.maxHttpRequests) fail("HTTP request budget exceeded")
-  if (options.signal?.aborted) fail("request aborted")
+  if (options.signal && signalAborted(options.signal)) fail("request aborted")
   const controller = new AbortController()
   const onAbort = (): void => controller.abort()
-  options.signal?.addEventListener("abort", onAbort, { once: true })
+  if (options.signal) EventTarget.prototype.addEventListener.call(options.signal, "abort", onAbort, { once: true })
   const timer = setTimeout(() => controller.abort(), options.timeoutMs)
   let response: Response
   try {
     try {
-      response = await options.fetchImpl(url, {
+      response = await raceWithAbort(Promise.resolve(options.fetchImpl(url, {
         method: "GET",
         headers: {
           Accept: "application/vnd.github+json",
@@ -497,13 +525,18 @@ async function requestJson(url: URL, maximumBytes: number, input: NormalizedInpu
         },
         redirect: "error",
         signal: controller.signal,
-      })
+      })), controller.signal)
     } catch {
+      if (controller.signal.aborted) {
+        if (options.signal && signalAborted(options.signal)) fail("request aborted")
+        fail("request timed out")
+      }
       fail("network request failed")
     }
     if (response.status < 200 || response.status >= 300) fail(`GitHub returned non-success status ${response.status}`)
     if (!jsonContentType(response.headers.get("content-type"))) fail("GitHub response content type is not JSON")
     const bodyBytes = await readBoundedBody(response, maximumBytes, controller)
+    if (controller.signal.aborted) fail("request aborted before response validation completed")
     let text: string
     try { text = new TextDecoder("utf-8", { fatal: true }).decode(bodyBytes) } catch { fail("GitHub response is not valid UTF-8 JSON") }
     assertUnicodeScalars(text, "GitHub response")
@@ -513,7 +546,7 @@ async function requestJson(url: URL, maximumBytes: number, input: NormalizedInpu
     return parsed
   } finally {
     clearTimeout(timer)
-    options.signal?.removeEventListener("abort", onAbort)
+    if (options.signal) EventTarget.prototype.removeEventListener.call(options.signal, "abort", onAbort)
   }
 }
 
@@ -683,6 +716,7 @@ async function fetchContent(
   input: NormalizedInput,
   options: NormalizedOptions,
   state: RequestState,
+  remainingMaterializedBytes: number,
 ): Promise<ContentRead> {
   const removed = changed?.status === "removed"
   const contentRepositoryId = removed ? snapshot.baseRepositoryId : snapshot.headRepositoryId
@@ -708,26 +742,25 @@ async function fetchContent(
 
   if (type !== "file") {
     truncationReason = "UNSUPPORTED_TYPE"
+  } else if (providerDeclaredSize > O4B_LIMITS.maxFullFileBytes) {
+    truncationReason = "OVERSIZED"
   } else if (encoding !== "base64") {
-    truncationReason = providerDeclaredSize > O4B_LIMITS.maxFullFileBytes ? "OVERSIZED" : "UNSUPPORTED_ENCODING"
+    truncationReason = "UNSUPPORTED_ENCODING"
   } else if (typeof record.content !== "string") {
-    truncationReason = providerDeclaredSize > O4B_LIMITS.maxFullFileBytes ? "OVERSIZED" : "MISSING_CONTENT"
+    truncationReason = "MISSING_CONTENT"
   } else {
+    if (providerDeclaredSize > remainingMaterializedBytes) fail("aggregate materialized content byte budget exceeded before content materialization")
     rawBytes = strictBase64(record.content, `content ${path}.content`)
     if (rawBytes.byteLength !== providerDeclaredSize) fail("content declared-size mismatch")
     if (!providerBlobSha || gitBlobSha1(rawBytes) !== providerBlobSha) fail("content Git blob SHA mismatch")
-    if (rawBytes.byteLength > O4B_LIMITS.maxFullFileBytes) {
-      truncationReason = "OVERSIZED"
-    } else {
-      try {
-        contentText = new TextDecoder("utf-8", { fatal: true }).decode(rawBytes)
-        assertUnicodeScalars(contentText, `content ${path}`)
-        truncationState = "FULL"
-        materializedByteLength = rawBytes.byteLength
-      } catch {
-        contentText = null
-        truncationReason = "BINARY_OR_NON_UTF8"
-      }
+    try {
+      contentText = new TextDecoder("utf-8", { fatal: true }).decode(rawBytes)
+      assertUnicodeScalars(contentText, `content ${path}`)
+      truncationState = "FULL"
+      materializedByteLength = rawBytes.byteLength
+    } catch {
+      contentText = null
+      truncationReason = "BINARY_OR_NON_UTF8"
     }
   }
 
@@ -772,7 +805,7 @@ async function fetchContent(
     readEvidenceIdentity: evidence.readEvidenceIdentity,
   }
   const contentRecordIdentity = digest("content-record-identity", contentCoreWithoutIdentity(core))
-  return deepFreeze({ item: { ...core, contentRecordIdentity, contentText }, evidence })
+  return deepFreeze({ item: { ...core, contentRecordIdentity, contentText }, evidence, materializedBudgetBytes: rawBytes?.byteLength ?? 0 })
 }
 
 function metadataCore(record: O4bChangedFileMetadataRecord): unknown {
@@ -869,19 +902,13 @@ export async function acquireO4bBoundedReadOnlyGithubContext(
   const reads: ContentRead[] = []
   let materializedTotal = 0
   for (const row of files.metadata) {
-    const read = await fetchContent(row.path, "CHANGED_PATH", row, initial, snapshotInput, input, options, state)
-    if (read.item.truncationState === "FULL") {
-      if (materializedTotal + read.item.materializedByteLength > O4B_LIMITS.maxTotalMaterializedContentBytes) fail("aggregate materialized content byte budget exceeded")
-      materializedTotal += read.item.materializedByteLength
-    }
+    const read = await fetchContent(row.path, "CHANGED_PATH", row, initial, snapshotInput, input, options, state, O4B_LIMITS.maxTotalMaterializedContentBytes - materializedTotal)
+    materializedTotal += read.materializedBudgetBytes
     reads.push(read)
   }
   for (const path of supportingPaths) {
-    const read = await fetchContent(path, "SUPPORTING_CONTEXT", null, initial, snapshotInput, input, options, state)
-    if (read.item.truncationState === "FULL") {
-      if (materializedTotal + read.item.materializedByteLength > O4B_LIMITS.maxTotalMaterializedContentBytes) fail("aggregate materialized content byte budget exceeded")
-      materializedTotal += read.item.materializedByteLength
-    }
+    const read = await fetchContent(path, "SUPPORTING_CONTEXT", null, initial, snapshotInput, input, options, state, O4B_LIMITS.maxTotalMaterializedContentBytes - materializedTotal)
+    materializedTotal += read.materializedBudgetBytes
     reads.push(read)
   }
 

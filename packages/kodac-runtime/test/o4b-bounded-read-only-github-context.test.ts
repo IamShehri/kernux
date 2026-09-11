@@ -320,11 +320,50 @@ const cases: Array<[number, string, () => void | Promise<void>]> = [
     await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,new Proxy({fetchImpl:async()=>new Response()},{})),/options|non-proxy/);
     const revoked=Proxy.revocable({timeoutMs:1000},{}); revoked.revoke(); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,revoked.proxy),/options|non-proxy/);
     let gets=0; const accessor:any={}; Object.defineProperty(accessor,"timeoutMs",{enumerable:true,get(){gets+=1; return 1000}}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,accessor),/data property/); assert.equal(gets,0);
-    const signal=Proxy.revocable(new AbortController().signal,{}); signal.revoke(); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{signal:signal.proxy}),/non-proxy AbortSignal/);
+    const signal=Proxy.revocable(new AbortController().signal,{}); signal.revoke(); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{signal:signal.proxy}),/genuine AbortSignal|non-proxy/);
+    const fakeSignal=Object.create(AbortSignal.prototype); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{signal:fakeSignal}),/genuine AbortSignal/);
     const proxiedFetch=new Proxy(async()=>new Response(),{}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{fetchImpl:proxiedFetch}),/non-proxy function/);
     const proxiedNow=new Proxy(()=>"2026-09-11T01:00:00.000Z",{}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{now:proxiedNow}),/non-proxy function/);
+  }],
+  [46, "repository owner and repository dot segments are rejected before transport invocation", async () => {
+    for (const repositoryFullName of ["./x","../x","owner/.","owner/.."]) {
+      const f=makeFixture({input:{expectedRepositoryFullName:repositoryFullName}});
+      await assert.rejects(f.run,/URL dot segments/);
+      assert.equal(f.calls.length,0);
+    }
+  }],
+  [47, "O4-B timeout bounds a transport that ignores AbortSignal with no retry", async () => {
+    const f=makeFixture(); let calls=0;
+    const stubborn=(async()=>{calls+=1; return await new Promise<Response>(()=>{})}) as typeof fetch;
+    await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{fetchImpl:stubborn,timeoutMs:5}),/timed out/);
+    assert.equal(calls,1);
+  }],
+  [48, "O4-B timeout bounds a response body stream that ignores AbortSignal", async () => {
+    const f=makeFixture({intercept:(url)=>{
+      if(!/\/pulls\/42$/.test(url.pathname)) return undefined;
+      const stream=new ReadableStream<Uint8Array>({pull(){return new Promise<void>(()=>{})}});
+      return new Response(stream,{status:200,headers:{"content-type":"application/json"}});
+    }});
+    await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{fetchImpl:f.fetchImpl,timeoutMs:5}),/read aborted|timed out|aborted/);
+    assert.equal(f.calls.length,1);
+  }],
+  [49, "caller cancellation during a non-cooperative transport fails closed with no retry", async () => {
+    const f=makeFixture(); const controller=new AbortController(); let calls=0;
+    const stubborn=(async()=>{calls+=1; return await new Promise<Response>(()=>{})}) as typeof fetch;
+    const pending=acquireO4bBoundedReadOnlyGithubContext(f.input,{fetchImpl:stubborn,signal:controller.signal,timeoutMs:1000});
+    setTimeout(()=>controller.abort(),5);
+    await assert.rejects(pending,/request aborted/); assert.equal(calls,1);
+  }],
+  [50, "aggregate budget is checked before base64 decoding the first over-budget content item", async () => {
+    const bytes=new Uint8Array(O4B_LIMITS.maxFullFileBytes).fill(0xff);
+    const rows=Array.from({length:9},(_,i)=>changedFile(`src/bin-${i}.dat`,"modified",bytes));
+    const content:Record<string,Obj>={};
+    for(let i=0;i<8;i+=1) content[rows[i]!.filename]=fileBody(rows[i]!.filename,bytes);
+    content[rows[8]!.filename]={type:"file",encoding:"base64",path:rows[8]!.filename,sha:blobSha(bytes),size:bytes.byteLength,content:"%%%NOT-BASE64%%%"};
+    const f=makeFixture({changed:rows,content});
+    await assert.rejects(f.run,/aggregate materialized content byte budget exceeded before content materialization/);
   }],
 ]
 
 for (const [number,name,fn] of cases) test(`O4-B focused ${number}: ${name}`,fn)
-assert.equal(cases.length,45)
+assert.equal(cases.length,50)
