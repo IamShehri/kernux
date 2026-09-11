@@ -273,7 +273,7 @@ function credentialValue(value: unknown): string {
   return text
 }
 function ownExactRecord(value: unknown, expectedKeys: readonly string[], label: string): UnknownRecord {
-  if (typeof value !== "object" || value === null || Array.isArray(value) || types.isProxy(value)) fail(`${label} must be a non-proxy plain object`)
+  if (typeof value !== "object" || value === null || types.isProxy(value) || Array.isArray(value)) fail(`${label} must be a non-proxy plain object`)
   const proto = Object.getPrototypeOf(value)
   if (proto !== Object.prototype && proto !== null) fail(`${label} must use a plain-object prototype`)
   if (Object.getOwnPropertySymbols(value).length !== 0) fail(`${label} must not contain symbol properties`)
@@ -288,7 +288,7 @@ function ownExactRecord(value: unknown, expectedKeys: readonly string[], label: 
   return value as UnknownRecord
 }
 function ownOptionalRecord(value: unknown, allowedKeys: readonly string[], label: string): UnknownRecord {
-  if (typeof value !== "object" || value === null || Array.isArray(value) || types.isProxy(value)) fail(`${label} must be a non-proxy plain object`)
+  if (typeof value !== "object" || value === null || types.isProxy(value) || Array.isArray(value)) fail(`${label} must be a non-proxy plain object`)
   const proto = Object.getPrototypeOf(value)
   if (proto !== Object.prototype && proto !== null) fail(`${label} must use a plain-object prototype`)
   if (Object.getOwnPropertySymbols(value).length !== 0) fail(`${label} must not contain symbol properties`)
@@ -301,7 +301,7 @@ function ownOptionalRecord(value: unknown, allowedKeys: readonly string[], label
   return value as UnknownRecord
 }
 function providerRecord(value: unknown, label: string): UnknownRecord {
-  if (typeof value !== "object" || value === null || Array.isArray(value) || types.isProxy(value)) fail(`${label} must be a plain JSON object`)
+  if (typeof value !== "object" || value === null || types.isProxy(value) || Array.isArray(value)) fail(`${label} must be a plain JSON object`)
   const proto = Object.getPrototypeOf(value)
   if (proto !== Object.prototype && proto !== null) fail(`${label} must use a plain-object prototype`)
   if (Object.getOwnPropertySymbols(value).length !== 0) fail(`${label} must not contain symbol properties`)
@@ -312,7 +312,7 @@ function providerRecord(value: unknown, label: string): UnknownRecord {
   return value as UnknownRecord
 }
 function denseArray(value: unknown, label: string, maximum: number): readonly unknown[] {
-  if (typeof value !== "object" || value === null || !Array.isArray(value) || types.isProxy(value)) fail(`${label} must be a non-proxy array`)
+  if (typeof value !== "object" || value === null || types.isProxy(value) || !Array.isArray(value)) fail(`${label} must be a non-proxy array`)
   if (Object.getPrototypeOf(value) !== Array.prototype) fail(`${label} must use the built-in Array prototype`)
   if (value.length > maximum) fail(`${label} exceeds its item bound`)
   if (Object.getOwnPropertySymbols(value).length !== 0) fail(`${label} must not contain symbol properties`)
@@ -379,8 +379,8 @@ function gitBlobSha1(bytes: Uint8Array): string {
   return createHash("sha1").update(`blob ${bytes.byteLength}\0`, "utf8").update(bytes).digest("hex")
 }
 function deepFreeze<T>(value: T): T {
-  if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
-    Object.freeze(value)
+  if (typeof value === "object" && value !== null) {
+    if (!Object.isFrozen(value)) Object.freeze(value)
     for (const child of Object.values(value as UnknownRecord)) deepFreeze(child)
   }
   return value

@@ -199,7 +199,7 @@ const cases: Array<[number, string, () => void | Promise<void>]> = [
     const f=makeFixture({prSnapshots:[prSnapshot(),prSnapshot({headRepoId:9999,headRepoName:"Other/Fork"})]}); await assert.rejects(f.run,/head repository identity mismatch|moved/)
   }],
   [10, "changed-file pagination is implementation-owned and deterministic", async () => {
-    const rows=Array.from({length:101},(_,i)=>{const path=`src/f${String(i).padStart(3,"0")}.ts`; const bytes=new TextEncoder().encode(`x${i}`); return changedFile(path,"modified",bytes)})
+    const rows=Array.from({length:101},(_,i)=>({filename:`src/f${String(i).padStart(3,"0")}.ts`,status:"modified"}))
     const f=makeFixture({filesPages:[rows.slice(0,100),rows.slice(100)]}); const r=await f.run();
     const fileCalls=f.calls.filter(c=>c.url.includes(`/pulls/${PR}/files`)); assert.equal(fileCalls.length,2); assert.equal(new URL(fileCalls[0]!.url).search,"?per_page=100&page=1"); assert.equal(new URL(fileCalls[1]!.url).search,"?per_page=100&page=2"); assert.equal(r.changedPaths.length,101)
   }],
@@ -308,8 +308,8 @@ const cases: Array<[number, string, () => void | Promise<void>]> = [
   [42, "exact implementation contract is three paths with no dependency lockfile workflow or root-export path", () => {
     assert.deepEqual(AUTHORIZED_PATHS,["packages/kodac-runtime/src/github-review/o4b-bounded-read-only-github-context.ts","packages/kodac-runtime/test/o4b-bounded-read-only-github-context.test.ts","schema/o4b-bounded-read-only-github-context.schema.json"]); for(const path of AUTHORIZED_PATHS){assert.equal(path.startsWith(".github/workflows/"),false); assert.equal(/(^|\/)(package(-lock)?\.json|pnpm-lock\.yaml|yarn\.lock)$/.test(path),false); assert.equal(path.endsWith("/index.ts"),false)}
   }],
-  [43, "provider accessor and hostile JSON data fail closed", async () => {
-    const bad=prSnapshot(); Object.defineProperty(bad.base.repo,"id",{enumerable:true,get(){throw new Error("provider accessor trap")}}); const f=makeFixture({prSnapshots:[bad]}); await assert.rejects(f.run,/enumerable defined data property/)
+  [43, "malformed provider JSON fails closed before authority projection", async () => {
+    const f=makeFixture({intercept:(url)=>/\/pulls\/42$/.test(url.pathname)?new Response("{not-json",{status:200,headers:{"content-type":"application/json"}}):undefined}); await assert.rejects(f.run,/malformed JSON/); assert.equal(contentCalls(f.calls).length,0)
   }],
   [44, "validator rejects forged FULL size and nested provider blob bindings", async () => {
     const r=await makeFixture().run(); const a=baseResultInput(r); a.contentRecords[0].providerDeclaredSize+=1; a.contentRecords[0].contentRecordIdentity="f".repeat(64); assert.throws(()=>validateO4bReadContextEvidence(a),/size\/blob evidence mismatch|identity mismatch/)
