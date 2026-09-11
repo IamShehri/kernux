@@ -315,7 +315,16 @@ const cases: Array<[number, string, () => void | Promise<void>]> = [
     const r=await makeFixture().run(); const a=baseResultInput(r); a.contentRecords[0].providerDeclaredSize+=1; a.contentRecords[0].contentRecordIdentity="f".repeat(64); assert.throws(()=>validateO4bReadContextEvidence(a),/size\/blob evidence mismatch|identity mismatch/)
     const b=baseResultInput(r); b.changedFileMetadataRecords[0].providerBlobSha="e".repeat(40); b.changedFileMetadataRecords[0].metadataIdentity="f".repeat(64); assert.throws(()=>validateO4bReadContextEvidence(b),/identity mismatch|provider blob mismatch/)
   }],
+  [45, "caller-injected adapter options reject hostile proxy and accessor structure before use", async () => {
+    const f=makeFixture();
+    await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,new Proxy({fetchImpl:async()=>new Response()},{})),/options|non-proxy/);
+    const revoked=Proxy.revocable({timeoutMs:1000},{}); revoked.revoke(); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,revoked.proxy),/options|non-proxy/);
+    let gets=0; const accessor:any={}; Object.defineProperty(accessor,"timeoutMs",{enumerable:true,get(){gets+=1; return 1000}}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,accessor),/data property/); assert.equal(gets,0);
+    const signal=Proxy.revocable(new AbortController().signal,{}); signal.revoke(); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{signal:signal.proxy}),/non-proxy AbortSignal/);
+    const proxiedFetch=new Proxy(async()=>new Response(),{}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{fetchImpl:proxiedFetch}),/non-proxy function/);
+    const proxiedNow=new Proxy(()=>NOW,{}); await assert.rejects(()=>acquireO4bBoundedReadOnlyGithubContext(f.input,{now:proxiedNow}),/non-proxy function/);
+  }],
 ]
 
 for (const [number,name,fn] of cases) test(`O4-B focused ${number}: ${name}`,fn)
-assert.equal(cases.length,44)
+assert.equal(cases.length,45)

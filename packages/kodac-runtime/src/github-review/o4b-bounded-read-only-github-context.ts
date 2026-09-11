@@ -427,11 +427,11 @@ function normalizeOptions(raw: unknown): NormalizedOptions {
   const record = ownOptionalRecord(raw, OPTION_KEYS, "options")
   const fetchImpl = record.fetchImpl === undefined ? fetch : record.fetchImpl
   const now = record.now === undefined ? (() => new Date().toISOString()) : record.now
-  if (typeof fetchImpl !== "function") fail("options.fetchImpl must be a function")
-  if (typeof now !== "function") fail("options.now must be a function")
+  if (typeof fetchImpl !== "function" || types.isProxy(fetchImpl)) fail("options.fetchImpl must be a non-proxy function")
+  if (typeof now !== "function" || types.isProxy(now)) fail("options.now must be a non-proxy function")
   const signal = record.signal as AbortSignal | undefined
-  if (signal !== undefined && (typeof signal !== "object" || signal === null || typeof signal.addEventListener !== "function" || typeof signal.removeEventListener !== "function" || typeof signal.aborted !== "boolean")) {
-    fail("options.signal must be an AbortSignal")
+  if (signal !== undefined && (typeof signal !== "object" || signal === null || types.isProxy(signal) || typeof signal.addEventListener !== "function" || typeof signal.removeEventListener !== "function" || typeof signal.aborted !== "boolean")) {
+    fail("options.signal must be a non-proxy AbortSignal")
   }
   const timeoutMs = record.timeoutMs === undefined
     ? O4B_LIMITS.maxNetworkTimeoutMs
