@@ -363,7 +363,15 @@ const cases: Array<[number, string, () => void | Promise<void>]> = [
     const f=makeFixture({changed:rows,content});
     await assert.rejects(f.run,/aggregate materialized content byte budget exceeded before content materialization/);
   }],
+  [51, "schema repository-name patterns preserve runtime dot-segment confinement", () => {
+    const schema=JSON.parse(readFileSync(new URL("../../../schema/o4b-bounded-read-only-github-context.schema.json",import.meta.url),"utf8"));
+    const patterns=[schema.properties.repositoryFullName.pattern,schema.properties.headRepositoryFullName.pattern,schema.properties.contentRecords.items.properties.contentRepositoryFullName.pattern].map((value:string)=>new RegExp(value));
+    for(const pattern of patterns){
+      assert.equal(pattern.test("TheHalfMoon/Kodac"),true);
+      for(const invalid of ["./x","../x","owner/.","owner/.."]) assert.equal(pattern.test(invalid),false,`${pattern} admitted ${invalid}`);
+    }
+  }],
 ]
 
 for (const [number,name,fn] of cases) test(`O4-B focused ${number}: ${name}`,fn)
-assert.equal(cases.length,50)
+assert.equal(cases.length,51)
